@@ -1,0 +1,26 @@
+{
+  "name": "Create Repo",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/repository",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "POST",
+    "queryParams": [],
+    "headers": [],
+    "body": "{\n  \"namespace\": \"{{orga}}\",\n  \"repository\": \"{{repo}}\",\n  \"visibility\": \"public\",\n  \"description\": \"\",\n  \"repo_kind\": \"image\"\n}",
+    "bodyContainer": {
+      "text": "{\n  \"namespace\": \"{{orga}}\",\n  \"repository\": \"{{repo}}\",\n  \"visibility\": \"public\",\n  \"description\": \"\",\n  \"repo_kind\": \"image\"\n}",
+      "form": [],
+      "multipartForm": []
+    },
+    "contentType": "application/json",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

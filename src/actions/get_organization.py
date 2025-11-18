@@ -9,7 +9,9 @@ class GetOrganizationAction:
 
     def execute(self, data: dict) -> ActionResponse:
         try:
+            print(f"[GetOrganizationAction] Executing with data: {data}")
             org = GetOrganization(**data)
+            print(f"[GetOrganizationAction] Filtered model data: {org.model_dump()}")
             result = self.gateway.get_organization(org.name)
 
             return ActionResponse(

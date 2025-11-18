@@ -1,0 +1,84 @@
+# =====================================
+# Quay Local Configuration
+# =====================================
+
+DATABASE_SECRET_KEY: "s203f6Mk/rTApPXq52X/1vwDthSGy1o+UUABYH9pBfBE="
+
+# Server configuration
+SERVER_HOSTNAME: 127.0.0.1:9080
+PREFERRED_URL_SCHEME: http
+EXTERNAL_TLS_TERMINATION: false
+SESSION_COOKIE_SECURE: false
+SESSION_COOKIE_SAMESITE: Lax
+
+# Database connection
+DB_URI: postgresql://quay:quay@quay-pg-db:5432/quay
+DB_CONNECTION_ARGS:
+  connect_timeout: 10
+  keepalives: 1
+  keepalives_idle: 30
+  keepalives_interval: 10
+  keepalives_count: 5
+  sslmode: disable
+DB_CONNECTION_POOLING: true
+
+# Redis configuration
+REDIS_HOST: quay-redis
+REDIS_PORT: 6379
+REDIS_PASSWORD: ""
+REDIS_SSL: false
+
+# Storage configuration
+DISTRIBUTED_STORAGE_CONFIG:
+  default:
+    - LocalStorage
+    - storage_path: /datastorage
+DEFAULT_TAG_EXPIRATION: 2w
+
+# Authentication and access
+AUTHENTICATION_TYPE: Database
+FEATURE_USER_CREATION: true
+FEATURE_USER_INITIALIZE: false
+FEATURE_INVITE_ONLY_USER_CREATION: false
+FEATURE_REQUIRE_ENCRYPTED_BASIC_AUTH: false
+FEATURE_ANONYMOUS_ACCESS: false
+FEATURE_USER_LAST_ACCESSED: true
+
+# Security
+FEATURE_SECURITY_SCANNER: false
+FEATURE_SECURITY_NOTIFICATIONS: false
+
+# UI and metadata
+REGISTRY_TITLE: "Local Quay"
+REGISTRY_TITLE_SHORT: "Quay"
+ENTERPRISE_LOGO_URL: ""
+CONTACT_INFO:
+  - "http://127.0.0.1"
+
+# Superuser configuration
+SUPER_USERS:
+  - admin
+
+# Misc
+FEATURE_APP_REGISTRY: false
+FEATURE_REPO_MIRROR: false
+FEATURE_PROXY_CACHE: true
+
+SETUP_COMPLETE: true
+
+# Build logs Redis configuration
+BUILDLOGS_REDIS:
+  host: quay-redis
+  port: 6379
+
+# User events Redis configuration
+USER_EVENTS_REDIS:
+  host: quay-redis
+  port: 6379
+
+# Additional configuration to complete Quay setup
+CONFIG_DIRECTORY: /conf/stack
+DISTRIBUTED_STORAGE_DEFAULT_LOCATIONS:
+  - default
+FEATURE_GENERAL_OCI_SUPPORT: true
+FEATURE_MAILING: false

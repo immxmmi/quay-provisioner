@@ -49,6 +49,29 @@ class PipelineEngine:
             action_class = ACTION_REGISTRY.get(step.job)
             action = action_class()
 
+            # Run multiple executions via params_list
+            if hasattr(step, "params_list") and step.params_list:
+                list_expr = step.params_list.strip()
+                inputs = self.reader.load_inputs(pipeline.input_file)
+
+                if list_expr.startswith("{{ inputs.") and list_expr.endswith(" }}"):
+                    key = list_expr[len("{{ inputs."): -len(" }}")].strip()
+                    items = inputs.get(key, [])
+                else:
+                    items = []
+
+                for params in items:
+                    print(f"▶ Running step: {step.name} ({step.job})")
+                    response = action.execute(params or {})
+                    print(f"   ✔ Success: {response.success}")
+                    if response.message:
+                        print(f"   ✔ Message: {response.message}")
+                    if response.data:
+                        print(f"   ✔ Data: {response.data}")
+                    print()
+
+                continue
+
             print(f"▶ Running step: {step.name} ({step.job})")
 
             response = action.execute(step.params or {})

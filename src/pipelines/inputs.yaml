@@ -1,3 +1,10 @@
-organization: "my-org"
-namespace: "platform"
-team_name: "admins"
+organizations:
+  - name: "momo"
+    visibility: "private"
+    email: "momo@test.ch"
+    owner: "momo"
+
+  - name: "falko"
+    visibility: "public"
+    email: "contact@org2.com"
+    owner: "system"

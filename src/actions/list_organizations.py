@@ -8,7 +8,9 @@ class ListOrganizationsAction:
 
     def execute(self, data: dict) -> ActionResponse:
         try:
+            print(f"[ListOrganizationsAction] Executing with data: {data}")
             result = self.gateway.list_organizations()
+            print(f"[ListOrganizationsAction] API result: {result}")
 
             return ActionResponse(
                 success=True,

@@ -1,8 +1,7 @@
 input_file: "pipelines/inputs.yaml"
 
 pipeline:
-  - name: create-organization
+  - name: create-organizations
     job: create_organization
     enabled: true
-    params:
-      name: "{{ inputs.organization }}"
+    params_list: "{{ inputs.organizations }}"

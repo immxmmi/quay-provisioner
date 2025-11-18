@@ -1,3 +1,3 @@
 api:
-  base_url: "https://quay.io/api/v1"
-  token: "YOUR_TOKEN_HERE"
+  base_url: "http://127.0.0.1:9080/api/v1"
+  token: "HxuRxgqbBazh9dUIKHyJmbcIDyZZ5bYSerL83ZR1"

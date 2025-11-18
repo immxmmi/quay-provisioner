@@ -1,0 +1,80 @@
+{
+  "bearer_token": {
+    "value": "bDg8hxTi79nxIX4PBt4kzgUP8kSw2k5ipneaPesR",
+    "type": "string",
+    "id": 0,
+    "isSecret": false
+  },
+  "quay_registry": {
+    "value": "http://127.0.0.1:9080",
+    "type": "string",
+    "id": 1,
+    "isSecret": false
+  },
+  "orga": {
+    "value": "docker3",
+    "type": "string",
+    "id": 2,
+    "isSecret": false
+  },
+  "repo": {
+    "value": "proxy",
+    "type": "string",
+    "id": 3,
+    "isSecret": false
+  },
+  "email": {
+    "value": "docker3@test.ch",
+    "type": "string",
+    "id": 4,
+    "isSecret": false
+  },
+  "policy_uuid": {
+    "value": "",
+    "type": "string",
+    "id": 5,
+    "isSecret": false
+  },
+  "tag": {
+    "value": "",
+    "type": "string",
+    "id": 6,
+    "isSecret": false
+  },
+  "newtag": {
+    "value": "",
+    "type": "string",
+    "id": 7,
+    "isSecret": false
+  },
+  "manifest_digest": {
+    "value": "",
+    "type": "string",
+    "id": 8,
+    "isSecret": false
+  },
+  "team": {
+    "value": "",
+    "type": "string",
+    "id": 9,
+    "isSecret": false
+  },
+  "user": {
+    "value": "",
+    "type": "string",
+    "id": 10,
+    "isSecret": false
+  },
+  "robot": {
+    "value": "docker+proxy",
+    "type": "string",
+    "id": 11,
+    "isSecret": false
+  },
+  "quota_id": {
+    "value": "",
+    "type": "string",
+    "id": 12,
+    "isSecret": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Create Org",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/organization/",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "POST",
+    "queryParams": [],
+    "headers": [
+      {
+        "id": 1761825249797,
+        "key": "Content-Type",
+        "value": "application/json",
+        "isEnabled": false
+      }
+    ],
+    "body": "{\n  \"name\": \"{{orga}}\",\n  \"email\": \"{{email}}\"\n}",
+    "bodyContainer": {
+      "text": "{\n  \"name\": \"{{orga}}\",\n  \"email\": \"{{email}}\"\n}",
+      "form": [
+        {
+          "id": 1761824839610,
+          "key": "name",
+          "value": "{{orga}}",
+          "isEnabled": true
+        },
+        {
+          "id": 1761824856809,
+          "key": "email",
+          "value": "{{orga}}@test.ch",
+          "isEnabled": true
+        }
+      ],
+      "multipartForm": []
+    },
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

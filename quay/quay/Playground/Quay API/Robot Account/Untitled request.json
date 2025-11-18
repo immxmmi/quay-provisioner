@@ -1,0 +1,21 @@
+{
+  "name": "Untitled request",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/organization/{{orga}}/robots/test",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "PUT",
+    "queryParams": [],
+    "headers": [],
+    "body": null,
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

@@ -11,6 +11,7 @@ class CreateOrganizationAction:
         try:
             print(f"[CreateOrganizationAction] Executing with data: {data}")
             org = Organization(**data)
+            print(f"[CreateOrganizationAction] Filtered model data: {org.model_dump()}")
             result = self.gateway.create_organization(org.name)
             print(f"[CreateOrganizationAction] API result: {result}")
 

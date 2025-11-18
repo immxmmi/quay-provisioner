@@ -9,7 +9,9 @@ class DeleteOrganizationAction:
 
     def execute(self, data: dict) -> ActionResponse:
         try:
+            print(f"[DeleteOrganizationAction] Executing with data: {data}")
             org = DeleteOrganization(**data)
+            print(f"[DeleteOrganizationAction] Filtered model data: {org.model_dump()}")
             result = self.gateway.delete_organization(org.name)
 
             return ActionResponse(

@@ -1,0 +1,21 @@
+{
+  "name": "Find Repo",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/find/repositories",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "GET",
+    "queryParams": [],
+    "headers": [],
+    "body": null,
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

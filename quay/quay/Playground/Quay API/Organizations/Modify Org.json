@@ -1,0 +1,26 @@
+{
+  "name": "Modify Org ",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/organization/{{orga}}",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "PUT",
+    "queryParams": [],
+    "headers": [],
+    "body": "{\n  \"name\": \"{{orga}}\",\n  \"email\": \"{{email}}\"\n}",
+    "bodyContainer": {
+      "text": "{\n  \"name\": \"{{orga}}\",\n  \"email\": \"{{email}}\"\n}",
+      "form": [],
+      "multipartForm": []
+    },
+    "contentType": "application/json",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

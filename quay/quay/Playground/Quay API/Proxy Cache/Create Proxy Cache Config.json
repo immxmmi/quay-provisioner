@@ -1,0 +1,26 @@
+{
+  "name": "Create Proxy Cache Config",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/organization/{{orga}}/proxycache",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "POST",
+    "queryParams": [],
+    "headers": [],
+    "body": "{\n  \"expiration_s\": 86400,\n  \"insecure\": false,\n  \"org_name\": \"docker3\",\n  \"upstream_registry\": \"docker.io\",\n  \"upstream_registry_username\": null,\n  \"upstream_registry_password\": null\n}",
+    "bodyContainer": {
+      "text": "{\n  \"expiration_s\": 86400,\n  \"insecure\": false,\n  \"org_name\": \"docker3\",\n  \"upstream_registry\": \"docker.io\",\n  \"upstream_registry_username\": null,\n  \"upstream_registry_password\": null\n}",
+      "form": [],
+      "multipartForm": []
+    },
+    "contentType": "application/json",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}

@@ -1,0 +1,86 @@
+services:
+  quay-app:
+    image: quay.io/projectquay/quay:3.15.1
+    depends_on:
+      - quay-pg-db
+      - quay-redis
+    entrypoint:
+      - bash
+      - -c
+      - |
+        if [ ! -f /conf/stack/config.yaml ]; then
+          echo "❌ ERROR: /conf/stack/config.yaml not found — please check your mount (./quay-config:/conf/stack)"
+          exit 1
+        fi
+        echo "✅ config.yaml found, starting Quay..."
+        /quay-registry/quay-entrypoint.sh &
+
+        echo "⏳ Waiting for Quay to start..."
+        sleep 15
+
+        wait
+    ports:
+      - 9080:8080
+      - 9443:8443
+    restart: unless-stopped
+    volumes:
+      - ./config:/conf/stack:Z
+      - app_storage:/datastorage
+      - app_log:/var/log
+      - app_tmp:/tmp
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 6g
+  quay-pg-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    command:
+      - bash
+      - -c
+      - |
+        docker-entrypoint.sh postgres &
+        until pg_isready -U $$POSTGRES_USER; do
+          echo "⏳ Waiting for Postgres..."
+          sleep 2
+        done
+        psql -U $$POSTGRES_USER -d $$POSTGRES_DB -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+        wait
+    volumes:
+      - quay-pg-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2g
+  quay-redis:
+    image: redis:7
+    container_name: quay-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - quay-redis-data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512m
+volumes:
+  app_storage:
+    driver: local
+  app_config:
+    driver: local
+  app_log:
+    driver: local
+  app_tmp:
+    driver: local
+  quay-pg-data:
+    driver: local
+  quay-redis-data:
+    driver: local

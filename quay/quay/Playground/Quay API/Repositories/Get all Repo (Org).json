@@ -1,0 +1,28 @@
+{
+  "name": "Get all Repo (Org)",
+  "request": {
+    "type": "http",
+    "url": "{{quay_registry}}/api/v1/repository",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "GET",
+    "queryParams": [
+      {
+        "id": 0.9592937215017991,
+        "key": "namespace",
+        "value": "{{orga}}",
+        "isEnabled": true
+      }
+    ],
+    "headers": [],
+    "body": null,
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    },
+    "pathVariables": []
+  }
+}
