@@ -4,41 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/PipelineExecutionPlatform.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/actions/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/actions/create_organization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/actions/delete_organization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/actions/get_organization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/actions/list_organizations.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine/pipeline_engine.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine_reader/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine_reader/pipeline_reader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gateway/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/git_watcher/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/action_response.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/organization_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/pipeline_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pipelines/pipeline2.yaml" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Implement action registry and API client for organization management">
+      <change afterPath="$PROJECT_DIR$/arc.excalidraw" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +32,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Docker.Dockerfile.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.main.executor": "Run",
     "Python.pipeline_engine.executor": "Run",
@@ -146,7 +114,20 @@
       <option name="presentableId" value="Default" />
       <updated>1763464193104</updated>
     </task>
+    <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
+      <option name="closed" value="true" />
+      <created>1763468598795</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763468598795</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Implement action registry and API client for organization management" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement action registry and API client for organization management" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
