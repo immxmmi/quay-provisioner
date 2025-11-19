@@ -4,52 +4,55 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add Excalidraw diagram for pipeline execution platform and update workspace configuration">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/.env.example" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/API.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Create Org.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Delete Org.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get Org Applications.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get Org.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get all Org.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Modify Org.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/auth.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Create Proxy Cache Config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Delete Proxy Cache Config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Get Org Proxy Cache Config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/auth.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Create Repo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Delete Repo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Detail Repo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Find Repo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Get all Repo (Org).json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/auth.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Robot Account/Untitled request.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Robot Account/auth.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/auth.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/Quay API/vars.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/environments/global.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/Playground/requestly.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/config/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/create-admin.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay/quay/docker-compose.yaml" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add configuration files and update pipeline execution logic for organization management">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/environment/gittea/docker-compose.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/create_robot_account.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/delete_robot_account.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/get_robot_account.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/list_robot_accounts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/git_watcher/watcher.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/robot_account_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arc.excalidraw" beforeDir="false" afterPath="$PROJECT_DIR$/arc.excalidraw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/delete_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/list_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/list_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/pipeline_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/organization_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/organization_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/pipeline_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/pipeline_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/API.md" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/API.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Create Org.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Create Org.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Delete Org.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Delete Org.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get Org Applications.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Get Org Applications.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get Org.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Get Org.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Get all Org.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Get all Org.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/Modify Org.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/Modify Org.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Organizations/auth.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Organizations/auth.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Create Proxy Cache Config.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Proxy Cache/Create Proxy Cache Config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Delete Proxy Cache Config.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Proxy Cache/Delete Proxy Cache Config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/Get Org Proxy Cache Config.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Proxy Cache/Get Org Proxy Cache Config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Proxy Cache/auth.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Proxy Cache/auth.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Create Repo.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/Create Repo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Delete Repo.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/Delete Repo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Detail Repo.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/Detail Repo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Find Repo.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/Find Repo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/Get all Repo (Org).json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/Get all Repo (Org).json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Repositories/auth.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Repositories/auth.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Robot Account/Untitled request.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Robot Account/Untitled request.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/Robot Account/auth.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/Robot Account/auth.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/auth.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/auth.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/Quay API/vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/Quay API/vars.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/environments/global.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/environments/global.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/Playground/requestly.json" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/Playground/requestly.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/create-admin.sh" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/create-admin.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay/quay/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline2.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline2.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline2.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,40 +69,45 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "immxmmi"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;immxmmi&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:immxmmi/pipeline_execution_platform.git",
-    "accountId": "996268fd-7a60-4e13-90d1-5839b689dbbe"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:immxmmi/pipeline_execution_platform.git&quot;,
+    &quot;accountId&quot;: &quot;996268fd-7a60-4e13-90d1-5839b689dbbe&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="35eId1BFJUCYI7UAtKDg8JX6W28" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.Dockerfile.executor": "Run",
-    "Docker.quay/docker-compose.yaml: Compose Deployment.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.main.executor": "Run",
-    "Python.pipeline_engine.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/momo/PycharmProjects/PipelineExecutionPlatform/quay"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.gittea/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.quay/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pipeline_engine.executor&quot;: &quot;Run&quot;,
+    &quot;Python.watcher.yaml.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/momo/PycharmProjects/PipelineExecutionPlatform/quay&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/quay" />
@@ -107,6 +115,8 @@
       <recent name="$PROJECT_DIR$/src/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/env" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/config" />
       <recent name="$PROJECT_DIR$/src/gateway" />
@@ -135,6 +145,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="watcher" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PipelineExecutionPlatform" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/git_watcher" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/git_watcher/watcher.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -144,31 +176,46 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
-      <deployment type="docker-compose.yml" />
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile" />
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="gittea/docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="environment/gittea/docker-compose.yaml" />
+        </settings>
+      </deployment>
       <method v="2" />
     </configuration>
     <configuration name="quay/docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
       <deployment type="docker-compose.yml">
         <settings>
-          <option name="sourceFilePath" value="quay/quay/docker-compose.yaml" />
+          <option name="sourceFilePath" value="environment/quay/docker-compose.yaml" />
         </settings>
       </deployment>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Docker.Dockerfile" />
+      <item itemvalue="Docker.gittea/docker-compose.yaml: Compose Deployment" />
       <item itemvalue="Docker.quay/docker-compose.yaml: Compose Deployment" />
+      <item itemvalue="Python.watcher" />
       <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Docker.quay/docker-compose.yaml: Compose Deployment" />
         <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Docker.gittea/docker-compose.yaml: Compose Deployment" />
+        <item itemvalue="Docker.quay/docker-compose.yaml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -203,20 +250,28 @@
       <option name="project" value="LOCAL" />
       <updated>1763468923712</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Add configuration files and update pipeline execution logic for organization management">
+      <option name="closed" value="true" />
+      <created>1763473335362</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763473335362</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Implement action registry and API client for organization management" />
     <MESSAGE value="Add Excalidraw diagram for pipeline execution platform and update workspace configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Excalidraw diagram for pipeline execution platform and update workspace configuration" />
+    <MESSAGE value="Add configuration files and update pipeline execution logic for organization management" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add configuration files and update pipeline execution logic for organization management" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/main.py</url>
-          <line>1</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

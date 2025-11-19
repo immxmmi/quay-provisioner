@@ -4,7 +4,20 @@ organizations:
     email: "momo@test.ch"
     owner: "momo"
 
-  - name: "falko"
+  - name: "test"
     visibility: "public"
     email: "contact@org2.com"
     owner: "system"
+
+robot_accounts:
+  - organization: "momo"
+    robot_shortname: "ci-bot"
+    description: "CI automation bot"
+
+  - organization: "momo"
+    robot_shortname: "deployment"
+    description: "Deployments bot"
+
+  - organization: "test"
+    robot_shortname: "scanner"
+    description: "Security scan bot"
