@@ -8,6 +8,7 @@ class CreateOrganizationAction:
     def __init__(self, gateway=None):
         self.gateway = gateway or QuayGateway()
 
+
     def execute(self, data: dict):
         try:
             print(f"[CreateOrganizationAction] Executing with data: {data}")

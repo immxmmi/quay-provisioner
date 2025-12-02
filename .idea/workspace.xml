@@ -4,19 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="add lib">
-      <change afterPath="$PROJECT_DIR$/quay-provisioner/templates/job.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay-provisioner/templates/pipelines-config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/quay-provisioner/templates/quay-config-secret.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add organization and robot account existence checks in actions">
       <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_organization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/actions/create_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_robot_account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_robot_account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/git_watcher/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/git_watcher/watcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +204,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1763464193104</updated>
-      <workItem from="1764665418800" duration="3568000" />
+      <workItem from="1764665418800" duration="3943000" />
     </task>
     <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
       <option name="closed" value="true" />
@@ -253,7 +246,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763559021105</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add organization and robot account existence checks in actions">
+      <option name="closed" value="true" />
+      <created>1764669158856</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1764669158856</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,20 +266,11 @@
     <MESSAGE value="Add configuration files and update pipeline execution logic for organization management" />
     <MESSAGE value="Add robot account management actions and update pipeline configuration" />
     <MESSAGE value="add lib" />
-    <option name="LAST_COMMIT_MESSAGE" value="add lib" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/main.py</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Add organization and robot account existence checks in actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add organization and robot account existence checks in actions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1764668507062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1764669287191" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

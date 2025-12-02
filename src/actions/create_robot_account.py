@@ -19,6 +19,7 @@ class CreateRobotAccountAction:
             if not org:
                 raise ValueError("Missing required field: 'organization'")
 
+            # --- VALIDATION ---
             print(f"[CreateRobotAccountAction] Checking if organization exists: {org}")
             if not GetOrganizationAction.exists(org):
                 print(f"[CreateRobotAccountAction] Organization does NOT exist: {org}")
@@ -37,6 +38,7 @@ class CreateRobotAccountAction:
                     data={"organization": org, "robot": dto.robot_shortname}
                 )
 
+            # --- CREATE NEW ROBOT ---
             result = self.gateway.create_robot_account(
                 organization=org,
                 robot_shortname=dto.robot_shortname,

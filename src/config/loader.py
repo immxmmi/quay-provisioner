@@ -3,6 +3,8 @@ from pathlib import Path
 
 import yaml
 
+TARGET_FILE = "pipelines/pipeline.yaml"
+
 
 class Config:
     def __init__(self):
