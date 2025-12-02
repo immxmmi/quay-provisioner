@@ -3,12 +3,6 @@ from pathlib import Path
 
 import yaml
 
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-TARGET_FILE = BASE_DIR / "pipelines" / "pipeline.yaml"
-
-
 class Config:
     def __init__(self):
         config_file = Path(__file__).parent / "settings.yaml"
@@ -28,6 +22,3 @@ class Config:
 
         if not self.token:
             raise ValueError("QUAY_API_TOKEN is not set in environment variables or settings.yaml")
-
-        # Expose resolved pipeline file path
-        self.pipeline_file = TARGET_FILE
