@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/immxmmi/quay-provisioner
-  tag: "a945725"
+  tag: "latest"
 
 serviceAccount:
   name: quay-provisioner

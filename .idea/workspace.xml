@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor Helm templates to use values for dynamic configuration">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/helm-push.yml" afterDir="false" />
-    </list>
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add GitHub Actions workflow for building and pushing Helm chart" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -185,7 +183,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1763464193104</updated>
-      <workItem from="1764665418800" duration="9074000" />
+      <workItem from="1764665418800" duration="9400000" />
     </task>
     <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
       <option name="closed" value="true" />
@@ -315,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764677620716</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Add GitHub Actions workflow for building and pushing Helm chart">
+      <option name="closed" value="true" />
+      <created>1764677739103</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1764677739103</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,7 +342,8 @@
     <MESSAGE value="Refactor loader.py and main.py to streamline pipeline file path handling" />
     <MESSAGE value="Refactor main.py to use Config for pipeline file path resolution" />
     <MESSAGE value="Refactor Helm templates to use values for dynamic configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor Helm templates to use values for dynamic configuration" />
+    <MESSAGE value="Add GitHub Actions workflow for building and pushing Helm chart" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add GitHub Actions workflow for building and pushing Helm chart" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1764672850842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
