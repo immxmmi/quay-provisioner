@@ -182,7 +182,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1763464193104</updated>
-      <workItem from="1764665418800" duration="7619000" />
+      <workItem from="1764665418800" duration="7950000" />
     </task>
     <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
       <option name="closed" value="true" />
@@ -288,7 +288,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764672862090</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Refactor loader.py and main.py to improve pipeline file path resolution">
+      <option name="closed" value="true" />
+      <created>1764673286730</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1764673286730</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
