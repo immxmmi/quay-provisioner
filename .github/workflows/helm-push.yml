@@ -1,0 +1,52 @@
+name: Build & Push Helm Chart
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  HELM_REPO: oci://ghcr.io/${{ github.repository_owner }}/quay-provisioner-chart
+
+jobs:
+  build-and-push-helm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: meta
+        run: |
+          VERSION=$(git rev-parse --short HEAD)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Lint Helm Chart
+        run: helm lint ./helm
+
+      - name: Package Helm Chart
+        run: |
+          helm package ./helm \
+            --version "${{ steps.meta.outputs.version }}" \
+            --app-version "${{ steps.meta.outputs.version }}"
+          mv *.tgz chart.tgz
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
+          helm registry login ghcr.io \
+            --username "${{ github.actor }}" \
+            --password-stdin
+
+      - name: Push Helm Chart
+        run: |
+          helm push chart.tgz ${{ env.HELM_REPO }}
