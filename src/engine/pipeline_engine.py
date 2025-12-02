@@ -69,6 +69,10 @@ class PipelineEngine:
                     if response.data:
                         print(f"   ✔ Data: {response.data}")
                     print()
+                    if not response.success:
+                        print("❌ Pipeline failed.")
+                        import sys
+                        sys.exit(1)
 
                 continue
 
@@ -82,3 +86,7 @@ class PipelineEngine:
             if response.data:
                 print(f"   ✔ Data: {response.data}")
             print()
+            if not response.success:
+                print("❌ Pipeline failed.")
+                import sys
+                sys.exit(1)
