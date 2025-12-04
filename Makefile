@@ -59,9 +59,14 @@ build_image:
 	docker build -t quay-provisioner .
 	@echo "Docker image built."
 
-export_image:
+build_only_image:
+	@echo "Building Dockerfile_build_only..."
+	docker build -f Dockerfile_build_only -t quay-provisioner-buildonly .
+	@echo "Dockerfile_build_only image built."
+
+export_image: build_only_image
 	@echo "Exporting Docker image quay-provisioner..."
-	docker save quay-provisioner -o quay-provisioner.tar
+	docker save quay-provisioner-buildonly -o quay-provisioner-buildonly.tar
 	@echo "✓ Image exported to quay-provisioner.tar"
 
 build_offline:
