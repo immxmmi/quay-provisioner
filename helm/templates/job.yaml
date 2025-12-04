@@ -21,10 +21,24 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.name }}
                   key: QUAY_API_TOKEN
+            {{- if .Values.caBundle.enabled }}
+            - name: {{ .Values.caBundle.envVar }}
+              value: {{ .Values.caBundle.mountPath }}
+            {{- end }}
           volumeMounts:
             - name: pipelines
               mountPath: {{ .Values.pipelines.mountPath }}
+            {{- if .Values.caBundle.enabled }}
+            - name: custom-ca
+              mountPath: {{ .Values.caBundle.mountPath }}
+              subPath: custom-ca.pem
+            {{- end }}
       volumes:
         - name: pipelines
           configMap:
             name: {{ .Values.pipelines.configMapName }}
+        {{- if .Values.caBundle.enabled }}
+        - name: custom-ca
+          configMap:
+            name: {{ .Values.caBundle.configMapName }}
+        {{- end }}

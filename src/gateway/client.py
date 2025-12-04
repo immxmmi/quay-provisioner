@@ -1,4 +1,5 @@
 import requests
+import os
 
 from config.loader import Config
 
@@ -13,7 +14,14 @@ class ApiClient:
 
     def request(self, method, endpoint, **kwargs):
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        response = requests.request(method, url, headers=self.headers, **kwargs)
+        verify_path = os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
+        response = requests.request(
+            method,
+            url,
+            headers=self.headers,
+            verify=verify_path,
+            **kwargs
+        )
         response.raise_for_status()
         return response.json() if response.text else {}
 

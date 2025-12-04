@@ -17,3 +17,9 @@ secrets:
 pipelines:
   configMapName: quay-provisioner-pipelines
   mountPath: /app/pipelines
+
+caBundle:
+  enabled: false
+  configMapName: custom-ca-bundle
+  mountPath: /etc/ssl/certs/custom-ca.pem
+  envVar: REQUESTS_CA_BUNDLE
