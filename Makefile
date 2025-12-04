@@ -8,12 +8,18 @@ help:
 	@echo "  install_quay_environment   Start local Quay test environment"
 	@echo "  deinstall_quay_environment Stop and remove Quay test environment"
 	@echo "  create_wheelhouse          Build Python wheels for offline builds"
+	@echo "  clean_wheelhouse           Clean the wheelhouse directory"
 	@echo "  build_image                Build normal Docker image"
 	@echo "  build_offline              Build offline Docker image (uses wheelhouse)"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make <target>"
 	@echo "======================================"
+
+
+PY_VERSION ?= 3.12
+IMAGE      ?= python:$(PY_VERSION)-slim
+
 
 install_quay_environment:
 	@echo "Installing Quay environment..."
@@ -26,11 +32,19 @@ deinstall_quay_environment:
 	@echo "Quay environment removed."
 
 create_wheelhouse:
+	mkdir -p wheels
 	docker run --rm \
-	  -v "$(pwd)/requirements.txt:/requirements.txt" \
-	  -v "$(pwd)/wheels:/wheels" \
-	  python:3.12-slim \
-	  sh -c "pip install --upgrade pip && pip download -r /requirements.txt -d /wheels"
+	  -v "$(PWD)/requirements.txt:/requirements.txt" \
+	  -v "$(PWD)/wheels:/wheels" \
+	  $(IMAGE) \
+	  sh -c "pip install --upgrade pip && \
+	         pip download --only-binary=:all: -r /requirements.txt -d /wheels"
+	@echo "✓ Wheelhouse created in ./wheels"
+
+clean_wheelhouse:
+	rm -rf wheels
+	mkdir wheels
+	@echo "✓ Wheelhouse cleaned"
 
 build_image:
 	@echo "Building Docker image..."
