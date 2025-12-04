@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add export_image and run_image targets to Makefile">
-      <change afterPath="$PROJECT_DIR$/Dockerfile_build_only" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quay-provisioner.tar" beforeDir="false" afterPath="$PROJECT_DIR$/quay-provisioner.tar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quay-provisioner-buildonly.tar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +196,7 @@
       <updated>1763464193104</updated>
       <workItem from="1764665418800" duration="17082000" />
       <workItem from="1764769826104" duration="949000" />
-      <workItem from="1764837174966" duration="5565000" />
+      <workItem from="1764837174966" duration="7371000" />
     </task>
     <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
       <option name="closed" value="true" />
@@ -438,7 +438,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764850984487</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Add export_image and run_image targets to Makefile">
+      <option name="closed" value="true" />
+      <created>1764851255440</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1764851255440</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Add export_image and run_image targets to Makefile">
+      <option name="closed" value="true" />
+      <created>1764851267831</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1764851267831</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

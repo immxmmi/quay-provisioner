@@ -22,6 +22,9 @@ help:
 
 PY_VERSION ?= 3.12
 IMAGE      ?= quay.io/lib/python:$(PY_VERSION)
+REGISTRY   ?= quay.io
+REPO	   ?= your-repo/quay-provisioner
+TAG		   ?= latest
 
 
 install_quay_environment:
@@ -59,15 +62,16 @@ build_image:
 	docker build -t quay-provisioner .
 	@echo "Docker image built."
 
-build_only_image:
-	@echo "Building Dockerfile_build_only..."
-	docker build -f Dockerfile_build_only -t quay-provisioner-buildonly .
-	@echo "Dockerfile_build_only image built."
-
-export_image: build_only_image
+export_image: build_image
 	@echo "Exporting Docker image quay-provisioner..."
-	docker save quay-provisioner-buildonly -o quay-provisioner-buildonly.tar
+	docker save quay-provisioner -o quay-provisioner.tar
 	@echo "✓ Image exported to quay-provisioner.tar"
+
+push_image:
+	@echo "Pushing Docker image to $(REGISTRY)..."
+	docker tag quay-provisioner $(REGISTRY)/$(REPO):$(TAG)
+	docker push $(REGISTRY)/$(REPO):$(TAG)
+	@echo "✓ Image pushed to $(REGISTRY)/$(REPO)"
 
 build_offline:
 	@echo "Building offline Docker image..."
