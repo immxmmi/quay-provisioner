@@ -15,11 +15,7 @@ class ApiClient:
     def request(self, method, endpoint, **kwargs):
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         disable_verify = os.getenv("DISABLE_TLS_VERIFY", "false").lower() == "true"
-
-        if disable_verify:
-            verify_path = False
-        else:
-            verify_path = os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
+        verify_path = False if disable_verify else os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
 
         response = requests.request(
             method,
@@ -28,8 +24,19 @@ class ApiClient:
             verify=verify_path,
             **kwargs
         )
+
         response.raise_for_status()
-        return response.json() if response.text else {}
+
+        if not response.text or response.text.strip() == "":
+            return {}
+
+        try:
+            return response.json()
+        except ValueError:
+            print("WARN: Response is not valid JSON.")
+            print("STATUS:", response.status_code)
+            print("RAW:", response.text)
+            return {"raw": response.text}
 
 
     def get(self, endpoint, **kwargs):
