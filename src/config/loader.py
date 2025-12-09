@@ -6,20 +6,20 @@ import yaml
 class Config:
     def __init__(self):
         config_file = Path(__file__).parent / "settings.yaml"
-        # Ensure pipelines directory exists (important for local runs)
         pipelines_dir = Path(__file__).parent.parent / "pipelines"
         pipelines_dir.mkdir(parents=True, exist_ok=True)
-        data = yaml.safe_load(config_file.read_text())
 
-        # Resolve absolute base directory for the project
         BASE_DIR = Path(__file__).resolve().parent.parent
 
-        # Determine pipeline file from ENV or fallback to default location
         pipeline_env = os.getenv("PIPELINE_FILE")
         if pipeline_env:
             self.pipeline_file = Path(pipeline_env).resolve()
         else:
             self.pipeline_file = (BASE_DIR / "pipelines" / "pipeline.yaml").resolve()
+
+        self.inputs_file = (BASE_DIR / "pipelines" / "inputs.yaml").resolve()
+
+        data = yaml.safe_load(config_file.read_text())
 
         env_base = os.getenv("QUAY_API_BASE_URL")
         env_token = os.getenv("QUAY_API_TOKEN")

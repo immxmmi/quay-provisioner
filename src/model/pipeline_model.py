@@ -11,5 +11,4 @@ class PipelineStep(BaseModel):
 
 
 class PipelineDefinition(BaseModel):
-    input_file: str
     pipeline: List[PipelineStep]

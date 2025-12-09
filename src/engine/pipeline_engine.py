@@ -4,12 +4,13 @@ from engine.action_registry import ACTION_REGISTRY
 
 class PipelineEngine:
 
-    def __init__(self):
+    def __init__(self, config):
         self.reader = PipelineReader()
+        self.config = config
 
     def load_pipeline(self, pipeline_file: str):
         pipeline = self.reader.load_pipeline(pipeline_file)
-        inputs = self.reader.load_inputs(pipeline.input_file)
+        inputs = self.reader.load_inputs(self.config.inputs_file)
         pipeline = self.reader.resolve_templates(pipeline, inputs)
         self.validate_jobs(pipeline)
         return pipeline
@@ -52,7 +53,7 @@ class PipelineEngine:
             # Run multiple executions via params_list
             if hasattr(step, "params_list") and step.params_list:
                 list_expr = step.params_list.strip()
-                inputs = self.reader.load_inputs(pipeline.input_file)
+                inputs = self.reader.load_inputs(self.config.inputs_file)
 
                 if list_expr.startswith("{{ inputs.") and list_expr.endswith(" }}"):
                     key = list_expr[len("{{ inputs."): -len(" }}")].strip()

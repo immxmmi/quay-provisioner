@@ -1,11 +1,10 @@
 organizations:
-  - name: "falko"
+  - name: "test"
     visibility: "private"
     email: "test@test.ch"
     owner: "test"
 
-
 robot_accounts:
-  - organization: "momo"
+  - organization: "test"
     robot_shortname: "ci-bot"
     description: "CI automation bot"
