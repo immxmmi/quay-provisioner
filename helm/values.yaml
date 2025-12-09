@@ -8,11 +8,14 @@ serviceAccount:
 secrets:
   name: quay-config
 
-  apiBaseUrl: ""
+  apiHost: "127.0.0.1"
+  apiPort: "9080"
+  apiBasePath: "/api/v1"
+  apiAuthType: "bearer"
   apiToken: ""
 
-  # (ESO usw.)
-  existingSecret: ""   # z.B. "quay-config-external"
+  # Falls ein externes Secret genutzt wird (ESO etc.)
+  existingSecret: ""
 
 pipelines:
   configMapName: quay-provisioner-pipelines
