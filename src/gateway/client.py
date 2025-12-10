@@ -33,12 +33,9 @@ class ApiClient:
         self.verify = False if disable_verify else os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
 
     def _request(self, method, endpoint, **kwargs):
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        url = url.replace("//", "/").replace("http:/", "http://").replace("https:/", "https://")
-
-        if method in ("POST", "PUT") and not endpoint.endswith("/"):
-            endpoint = endpoint.rstrip("/") + "/"
-            url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        endpoint = endpoint.strip("/")
+        url = f"{self.base_url}/{endpoint}"
+        url = url.replace("://", "§§").replace("//", "/").replace("§§", "://")
 
         if self.cfg.debug:
             log.debug("ApiClient", f"Request {method} {url}")

@@ -4,12 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add configuration and logger utility; refactor API client and actions for improved logging and error handling">
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/create_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_robot_account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/get_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_robot_account.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gateway/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,15 +215,7 @@
       <workItem from="1764837174966" duration="11314000" />
       <workItem from="1764931683720" duration="144000" />
       <workItem from="1765182075966" duration="17646000" />
-      <workItem from="1765374734459" duration="5396000" />
-    </task>
-    <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
-      <option name="closed" value="true" />
-      <created>1763468598795</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1763468598795</updated>
+      <workItem from="1765374734459" duration="7439000" />
     </task>
     <task id="LOCAL-00002" summary="Add Excalidraw diagram for pipeline execution platform and update workspace configuration">
       <option name="closed" value="true" />
@@ -607,14 +601,21 @@
       <option name="project" value="LOCAL" />
       <updated>1765379963541</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings">
+      <option name="closed" value="true" />
+      <created>1765380336550</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1765380336551</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor loader.py and main.py to streamline pipeline file path handling" />
     <MESSAGE value="Refactor main.py to use Config for pipeline file path resolution" />
     <MESSAGE value="Refactor Helm templates to use values for dynamic configuration" />
     <MESSAGE value="Add GitHub Actions workflow for building and pushing Helm chart" />
@@ -639,10 +640,11 @@
     <MESSAGE value="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
     <MESSAGE value="Add timestamps to pipeline execution logs for better tracking and debugging" />
     <MESSAGE value="Add configuration and logger utility; refactor API client and actions for improved logging and error handling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add configuration and logger utility; refactor API client and actions for improved logging and error handling" />
+    <MESSAGE value="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765380279098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765384499335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

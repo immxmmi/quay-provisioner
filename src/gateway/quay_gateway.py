@@ -41,10 +41,32 @@ class QuayGateway:
             log.debug("QuayGateway", f"create_robot_account org={organization} robot={robot_shortname} description={description}")
         if self.client.cfg.debug:
             log.debug("QuayGateway", f"create_robot_account args=({organization}, {robot_shortname}, {description})")
-        return self.client.put(
-            f"/organization/{organization}/robots/{robot_shortname}",
-            json=payload
-        )
+        try:
+            return self.client.put(
+                f"/organization/{organization}/robots/{robot_shortname}".rstrip("/"),
+                json=payload
+            )
+        except Exception as e:
+            msg = str(e)
+
+            # Robot already exists
+            if "Existing robot with name" in msg:
+                return {
+                    "created": False,
+                    "robot": f"{organization}+{robot_shortname}",
+                    "reason": "already_exists"
+                }
+
+            # Robot does not exist (Quay pre-check issue)
+            if "Could not find robot" in msg:
+                return {
+                    "created": True,
+                    "robot": f"{organization}+{robot_shortname}",
+                    "reason": "precheck_missing"
+                }
+
+            # Any other error should propagate
+            raise
 
     def delete_robot_account(self, organization: str, robot_shortname: str):
         if self.client.cfg.debug:
@@ -58,7 +80,7 @@ class QuayGateway:
             log.debug("QuayGateway", f"get_robot_account org={organization} robot={robot_shortname}")
         if self.client.cfg.debug:
             log.debug("QuayGateway", f"get_robot_account args=({organization}, {robot_shortname})")
-        return self.client.get(f"/organization/{organization}/robots/{robot_shortname}")
+        return self.client.get(f"/organization/{organization}/robots/{robot_shortname}".rstrip("/"))
 
     def list_robot_accounts(self, organization: str):
         if self.client.cfg.debug:

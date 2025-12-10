@@ -18,7 +18,12 @@ class GetRobotAccountAction:
             )
             return result is not None
         except Exception as e:
-            if "404" in str(e):
+            msg = str(e)
+            # Quay returns 400 for non-existing robots
+            if "400" in msg and "Could not find robot" in msg:
+                return False
+            # 404 fallback
+            if "404" in msg:
                 return False
             raise e
 

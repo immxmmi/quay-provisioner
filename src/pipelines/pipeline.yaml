@@ -1,10 +1,10 @@
 pipeline:
-  - name: get-organizations
-    job: get_organization
+  - name: create-organizations
+    job: create_organization
     enabled: true
     params_list: "{{ organizations }}"
 
   - name: create-robot-accounts
     job: create_robot_account
-    enabled: false
+    enabled: true
     params_list: "{{ robot_accounts }}"

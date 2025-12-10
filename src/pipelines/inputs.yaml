@@ -1,5 +1,5 @@
 organizations:
-  - name: "momo"
+  - name: "test"
     visibility: "private"
     email: "test@test.ch"
     owner: "test"
