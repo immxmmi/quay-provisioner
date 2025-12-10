@@ -15,6 +15,7 @@ class GetOrganizationAction:
             result = gateway.get_organization(name)
             return result is not None
         except Exception as e:
+            log.info("GetOrganizationAction", f"Error checking if organization exists: {e}")
             if "404" in str(e):  # NOT FOUND means it does not exist
                 return False
             raise e
@@ -23,7 +24,7 @@ class GetOrganizationAction:
         try:
             log.info("GetOrganizationAction", f"Executing organization lookup request payload={data}")
             org = GetOrganization(**data)
-            log.debug("GetOrganizationAction", f"Validated input mapped to model model={org.model_dump()}")
+            log.info("GetOrganizationAction", f"Validated input mapped to model model={org.model_dump()}")
             log.info("GetOrganizationAction", f"Calling Quay API: get_organization name={org.name}")
             result = self.gateway.get_organization(org.name)
             log.info("GetOrganizationAction", f"Organization fetch succeeded name={org.name}")

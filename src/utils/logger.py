@@ -5,7 +5,7 @@ class Logger:
     @staticmethod
     def log(level, cls, msg):
         ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{ts}] [{cls}] [{level}] {msg}")
+        print(f"[{ts}] [{level}] [{cls}] {msg}")
 
     @staticmethod
     def debug(cls, msg):

@@ -49,7 +49,7 @@ class ApiClient:
                 import json as _json
                 curl_parts.append(f"-d '{_json.dumps(kwargs.get('json'))}'")
             curl_parts.append(f"'{url}'")
-            log.debug("ApiClient", f"CURL: {' '.join(curl_parts)}")
+            log.debug("ApiClient", f"[CURL]: {' '.join(curl_parts)}")
 
         try:
             response = requests.request(
