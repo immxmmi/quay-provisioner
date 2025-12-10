@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import yaml
+from utils.logger import Logger as log
 
 
 class Config:
@@ -35,12 +36,12 @@ class Config:
         self.base_url = f"{self.host}:{self.port}{self.base_path}"
 
         if self.debug:
-            print(f"[DEBUG] Config raw_host={raw_host}")
-            print(f"[DEBUG] Config normalized_host={self.host}")
-            print(f"[DEBUG] Config port={self.port}")
-            print(f"[DEBUG] Config raw_base_path={raw_base_path}")
-            print(f"[DEBUG] Config normalized_base_path={self.base_path}")
-            print(f"[DEBUG] Config base_url={self.base_url}")
+            log.debug("Config", f"Config raw_host={raw_host}")
+            log.debug("Config", f"Config normalized_host={self.host}")
+            log.debug("Config", f"Config port={self.port}")
+            log.debug("Config", f"Config raw_base_path={raw_base_path}")
+            log.debug("Config", f"Config normalized_base_path={self.base_path}")
+            log.debug("Config", f"Config base_url={self.base_url}")
 
         # --- AUTH CONFIG ---
         self.auth_type = os.getenv("API_AUTH_TYPE", auth.get("type", "bearer"))

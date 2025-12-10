@@ -1,6 +1,7 @@
 from gateway.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 from model.robot_account_model import GetRobotAccount
+from utils.logger import Logger as log
 
 
 class GetRobotAccountAction:
@@ -23,10 +24,10 @@ class GetRobotAccountAction:
 
     def execute(self, data: dict):
         try:
-            print(f"[GetRobotAccountAction] Executing with data: {data}")
+            log.info("GetRobotAccountAction", f"Executing with data: {data}")
 
             dto = GetRobotAccount(**data)
-            print(f"[GetRobotAccountAction] Filtered model data: {dto.model_dump()}")
+            log.debug("GetRobotAccountAction", f"Filtered model data: {dto.model_dump()}")
 
             org = data.get("organization")
             if not org:
@@ -37,7 +38,7 @@ class GetRobotAccountAction:
                 robot_shortname=dto.robot_shortname
             )
 
-            print(f"[GetRobotAccountAction] API result: {result}")
+            log.info("GetRobotAccountAction", f"API result: {result}")
 
             return ActionResponse(
                 success=True,
@@ -49,5 +50,5 @@ class GetRobotAccountAction:
             )
 
         except Exception as e:
-            print(f"[GetRobotAccountAction] ERROR: {e}")
+            log.error("GetRobotAccountAction", f"ERROR: {e}")
             return ActionResponse(success=False, message=str(e))

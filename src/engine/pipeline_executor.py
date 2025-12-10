@@ -1,6 +1,7 @@
 from engine.action_registry import ACTION_REGISTRY
 from engine_reader.pipeline_reader import PipelineReader
 from config.loader import Config
+from utils.logger import Logger as log
 
 class PipelineExecutor:
 
@@ -12,7 +13,7 @@ class PipelineExecutor:
 
         cfg = Config()
         if cfg.debug:
-            print(f"[DEBUG] Executor loaded inputs: {inputs}")
+            log.debug("PipelineExecutor", f"Executor loaded inputs: {inputs}")
 
         for step in pipeline.pipeline:
             if not step.enabled:
@@ -27,28 +28,28 @@ class PipelineExecutor:
 
                 for params in items:
                     if cfg.debug:
-                        print(f"[DEBUG] Executing step {step.name} with params: {params}")
+                        log.debug("PipelineExecutor", f"Executing step {step.name} with params: {params}")
                     self._run_action(step, action, params)
                 continue
 
             if cfg.debug:
-                print(f"[DEBUG] Executing step {step.name} with params: {step.params or {}}")
+                log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {}}")
             self._run_action(step, action, step.params or {})
 
     def _run_action(self, step, action, params):
         cfg = Config()
         if cfg.debug:
-            print(f"[DEBUG] _run_action invoked for {step.name}")
-        print(f"▶ Running step: {step.name} ({step.job})")
+            log.debug("PipelineExecutor", f"_run_action invoked for {step.name}")
+        log.info("PipelineExecutor", f"Running step: {step.name} ({step.job})")
         response = action.execute(params)
 
-        print(f"   ✔ Success: {response.success}")
+        log.info("PipelineExecutor", f"Success: {response.success}")
         if response.message:
-            print(f"   ✔ Message: {response.message}")
+            log.info("PipelineExecutor", f"Message: {response.message}")
         if response.data:
-            print(f"   ✔ Data: {response.data}")
+            log.info("PipelineExecutor", f"Data: {response.data}")
 
         if not response.success:
-            print("❌ Pipeline failed.")
+            log.error("PipelineExecutor", "Pipeline failed.")
             import sys
             sys.exit(1)

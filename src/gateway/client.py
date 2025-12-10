@@ -2,6 +2,7 @@ import os
 import sys
 import requests
 from config.loader import Config
+from utils.logger import Logger as log
 
 
 class ApiClient:
@@ -11,8 +12,8 @@ class ApiClient:
         self.cfg = cfg
 
         if cfg.debug:
-            print(f"[DEBUG] ApiClient base_url={cfg.base_url}")
-            print(f"[DEBUG] ApiClient auth_type={cfg.auth_type}")
+            log.debug("ApiClient", f"base_url={cfg.base_url}")
+            log.debug("ApiClient", f"auth_type={cfg.auth_type}")
 
         self.base_url = cfg.base_url.rstrip("/")
         self.headers = {
@@ -40,7 +41,7 @@ class ApiClient:
             url = f"{self.base_url}/{endpoint.lstrip('/')}"
 
         if self.cfg.debug:
-            print(f"[DEBUG] Request {method} {url}")
+            log.debug("ApiClient", f"Request {method} {url}")
             curl_parts = ["curl", "-X", method]
             for k, v in self.headers.items():
                 curl_parts.append(f"-H '{k}: {v}'")
@@ -48,7 +49,7 @@ class ApiClient:
                 import json as _json
                 curl_parts.append(f"-d '{_json.dumps(kwargs.get('json'))}'")
             curl_parts.append(f"'{url}'")
-            print(f"[DEBUG] CURL: {' '.join(curl_parts)}")
+            log.debug("ApiClient", f"CURL: {' '.join(curl_parts)}")
 
         try:
             response = requests.request(
@@ -60,16 +61,13 @@ class ApiClient:
                 **kwargs
             )
         except requests.ConnectionError as e:
-            print("❌ API CLIENT FAILURE")
-            print(f"Connection refused when calling {url}\n{e}")
+            log.error("ApiClient", f"Connection refused when calling {url}: {e}")
             sys.exit(1)
         except requests.Timeout as e:
-            print("❌ API CLIENT FAILURE")
-            print(f"Request timeout when calling {url}\n{e}")
+            log.error("ApiClient", f"Request timeout when calling {url}: {e}")
             sys.exit(1)
         except requests.RequestException as e:
-            print("❌ API CLIENT FAILURE")
-            print(f"Unexpected request error: {e}")
+            log.error("ApiClient", f"Unexpected request error: {e}")
             sys.exit(1)
 
         if response.status_code in (301, 308) and "Location" in response.headers:
@@ -88,19 +86,16 @@ class ApiClient:
         try:
             response.raise_for_status()
         except requests.HTTPError:
-            print("❌ API CLIENT FAILURE")
-            print(f"HTTP {response.status_code} on {method} {url}\nResponse Body:\n{response.text}")
+            log.error("ApiClient", f"HTTP {response.status_code} on {method} {url} body={response.text}")
             sys.exit(1)
 
-        # Empty body
         if not response.text or not response.text.strip():
             return {}
 
-        # Try parsing JSON
         try:
             return response.json()
         except ValueError:
-            print("⚠️  WARN: Non-JSON response received")
+            log.debug("ApiClient", "Non-JSON response received")
             return {
                 "warning": "Non-JSON response",
                 "status": response.status_code,

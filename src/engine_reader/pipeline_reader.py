@@ -1,6 +1,7 @@
 import yaml
 from pathlib import Path
 from model.pipeline_model import PipelineDefinition
+from utils.logger import Logger as log
 
 
 class PipelineReader:
@@ -9,8 +10,8 @@ class PipelineReader:
         from config.loader import Config
         cfg = Config()
         if cfg.debug:
-            print(f"[DEBUG] PipelineReader.load_pipeline file={file_path}")
-            print(f"[DEBUG] PipelineReader.load_pipeline content={data}")
+            log.debug("PipelineReader", f"load_pipeline file={file_path}")
+            log.debug("PipelineReader", f"load_pipeline content={data}")
         return PipelineDefinition(**data)
 
     def load_inputs(self, file_path: str) -> dict:
@@ -18,8 +19,8 @@ class PipelineReader:
         cfg = Config()
         data = yaml.safe_load(Path(file_path).read_text())
         if cfg.debug:
-            print(f"[DEBUG] PipelineReader.load_inputs file={file_path}")
-            print(f"[DEBUG] PipelineReader.load_inputs content={data}")
+            log.debug("PipelineReader", f"load_inputs file={file_path}")
+            log.debug("PipelineReader", f"load_inputs content={data}")
         return data
 
     def resolve_templates(self, pipeline: PipelineDefinition, inputs: dict):
@@ -31,6 +32,6 @@ class PipelineReader:
                         from config.loader import Config
                         cfg = Config()
                         if cfg.debug:
-                            print(f"[DEBUG] resolve_templates step={step.name} key={key} old={value} new={inputs.get(param_key)}")
+                            log.debug("PipelineReader", f"resolve_templates step={step.name} key={key} old={value} new={inputs.get(param_key)}")
                         step.params[key] = inputs.get(param_key)
         return pipeline

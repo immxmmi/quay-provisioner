@@ -3,7 +3,7 @@ from engine.pipeline_validator import PipelineValidator
 from engine.pipeline_executor import PipelineExecutor
 from config.loader import Config
 import sys
-
+from utils.logger import Logger as log
 
 class PipelineEngine:
 
@@ -17,25 +17,25 @@ class PipelineEngine:
         try:
             cfg = Config()
             if cfg.debug:
-                print(f"[DEBUG] Loading pipeline file: {pipeline_file}")
+                log.debug("PipelineEngine", f"Loading pipeline file: {pipeline_file}")
 
             pipeline = self.reader.load_pipeline(pipeline_file)
             inputs = self.reader.load_inputs(self.config.inputs_file)
             if cfg.debug:
-                print(f"[DEBUG] Loaded inputs from: {self.config.inputs_file}")
-                print(f"[DEBUG] Inputs content: {inputs}")
+                log.debug("PipelineEngine", f"Loaded inputs from: {self.config.inputs_file}")
+                log.debug("PipelineEngine", f"Inputs content: {inputs}")
 
             pipeline = self.reader.resolve_templates(pipeline, inputs)
             if cfg.debug:
-                print("[DEBUG] Templates resolved")
+                log.debug("PipelineEngine", "Templates resolved")
 
             self.validator.validate_jobs(pipeline)
             if cfg.debug:
-                print("[DEBUG] Pipeline validation completed")
+                log.info("PipelineEngine", "Pipeline validation completed")
             return pipeline
 
         except Exception as e:
-            print(f"❌ Pipeline validation failed: {e}")
+            log.error("PipelineEngine", f"Pipeline validation failed: {e}")
             sys.exit(1)
 
     def debug_print(self, pipeline):
@@ -52,12 +52,12 @@ class PipelineEngine:
         try:
             cfg = Config()
             if cfg.debug:
-                print("[DEBUG] Starting pipeline execution")
+                log.info("PipelineEngine", "Starting pipeline execution")
 
             self.executor.run_pipeline(pipeline, self.config.inputs_file)
         except Exception as e:
             cfg = Config()
             if cfg.debug:
-                print(f"[DEBUG] Execution error detail: {e}")
-            print(f"❌ Pipeline execution failed: {e}")
+                log.debug("PipelineEngine", f"Execution error detail: {e}")
+            log.error("PipelineEngine", f"Pipeline execution failed: {e}")
             sys.exit(1)

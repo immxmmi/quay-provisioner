@@ -1,6 +1,6 @@
 pipeline:
-  - name: create-organizations
-    job: create_organization
+  - name: get-organizations
+    job: get_organization
     enabled: true
     params_list: "{{ organizations }}"
 

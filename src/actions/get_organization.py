@@ -1,6 +1,7 @@
 from gateway.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 from model.organization_model import GetOrganization
+from utils.logger import Logger as log
 
 
 class GetOrganizationAction:
@@ -20,10 +21,12 @@ class GetOrganizationAction:
 
     def execute(self, data: dict) -> ActionResponse:
         try:
-            print(f"[GetOrganizationAction] Executing with data: {data}")
+            log.info("GetOrganizationAction", f"Executing organization lookup request payload={data}")
             org = GetOrganization(**data)
-            print(f"[GetOrganizationAction] Filtered model data: {org.model_dump()}")
+            log.debug("GetOrganizationAction", f"Validated input mapped to model model={org.model_dump()}")
+            log.info("GetOrganizationAction", f"Calling Quay API: get_organization name={org.name}")
             result = self.gateway.get_organization(org.name)
+            log.info("GetOrganizationAction", f"Organization fetch succeeded name={org.name}")
 
             return ActionResponse(
                 success=True,
@@ -32,6 +35,7 @@ class GetOrganizationAction:
             )
 
         except Exception as e:
+            log.error("GetOrganizationAction", f"Organization fetch failed error={e}")
             return ActionResponse(
                 success=False,
                 message=str(e)

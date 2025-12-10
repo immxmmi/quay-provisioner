@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  quay-provisioner:
+    image: ghcr.io/immxmmi/quay-provisioner:0.1.0-8da7917
+    container_name: quay-provisioner
+    restart: "no"
+
+    environment:
+      DISABLE_TLS_VERIFY: "true"
+      API_HOST: "${API_HOST}"
+      API_PORT: "${API_PORT}"
+      API_BASE_PATH: "${API_BASE_PATH}"
+      API_AUTH_TYPE: "${API_AUTH_TYPE}"
+      API_TOKEN: "${API_TOKEN}"
+    command: ["sleep", "infinity"]
