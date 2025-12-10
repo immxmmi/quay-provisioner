@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add timestamps to pipeline execution logs for better tracking and debugging">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -205,7 +209,8 @@
       <workItem from="1764769826104" duration="949000" />
       <workItem from="1764837174966" duration="11314000" />
       <workItem from="1764931683720" duration="144000" />
-      <workItem from="1765182075966" duration="15697000" />
+      <workItem from="1765182075966" duration="17646000" />
+      <workItem from="1765374734459" duration="1812000" />
     </task>
     <task id="LOCAL-00001" summary="Implement action registry and API client for organization management">
       <option name="closed" value="true" />
@@ -575,14 +580,21 @@
       <option name="project" value="LOCAL" />
       <updated>1765295612468</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Add timestamps to pipeline execution logs for better tracking and debugging">
+      <option name="closed" value="true" />
+      <created>1765296231668</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1765296231668</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add multi-architecture support for Docker images in GitHub Actions workflow" />
     <MESSAGE value="Refactor loader.py to use BASE_DIR for pipeline file path resolution" />
     <MESSAGE value="Refactor loader.py and main.py to streamline pipeline file path handling" />
     <MESSAGE value="Refactor main.py to use Config for pipeline file path resolution" />
@@ -607,10 +619,11 @@
     <MESSAGE value="Refactor pipeline execution and validation logic; disable robot account creation in pipeline.yaml" />
     <MESSAGE value="Refactor API client to improve error handling and response parsing; add support for disabling TLS verification" />
     <MESSAGE value="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
+    <MESSAGE value="Add timestamps to pipeline execution logs for better tracking and debugging" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add timestamps to pipeline execution logs for better tracking and debugging" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765296166859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765376493646" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -26,12 +26,18 @@ class ApiClient:
             self.headers["X-API-Key"] = cfg.token
 
         self.headers = {k: v for k, v in self.headers.items() if v}
+        self.headers["X-Requested-With"] = "XMLHttpRequest"
 
         disable_verify = os.getenv("DISABLE_TLS_VERIFY", "false").lower() == "true"
         self.verify = False if disable_verify else os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
 
     def _request(self, method, endpoint, **kwargs):
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        url = url.replace("//", "/").replace("http:/", "http://").replace("https:/", "https://")
+
+        if method in ("POST", "PUT") and not endpoint.endswith("/"):
+            endpoint = endpoint.rstrip("/") + "/"
+            url = f"{self.base_url}/{endpoint.lstrip('/')}"
 
         if self.cfg.debug:
             print(f"[DEBUG] Request {method} {url}")
@@ -50,6 +56,7 @@ class ApiClient:
                 url=url,
                 headers=self.headers,
                 verify=self.verify,
+                allow_redirects=False,
                 **kwargs
             )
         except requests.ConnectionError as e:
@@ -64,6 +71,15 @@ class ApiClient:
             print("❌ API CLIENT FAILURE")
             print(f"Unexpected request error: {e}")
             sys.exit(1)
+
+        if response.status_code in (301, 308) and "Location" in response.headers:
+            redirect_url = response.headers["Location"]
+            response = requests.request(
+                method=method,
+                url=redirect_url,
+                headers=self.headers,
+                verify=self.verify,
+            )
 
         # Raise HTTP errors (4xx, 5xx)
         if response.status_code == 404 and method == "GET":
