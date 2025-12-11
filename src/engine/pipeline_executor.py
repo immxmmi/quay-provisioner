@@ -7,12 +7,12 @@ class PipelineExecutor:
 
     def __init__(self):
         self.reader = PipelineReader()
+        self.cfg = Config()
 
     def run_pipeline(self, pipeline, inputs_file):
         inputs = self.reader.load_inputs(inputs_file)
 
-        cfg = Config()
-        if cfg.debug:
+        if self.cfg.debug:
             log.debug("PipelineExecutor", f"Executor loaded inputs: {inputs}")
 
         for step in pipeline.pipeline:
@@ -27,6 +27,10 @@ class PipelineExecutor:
                 items = inputs.get(key, [])
 
                 log.info("PipelineExecutor", f"Resolved dynamic params list for key='{key}', items_count={len(items)}")
+                if self.cfg.debug:
+                    log.debug("PipelineExecutor", f"Dynamic params raw value for key='{key}': {items}")
+                if self.cfg.debug:
+                    log.debug("PipelineExecutor", f"Entering dynamic iteration loop for step '{step.name}' with total={len(items)}")
 
                 if not isinstance(items, list):
                     log.error("PipelineExecutor", f"Invalid params list for key='{key}'. Expected list, got: {type(items)}")
@@ -34,42 +38,46 @@ class PipelineExecutor:
 
                 for index, params in enumerate(items):
                     try:
-                        if cfg.debug:
+                        if self.cfg.debug:
                             log.debug("PipelineExecutor",
                                       f"[{step.name}] Executing dynamic iteration {index+1}/{len(items)} with params={params}")
+                        if self.cfg.debug:
+                            log.debug("PipelineExecutor", f"[{step.name}] Iteration {index+1}: validating params type={type(params)}")
 
                         if not isinstance(params, dict):
                             log.error("PipelineExecutor",
                                       f"Dynamic params entry is not a dict. Received: {params}")
                             raise ValueError(f"Invalid params in dynamic list for step '{step.name}'")
 
+                        if self.cfg.debug:
+                            log.debug("PipelineExecutor", f"[{step.name}] Iteration {index+1}: params validated successfully")
+
                         self._run_action(step, action, params)
 
                     except Exception as ex:
+                        if self.cfg.debug:
+                            log.debug("PipelineExecutor", f"[{step.name}] Iteration {index+1}: exception occurred → {ex}")
                         log.error("PipelineExecutor",
                                   f"Exception while executing step '{step.name}' with dynamic params: {ex}")
                         raise
 
                 continue
 
-            if cfg.debug:
+            if self.cfg.debug:
                 log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {}}")
             self._run_action(step, action, step.params or {})
 
     def _run_action(self, step, action, params):
-        cfg = Config()
+        cfg = self.cfg
         if cfg.debug:
             log.debug("PipelineExecutor", f"_run_action invoked for {step.name}")
+            log.debug("PipelineExecutor", f"_run_action parameters for step '{step.name}': {params}")
         log.info("PipelineExecutor", f"Running step: {step.name} ({step.job})")
         response = action.execute(params)
 
-        log.info("PipelineExecutor", f"Success: {response.success}")
-        if response.message:
-            log.info("PipelineExecutor", f"Message: {response.message}")
-        if response.data:
-            log.info("PipelineExecutor", f"Data: {response.data}")
+        log.info("PipelineExecutor",
+                 f"Result(success={response.success}, message={response.message}, data={response.data})")
 
         if not response.success:
             log.error("PipelineExecutor", "Pipeline failed.")
-            import sys
-            sys.exit(1)
+            raise RuntimeError("Pipeline execution aborted due to failed step.")
