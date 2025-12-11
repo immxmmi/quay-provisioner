@@ -10,6 +10,9 @@ class Config:
         config_file = Path(__file__).parent / "settings.yaml"
         data = yaml.safe_load(config_file.read_text())
 
+        app_cfg = data.get("app", {})
+        self.version = os.getenv("APP_VERSION", app_cfg.get("version", "unknown"))
+
         debug_cfg = data.get("debug", {})
         self.debug = os.getenv("DEBUG_ENABLED", str(debug_cfg.get("enabled", "false"))).lower() == "true"
         log.configure(self.debug)
@@ -43,6 +46,7 @@ class Config:
             log.debug("Config", f"Config raw_base_path={raw_base_path}")
             log.debug("Config", f"Config normalized_base_path={self.base_path}")
             log.debug("Config", f"Config base_url={self.base_url}")
+            log.debug("Config", f"App version={self.version}")
 
         # --- AUTH CONFIG ---
         self.auth_type = os.getenv("API_AUTH_TYPE", auth.get("type", "bearer"))

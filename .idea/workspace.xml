@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor API client and organization actions for improved logging; streamline debug output and enhance clarity">
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/templates/job.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/templates/job.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,15 +211,7 @@
       <workItem from="1764931683720" duration="144000" />
       <workItem from="1765182075966" duration="17646000" />
       <workItem from="1765374734459" duration="8293000" />
-      <workItem from="1765441093481" duration="4909000" />
-    </task>
-    <task id="LOCAL-00006" summary="Add organization and robot account existence checks in actions">
-      <option name="closed" value="true" />
-      <created>1764669158856</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1764669158856</updated>
+      <workItem from="1765441093481" duration="5446000" />
     </task>
     <task id="LOCAL-00007" summary="Add organization and robot account existence checks in actions">
       <option name="closed" value="true" />
@@ -606,7 +597,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765452885102</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Refactor API client and organization actions for improved logging; streamline debug output and enhance clarity">
+      <option name="closed" value="true" />
+      <created>1765453668082</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1765453668082</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
