@@ -1,8 +1,6 @@
 from engine_reader.pipeline_reader import PipelineReader
 from engine.pipeline_validator import PipelineValidator
 from engine.pipeline_executor import PipelineExecutor
-from config.loader import Config
-import sys
 from utils.logger import Logger as log
 
 class PipelineEngine:
@@ -18,11 +16,14 @@ class PipelineEngine:
             log.debug("PipelineEngine", f"Loading pipeline file: {pipeline_file}")
 
             pipeline = self.reader.load_pipeline(pipeline_file)
+            log.debug("PipelineEngine", f"Raw pipeline structure: {pipeline}")
+
             inputs = self.reader.load_inputs(self.config.inputs_file)
             log.debug("PipelineEngine", f"Loaded inputs from: {self.config.inputs_file}")
             log.debug("PipelineEngine", f"Inputs resolved: {inputs}")
 
             pipeline = self.reader.resolve_templates(pipeline, inputs)
+            log.debug("PipelineEngine", f"Pipeline after template resolution: {pipeline}")
             log.debug("PipelineEngine", "Template resolution completed")
 
             self.validator.validate_jobs(pipeline)
@@ -31,7 +32,7 @@ class PipelineEngine:
 
         except Exception as e:
             log.error("PipelineEngine", f"Pipeline validation failed: {e}")
-            sys.exit(1)
+            raise RuntimeError(f"Pipeline load/validation failed: {e}")
 
     def debug_print(self, pipeline):
         print("📌 Loaded Pipeline:")
@@ -46,9 +47,10 @@ class PipelineEngine:
     def run(self, pipeline):
         try:
             log.info("PipelineEngine", "Pipeline execution started")
+            log.debug("PipelineEngine", f"Executing pipeline with input file: {self.config.inputs_file}")
 
             self.executor.run_pipeline(pipeline, self.config.inputs_file)
         except Exception as e:
             log.debug("PipelineEngine", f"Execution error: {e}")
             log.error("PipelineEngine", f"Pipeline execution failed: {e}")
-            sys.exit(1)
+            raise RuntimeError(f"Execution failed: {e}")

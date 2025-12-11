@@ -18,11 +18,34 @@ class PipelineReader:
         return data
 
     def resolve_templates(self, pipeline: PipelineDefinition, inputs: dict):
+        log.debug("PipelineReader", "Starting template resolution")
+
         for step in pipeline.pipeline:
-            if step.params:
-                for key, value in step.params.items():
-                    if isinstance(value, str) and value.startswith("{{ inputs."):
-                        param_key = value.replace("{{ inputs.", "").replace(" }}", "")
-                        log.debug("PipelineReader", f"resolve_templates step={step.name} key={key} old={value} new={inputs.get(param_key)}")
-                        step.params[key] = inputs.get(param_key)
+            if not step.params:
+                continue
+
+            log.debug("PipelineReader", f"Resolving templates for step={step.name}")
+
+            for key, value in list(step.params.items()):
+                if not isinstance(value, str):
+                    continue
+
+                if value.startswith("{{ inputs.") and value.endswith(" }}"):
+                    param_key = value[len("{{ inputs."):-3].strip()
+
+                    resolved = inputs.get(param_key)
+                    log.debug(
+                        "PipelineReader",
+                        f"Template match: step={step.name} key={key} raw='{value}' "
+                        f"resolved_key='{param_key}' resolved_value={resolved}"
+                    )
+
+                    step.params[key] = resolved
+                else:
+                    log.debug(
+                        "PipelineReader",
+                        f"No template: step={step.name} key={key} value={value}"
+                    )
+
+        log.debug("PipelineReader", "Template resolution completed")
         return pipeline

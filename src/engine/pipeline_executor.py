@@ -42,15 +42,23 @@ class PipelineExecutor:
                             log.debug("PipelineExecutor",
                                       f"[{step.name}] Executing dynamic iteration {index+1}/{len(items)} with params={params}")
                         if self.cfg.debug:
-                            log.debug("PipelineExecutor", f"[{step.name}] Iteration {index+1}: validating params type={type(params)}")
+                            log.debug(
+                                "PipelineExecutor",
+                                f"[{step.name}] Iteration {index+1}/{len(items)} validation start | type={type(params)}, value={params}"
+                            )
 
                         if not isinstance(params, dict):
-                            log.error("PipelineExecutor",
-                                      f"Dynamic params entry is not a dict. Received: {params}")
+                            log.error(
+                                "PipelineExecutor",
+                                f"Iteration {index+1}: expected dict but received {type(params)} – value={params}"
+                            )
                             raise ValueError(f"Invalid params in dynamic list for step '{step.name}'")
 
                         if self.cfg.debug:
-                            log.debug("PipelineExecutor", f"[{step.name}] Iteration {index+1}: params validated successfully")
+                            log.debug(
+                                "PipelineExecutor",
+                                f"[{step.name}] Iteration {index+1}: validation passed"
+                            )
 
                         self._run_action(step, action, params)
 
