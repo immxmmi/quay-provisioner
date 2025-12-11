@@ -26,10 +26,30 @@ class PipelineExecutor:
                 key = step.params_list.replace("{{ ", "").replace(" }}", "")
                 items = inputs.get(key, [])
 
-                for params in items:
-                    if cfg.debug:
-                        log.debug("PipelineExecutor", f"Executing step {step.name} with params: {params}")
-                    self._run_action(step, action, params)
+                log.info("PipelineExecutor", f"Resolved dynamic params list for key='{key}', items_count={len(items)}")
+
+                if not isinstance(items, list):
+                    log.error("PipelineExecutor", f"Invalid params list for key='{key}'. Expected list, got: {type(items)}")
+                    raise ValueError(f"Invalid params list for key='{key}'")
+
+                for index, params in enumerate(items):
+                    try:
+                        if cfg.debug:
+                            log.debug("PipelineExecutor",
+                                      f"[{step.name}] Executing dynamic iteration {index+1}/{len(items)} with params={params}")
+
+                        if not isinstance(params, dict):
+                            log.error("PipelineExecutor",
+                                      f"Dynamic params entry is not a dict. Received: {params}")
+                            raise ValueError(f"Invalid params in dynamic list for step '{step.name}'")
+
+                        self._run_action(step, action, params)
+
+                    except Exception as ex:
+                        log.error("PipelineExecutor",
+                                  f"Exception while executing step '{step.name}' with dynamic params: {ex}")
+                        raise
+
                 continue
 
             if cfg.debug:
