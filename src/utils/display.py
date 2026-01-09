@@ -166,6 +166,62 @@ class Display:
         print(f"{Colors.DIM}{'─' * 60}{Colors.RESET}")
 
     @staticmethod
+    def inputs_overview(inputs: dict, debug: bool = False):
+        """Print a formatted overview of loaded inputs."""
+        print()
+        print(f"  {Colors.MAGENTA}{Colors.BOLD}Loaded Inputs{Colors.RESET}")
+        print(f"  {Colors.DIM}{'─' * 40}{Colors.RESET}")
+
+        if not inputs:
+            print(f"  {Colors.DIM}No inputs loaded{Colors.RESET}")
+            print()
+            return
+
+        for key, value in inputs.items():
+            if isinstance(value, list):
+                count = len(value)
+                icon = "📦" if "org" in key.lower() else "🤖" if "robot" in key.lower() else "📋"
+                print(f"  {icon} {Colors.BOLD}{key}{Colors.RESET} ({Colors.CYAN}{count}{Colors.RESET} items)")
+
+                if debug:
+                    # Show detailed list in debug mode
+                    for i, item in enumerate(value, 1):
+                        if isinstance(item, dict):
+                            # Get the most important identifier
+                            name = item.get("name") or item.get("robot_shortname") or item.get("id") or f"Item {i}"
+                            print(f"      {Colors.DIM}{i}.{Colors.RESET} {Colors.GREEN}{name}{Colors.RESET}")
+                            # Show other fields
+                            for k, v in item.items():
+                                if k not in ["name", "robot_shortname", "id"]:
+                                    val_str = str(v)[:30] + "..." if len(str(v)) > 30 else str(v)
+                                    print(f"         {Colors.DIM}{k}: {val_str}{Colors.RESET}")
+                        else:
+                            print(f"      {Colors.DIM}{i}.{Colors.RESET} {item}")
+                else:
+                    # Compact view: just show names
+                    names = []
+                    for item in value[:5]:  # Show max 5
+                        if isinstance(item, dict):
+                            name = item.get("name") or item.get("robot_shortname") or "?"
+                            names.append(name)
+                        else:
+                            names.append(str(item))
+
+                    names_str = ", ".join(names)
+                    if len(value) > 5:
+                        names_str += f", ... (+{len(value) - 5} more)"
+                    print(f"      {Colors.DIM}→ {names_str}{Colors.RESET}")
+
+                print()
+            else:
+                # Single value
+                print(f"  📌 {Colors.BOLD}{key}{Colors.RESET}: {value}")
+                print()
+
+        print(f"  {Colors.DIM}{'─' * 40}{Colors.RESET}")
+        print()
+
+    @staticmethod
     def pipeline_overview(pipeline, debug: bool = False):
         """Print pipeline structure overview."""
         steps = pipeline.pipeline

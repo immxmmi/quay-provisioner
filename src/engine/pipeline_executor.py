@@ -17,8 +17,7 @@ class PipelineExecutor:
     def run_pipeline(self, pipeline, inputs_file):
         inputs = self.reader.load_inputs(inputs_file)
 
-        if self.cfg.debug:
-            log.debug("PipelineExecutor", f"Executor loaded inputs: {inputs}")
+        Display.inputs_overview(inputs, debug=self.cfg.debug)
 
         # Count total enabled steps
         enabled_steps = [s for s in pipeline.pipeline if s.enabled]
@@ -50,12 +49,8 @@ class PipelineExecutor:
                 key = step.params_list.replace("{{ ", "").replace(" }}", "")
                 items = inputs.get(key, [])
 
-                log.info("PipelineExecutor", f"Resolved dynamic params list for key='{key}', items_count={len(items)}")
                 if self.cfg.debug:
-                    log.debug("PipelineExecutor", f"Dynamic params raw value for key='{key}': {items}")
-                if self.cfg.debug:
-                    log.debug("PipelineExecutor",
-                              f"Entering dynamic iteration loop for step '{step.name}' with total={len(items)}")
+                    log.debug("PipelineExecutor", f"Dynamic params for '{key}': {len(items)} items")
 
                 if not isinstance(items, list):
                     log.error("PipelineExecutor",

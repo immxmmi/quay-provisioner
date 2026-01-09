@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add display utilities for pipeline execution visualization">
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add Docker image push targets to Makefile; enhance build and deployment process">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/pipeline_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_executor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/display.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,22 +213,6 @@
       <workItem from="1765182075966" duration="17646000" />
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
-    </task>
-    <task id="LOCAL-00014" summary="Refactor loader.py and main.py to improve pipeline file path resolution">
-      <option name="closed" value="true" />
-      <created>1764673286730</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1764673286730</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Refactor main.py to use Config for pipeline file path resolution">
-      <option name="closed" value="true" />
-      <created>1764673453035</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1764673453035</updated>
     </task>
     <task id="LOCAL-00016" summary="Refactor Helm templates to use values for dynamic configuration">
       <option name="closed" value="true" />
@@ -604,7 +590,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767968040755</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="Add Makefile targets for building and pushing Docker images; enhance image management">
+      <option name="closed" value="true" />
+      <created>1767969820445</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1767969820445</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Add Docker image push targets to Makefile; enhance build and deployment process">
+      <option name="closed" value="true" />
+      <created>1767969931187</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1767969931187</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,8 +624,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add check_python_version target to Makefile and update Docker image reference" />
-    <MESSAGE value="Update PyYAML version in requirements.txt and modify workspace.xml for consistency" />
     <MESSAGE value="Add export_image and run_image targets to Makefile" />
     <MESSAGE value="Add download_image target to Makefile and update workspace.xml" />
     <MESSAGE value="Update CA bundle environment variable in values.yaml and modify workspace.xml" />
@@ -647,7 +647,9 @@
     <MESSAGE value="Refactor action classes to inherit from BaseAction; enhance validation and error handling across pipeline actions" />
     <MESSAGE value="Refactor main execution flow; enhance error handling and logging for pipeline execution" />
     <MESSAGE value="Add display utilities for pipeline execution visualization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add display utilities for pipeline execution visualization" />
+    <MESSAGE value="Add Makefile targets for building and pushing Docker images; enhance image management" />
+    <MESSAGE value="Add Docker image push targets to Makefile; enhance build and deployment process" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Docker image push targets to Makefile; enhance build and deployment process" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
