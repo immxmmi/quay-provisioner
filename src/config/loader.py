@@ -1,14 +1,40 @@
 import os
 from pathlib import Path
+from typing import Optional
+
 import yaml
+
 from utils.logger import Logger as log
 
 
 class Config:
+    """Configuration singleton with validation and error handling."""
+
+    _instance: Optional["Config"] = None
+
+    def __new__(cls) -> "Config":
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
+        if self._initialized:
+            return
+        self._initialized = True
+
         config_file = Path(__file__).parent / "settings.yaml"
-        data = yaml.safe_load(config_file.read_text())
+
+        if not config_file.exists():
+            raise FileNotFoundError(f"Configuration file not found: {config_file}")
+
+        try:
+            data = yaml.safe_load(config_file.read_text())
+        except yaml.YAMLError as e:
+            raise ValueError(f"Invalid YAML in configuration file: {e}") from e
+
+        if not data:
+            raise ValueError("Configuration file is empty")
 
         app_cfg = data.get("app", {})
         self.version = os.getenv("APP_VERSION", app_cfg.get("version", "unknown"))
@@ -27,12 +53,21 @@ class Config:
 
         # --- API CONFIG ---
         raw_host = os.getenv("API_HOST", api.get("host"))
+        if not raw_host:
+            raise ValueError("API_HOST must be set via settings.yaml or environment variable")
+
         if raw_host.startswith("http://") or raw_host.startswith("https://"):
             self.host = raw_host.rstrip("/")
         else:
             self.host = f"http://{raw_host}".rstrip("/")
 
-        self.port = int(os.getenv("API_PORT", api.get("port")))
+        try:
+            self.port = int(os.getenv("API_PORT", api.get("port", 443)))
+        except (ValueError, TypeError) as e:
+            raise ValueError(f"API_PORT must be a valid integer: {e}") from e
+
+        if not 1 <= self.port <= 65535:
+            raise ValueError(f"API_PORT must be between 1 and 65535, got: {self.port}")
 
         raw_base_path = os.getenv("API_BASE_PATH", api.get("base_path", "/api/v1"))
         self.base_path = raw_base_path.rstrip("/")
@@ -52,8 +87,10 @@ class Config:
         self.auth_type = os.getenv("API_AUTH_TYPE", auth.get("type", "bearer"))
         self.token = os.getenv("API_TOKEN", auth.get("token"))
 
-        if not raw_host:
-            raise ValueError("API_HOST must be set via settings.yaml or environment variable")
-
         if not self.token:
             raise ValueError("API_TOKEN must be set via settings.yaml or environment variable")
+
+    @classmethod
+    def reset(cls) -> None:
+        """Reset the singleton instance (useful for testing)."""
+        cls._instance = None

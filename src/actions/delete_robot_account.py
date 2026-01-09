@@ -1,34 +1,37 @@
-from gateway.quay_gateway import QuayGateway
+from actions.base_action import BaseAction
+from exceptions import ValidationError
 from model.action_response import ActionResponse
 from model.robot_account_model import DeleteRobotAccount
+from utils.logger import Logger as log
 
 
-class DeleteRobotAccountAction:
-    def __init__(self, gateway=None):
-        self.gateway = gateway or QuayGateway()
+class DeleteRobotAccountAction(BaseAction):
 
-    def execute(self, data: dict):
+    def execute(self, data: dict) -> ActionResponse:
         try:
-            print(f"[DeleteRobotAccountAction] Executing with data: {data}")
-            dto = DeleteRobotAccount(**data)
-            print(f"[DeleteRobotAccountAction] Filtered model data: {dto.model_dump()}")
+            self.validate_required(data, "organization")
+            org = data["organization"]
 
-            org = data.get("organization")
-            if not org:
-                raise ValueError("Missing required field: 'organization'")
+            log.info("DeleteRobotAccountAction", f"Executing with data: {data}")
+            dto = DeleteRobotAccount(**data)
+            log.debug("DeleteRobotAccountAction", f"Filtered model data: {dto.model_dump()}")
 
             result = self.gateway.delete_robot_account(
                 organization=org,
                 robot_shortname=dto.robot_shortname
             )
 
-            print(f"[DeleteRobotAccountAction] API result: {result}")
+            log.info("DeleteRobotAccountAction", f"Deleted robot: {org}/{dto.robot_shortname}")
 
             return ActionResponse(
                 success=True,
                 data={"organization": org, "robot": dto.robot_shortname, "result": result}
             )
 
-        except Exception as e:
-            print(f"[DeleteRobotAccountAction] ERROR: {e}")
+        except ValidationError as e:
+            log.error("DeleteRobotAccountAction", f"Validation error: {e}")
             return ActionResponse(success=False, message=str(e))
+
+        except Exception as e:
+            log.error("DeleteRobotAccountAction", f"Failed to delete robot account: {e}")
+            return ActionResponse(success=False, message=f"Failed to delete robot account: {e}")

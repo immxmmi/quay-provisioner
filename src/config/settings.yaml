@@ -4,7 +4,7 @@ api:
   base_path: "/api/v1"
 
 auth:
-  token: "aEFGlWKQwW0bOkcqnLawXmAB90gYNWVHdThgDeky"
+  token: "o2dqTZIwQKRs7pCWn2zHW133SP1MlR8l9hilyisl"
   type: "bearer"
 
 debug:

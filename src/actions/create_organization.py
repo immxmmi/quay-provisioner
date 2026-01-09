@@ -1,16 +1,13 @@
-from gateway.quay_gateway import QuayGateway
+from actions.base_action import BaseAction
+from actions.get_organization import GetOrganizationAction
 from model.action_response import ActionResponse
 from model.organization_model import Organization
-from actions.get_organization import GetOrganizationAction
 from utils.logger import Logger as log
 
 
-class CreateOrganizationAction:
-    def __init__(self, gateway=None):
-        self.gateway = gateway or QuayGateway()
+class CreateOrganizationAction(BaseAction):
 
-
-    def execute(self, data: dict):
+    def execute(self, data: dict) -> ActionResponse:
         try:
             log.info("CreateOrganizationAction", "Starting organization creation flow")
             org = Organization(**data)
@@ -35,5 +32,5 @@ class CreateOrganizationAction:
             log.error("CreateOrganizationAction", f"Exception occurred: {e}")
             return ActionResponse(
                 success=False,
-                message=str(e)
+                message=f"Failed to create organization: {e}"
             )

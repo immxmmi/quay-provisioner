@@ -1,7 +1,9 @@
-from engine_reader.pipeline_reader import PipelineReader
-from engine.pipeline_validator import PipelineValidator
 from engine.pipeline_executor import PipelineExecutor
+from engine.pipeline_validator import PipelineValidator
+from engine_reader.pipeline_reader import PipelineReader
+from exceptions import PipelineError
 from utils.logger import Logger as log
+
 
 class PipelineEngine:
 
@@ -32,7 +34,7 @@ class PipelineEngine:
 
         except Exception as e:
             log.error("PipelineEngine", f"Pipeline validation failed: {e}")
-            raise RuntimeError(f"Pipeline load/validation failed: {e}")
+            raise PipelineError(f"Pipeline load/validation failed: {e}") from e
 
     def debug_print(self, pipeline):
         print("📌 Loaded Pipeline:")
@@ -53,4 +55,4 @@ class PipelineEngine:
         except Exception as e:
             log.debug("PipelineEngine", f"Execution error: {e}")
             log.error("PipelineEngine", f"Pipeline execution failed: {e}")
-            raise RuntimeError(f"Execution failed: {e}")
+            raise PipelineError(f"Execution failed: {e}") from e

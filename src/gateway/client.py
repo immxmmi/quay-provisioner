@@ -1,14 +1,25 @@
 import os
+from typing import Any, Dict, Optional
+
 import requests
+
 from config.loader import Config
 from utils.logger import Logger as log
 
+# Sensitive headers that should be masked in logs
+SENSITIVE_HEADERS = {"authorization", "x-api-key", "cookie", "set-cookie"}
+DEFAULT_TIMEOUT = 30  # seconds
+
 
 class ApiClient:
+    """HTTP client with connection pooling, security features, and timeout support."""
+
+    _session: Optional[requests.Session] = None
 
     def __init__(self):
         cfg = Config()
         self.cfg = cfg
+        self.timeout = int(os.getenv("API_TIMEOUT", DEFAULT_TIMEOUT))
 
         log.debug("ApiClient", f"base_url={cfg.base_url}")
         log.debug("ApiClient", f"auth_type={cfg.auth_type}")
@@ -30,18 +41,39 @@ class ApiClient:
         disable_verify = os.getenv("DISABLE_TLS_VERIFY", "false").lower() == "true"
         self.verify = False if disable_verify else os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
 
-    def _request(self, method, endpoint, **kwargs):
+        if disable_verify:
+            log.debug("ApiClient", "WARNING: TLS verification is disabled")
+
+    @property
+    def session(self) -> requests.Session:
+        """Get or create a session for connection pooling."""
+        if ApiClient._session is None:
+            ApiClient._session = requests.Session()
+        return ApiClient._session
+
+    def _mask_sensitive_headers(self, headers: Dict[str, str]) -> Dict[str, str]:
+        """Mask sensitive header values for safe logging."""
+        masked = {}
+        for key, value in headers.items():
+            if key.lower() in SENSITIVE_HEADERS:
+                masked[key] = "***REDACTED***"
+            else:
+                masked[key] = value
+        return masked
+
+    def _request(self, method: str, endpoint: str, **kwargs) -> Any:
         endpoint = endpoint.strip("/")
         url = f"{self.base_url}/{endpoint}"
-        log.debug("ApiClient", f"Calling {method} {url}")
-        log.debug("ApiClient", f"Headers: {self.headers}")
-        log.debug("ApiClient", f"Verify: {self.verify}")
-        log.debug("ApiClient", f"Args: {kwargs}")
-        log.debug("ApiClient", f"Endpoint: {endpoint}")
-        log.debug("ApiClient", f"Base URL: {self.base_url}")
+        safe_headers = self._mask_sensitive_headers(self.headers)
 
+        log.debug("ApiClient", f"Calling {method} {url}")
+        log.debug("ApiClient", f"Headers: {safe_headers}")
+        log.debug("ApiClient", f"Verify: {self.verify}")
+        log.debug("ApiClient", f"Timeout: {self.timeout}s")
+
+        # Build CURL command with masked sensitive data for debugging
         curl_parts = ["curl", "-X", method]
-        for k, v in self.headers.items():
+        for k, v in safe_headers.items():
             curl_parts.append(f"-H '{k}: {v}'")
         if "json" in kwargs:
             import json as _json
@@ -50,12 +82,13 @@ class ApiClient:
         log.debug("ApiClient", f"[CURL]: {' '.join(curl_parts)}")
 
         try:
-            response = requests.request(
+            response = self.session.request(
                 method=method,
                 url=url,
                 headers=self.headers,
                 verify=self.verify,
                 allow_redirects=False,
+                timeout=self.timeout,
                 **kwargs
             )
         except requests.ConnectionError as e:
@@ -70,11 +103,13 @@ class ApiClient:
 
         if response.status_code in (301, 308) and "Location" in response.headers:
             redirect_url = response.headers["Location"]
-            response = requests.request(
+            log.debug("ApiClient", f"Following redirect to: {redirect_url}")
+            response = self.session.request(
                 method=method,
                 url=redirect_url,
                 headers=self.headers,
                 verify=self.verify,
+                timeout=self.timeout,
             )
 
         # Raise HTTP errors (4xx, 5xx)

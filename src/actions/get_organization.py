@@ -1,31 +1,31 @@
+from actions.base_action import BaseAction
 from gateway.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 from model.organization_model import GetOrganization
 from utils.logger import Logger as log
 
 
-class GetOrganizationAction:
-    def __init__(self, gateway=None):
-        self.gateway = gateway or QuayGateway()
+class GetOrganizationAction(BaseAction):
 
     @staticmethod
     def exists(name: str) -> bool:
+        """Check if an organization exists."""
         try:
             gateway = QuayGateway()
             result = gateway.get_organization(name)
             return result is not None
         except Exception as e:
-            log.info("GetOrganizationAction", f"Error checking if organization exists: {e}")
-            if "404" in str(e):  # NOT FOUND means it does not exist
+            log.debug("GetOrganizationAction", f"Error checking if organization exists: {e}")
+            if "404" in str(e):
                 return False
-            raise e
+            raise
 
     def execute(self, data: dict) -> ActionResponse:
         try:
-            log.info("GetOrganizationAction", f"Executing organization lookup request payload={data}")
+            log.info("GetOrganizationAction", f"Executing organization lookup payload={data}")
             org = GetOrganization(**data)
-            log.info("GetOrganizationAction", f"Validated input mapped to model model={org.model_dump()}")
-            log.info("GetOrganizationAction", f"Calling Quay API: get_organization name={org.name}")
+            log.debug("GetOrganizationAction", f"Validated input model={org.model_dump()}")
+
             result = self.gateway.get_organization(org.name)
             log.info("GetOrganizationAction", f"Organization fetch succeeded name={org.name}")
 
@@ -36,8 +36,8 @@ class GetOrganizationAction:
             )
 
         except Exception as e:
-            log.error("GetOrganizationAction", f"Organization fetch failed error={e}")
+            log.error("GetOrganizationAction", f"Organization fetch failed: {e}")
             return ActionResponse(
                 success=False,
-                message=str(e)
+                message=f"Failed to get organization: {e}"
             )

@@ -1,16 +1,15 @@
-from gateway.quay_gateway import QuayGateway
+from actions.base_action import BaseAction
 from model.action_response import ActionResponse
+from utils.logger import Logger as log
 
 
-class ListOrganizationsAction:
-    def __init__(self, gateway=None):
-        self.gateway = gateway or QuayGateway()
+class ListOrganizationsAction(BaseAction):
 
     def execute(self, data: dict) -> ActionResponse:
         try:
-            print(f"[ListOrganizationsAction] Executing with data: {data}")
+            log.info("ListOrganizationsAction", f"Executing with data: {data}")
             result = self.gateway.list_organizations()
-            print(f"[ListOrganizationsAction] API result: {result}")
+            log.debug("ListOrganizationsAction", f"API result: {result}")
 
             return ActionResponse(
                 success=True,
@@ -19,7 +18,8 @@ class ListOrganizationsAction:
             )
 
         except Exception as e:
+            log.error("ListOrganizationsAction", f"Failed to list organizations: {e}")
             return ActionResponse(
                 success=False,
-                message=str(e)
+                message=f"Failed to list organizations: {e}"
             )

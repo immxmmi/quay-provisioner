@@ -1,5 +1,17 @@
+from urllib.parse import quote
+
+from exceptions import (
+    RobotNotFoundError,
+    RobotAlreadyExistsError,
+    QuayApiError,
+)
 from gateway.client import ApiClient
 from utils.logger import Logger as log
+
+
+def _safe_path(value: str) -> str:
+    """URL-encode a path segment to prevent path traversal."""
+    return quote(value, safe="")
 
 
 class QuayGateway:
@@ -9,92 +21,65 @@ class QuayGateway:
     def create_organization(self, name: str):
         payload = {"name": name}
         log.debug("QuayGateway", f"create_organization name={name}")
-        log.debug("QuayGateway", f"create_organization args=({name},)")
         return self.client.post("/organization/", json=payload)
 
     def delete_organization(self, name: str):
         log.debug("QuayGateway", f"delete_organization name={name}")
-        log.debug("QuayGateway", f"delete_organization args=({name},)")
-        return self.client.delete(f"/organization/{name}")
+        return self.client.delete(f"/organization/{_safe_path(name)}")
 
     def get_organization(self, name: str):
         log.debug("QuayGateway", f"get_organization name={name}")
-        log.debug("QuayGateway", f"get_organization args=({name},)")
-        return self.client.get(f"/organization/{name}")
+        return self.client.get(f"/organization/{_safe_path(name)}")
 
     def list_organizations(self):
         log.debug("QuayGateway", "list_organizations")
-        log.debug("QuayGateway", "list_organizations args=()")
         return self.client.get("/organization")
 
     def create_robot_account(self, organization: str, robot_shortname: str, description: str | None = None):
         payload = {"description": description}
-        log.debug("QuayGateway", f"create_robot_account org={organization} robot={robot_shortname} description={description}")
-        log.debug("QuayGateway", f"create_robot_account args=({organization}, {robot_shortname}, {description})")
+        log.debug("QuayGateway", f"create_robot_account org={organization} robot={robot_shortname}")
+        safe_org = _safe_path(organization)
+        safe_robot = _safe_path(robot_shortname)
         try:
             return self.client.put(
-                f"/organization/{organization}/robots/{robot_shortname}".rstrip("/"),
+                f"/organization/{safe_org}/robots/{safe_robot}",
                 json=payload
             )
         except Exception as e:
             msg = str(e)
-
             if "Existing robot with name" in msg:
-                return {
-                    "created": False,
-                    "robot": f"{organization}+{robot_shortname}",
-                    "reason": "already_exists"
-                }
-
+                raise RobotAlreadyExistsError(
+                    f"Robot {robot_shortname} already exists in {organization}",
+                    response_body=msg
+                ) from e
             if "Could not find robot" in msg:
+                # Pre-check failed but creation might still succeed
                 return {
                     "created": True,
                     "robot": f"{organization}+{robot_shortname}",
                     "reason": "precheck_missing"
                 }
-
-            raise
+            raise QuayApiError(f"Failed to create robot: {msg}") from e
 
     def delete_robot_account(self, organization: str, robot_shortname: str):
         log.debug("QuayGateway", f"delete_robot_account org={organization} robot={robot_shortname}")
-        log.debug("QuayGateway", f"delete_robot_account args=({organization}, {robot_shortname})")
-        return self.client.delete(f"/organization/{organization}/robots/{robot_shortname}")
+        safe_org = _safe_path(organization)
+        safe_robot = _safe_path(robot_shortname)
+        return self.client.delete(f"/organization/{safe_org}/robots/{safe_robot}")
 
     def get_robot_account(self, organization: str, robot_shortname: str):
         log.debug("QuayGateway", f"get_robot_account org={organization} robot={robot_shortname}")
-        log.debug("QuayGateway", f"get_robot_account args=({organization}, {robot_shortname})")
-        try:
-            return self.client.get(
-                f"/organization/{organization}/robots/{robot_shortname}".rstrip("/")
+        safe_org = _safe_path(organization)
+        safe_robot = _safe_path(robot_shortname)
+        result = self.client.get(f"/organization/{safe_org}/robots/{safe_robot}")
+        if result is None:
+            raise RobotNotFoundError(
+                f"Robot {robot_shortname} not found in {organization}",
+                status_code=404
             )
-        except Exception as e:
-            msg = str(e)
-
-            if "Could not find robot" in msg or "404" in msg:
-                return {
-                    "exists": False,
-                    "organization": organization,
-                    "robot": robot_shortname,
-                    "reason": "not_found"
-                }
-
-            if "Existing robot with name" in msg:
-                return {
-                    "exists": True,
-                    "organization": organization,
-                    "robot": robot_shortname,
-                    "reason": "already_exists"
-                }
-
-            return {
-                "exists": False,
-                "organization": organization,
-                "robot": robot_shortname,
-                "reason": "api_error",
-                "error": msg
-            }
+        return result
 
     def list_robot_accounts(self, organization: str):
         log.debug("QuayGateway", f"list_robot_accounts org={organization}")
-        log.debug("QuayGateway", f"list_robot_accounts args=({organization},)")
-        return self.client.get(f"/organization/{organization}/robots/")
+        safe_org = _safe_path(organization)
+        return self.client.get(f"/organization/{safe_org}/robots/")

@@ -1,5 +1,6 @@
 import datetime
 
+
 class Logger:
     DEBUG_ENABLED = False
 
@@ -11,7 +12,7 @@ class Logger:
     def log(level, cls, msg):
         colors = {
             "DEBUG": "\033[94m",  # Blue
-            "INFO": "\033[92m",   # Green
+            "INFO": "\033[92m",  # Green
             "ERROR": "\033[91m",  # Red
         }
         reset = "\033[0m"
