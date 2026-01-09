@@ -1,27 +1,24 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: quay-provisioner-pipelines
+  name: {{ include "quay-provisioner.pipelinesConfigMapName" . }}
+  labels:
+    {{- include "quay-provisioner.labels" . | nindent 4 }}
 data:
-  inputs.yaml: |
-    organizations:
-      - name: test
-        visibility: private
-        email: test@test.ch
-        owner: test
-
-    robot_accounts:
-      - organization: test
-        robot_shortname: ci-bot
-        description: CI automation bot
-
   pipeline.yaml: |
     pipeline:
-      - name: create-organizations
-        job: create_organization
-        enabled: true
-        params_list: "{{`{{ inputs.organizations }}`}}"
-      - name: create-robot-accounts
-        job: create_robot_account
-        enabled: true
-        params_list: "{{`{{ inputs.robot_accounts }}`}}"
+    {{- range .Values.pipelines.pipeline }}
+      - name: {{ .name }}
+        job: {{ .job }}
+        enabled: {{ .enabled }}
+        {{- if .params_list }}
+        params_list: "{{ .params_list }}"
+        {{- end }}
+        {{- if .params }}
+        params:
+          {{- toYaml .params | nindent 10 }}
+        {{- end }}
+    {{- end }}
+
+  inputs.yaml: |
+    {{- toYaml .Values.pipelines.inputs | nindent 4 }}

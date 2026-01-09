@@ -1,6 +1,24 @@
 apiVersion: v2
 name: quay-provisioner
-description: A Helm chart that provisions Quay repositories, robot accounts, and automation resources.
+description: |
+  A Helm chart that provisions Quay container registries using YAML-defined pipelines.
+  Supports creating organizations, robot accounts, and other Quay resources.
+
 type: application
-version: 0.0.1
-appVersion: "0.0.1"
+version: 0.1.0
+appVersion: "2.2.1"
+
+keywords:
+  - quay
+  - provisioner
+  - automation
+  - container-registry
+  - pipeline
+
+home: https://github.com/immxmmi/quay-provisioner
+sources:
+  - https://github.com/immxmmi/quay-provisioner
+
+maintainers:
+  - name: immxmmi
+    url: https://github.com/immxmmi

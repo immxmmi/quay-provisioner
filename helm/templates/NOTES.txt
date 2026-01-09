@@ -1,0 +1,54 @@
+
+================================================================================
+  Quay Provisioner - {{ .Chart.Name }} v{{ .Chart.Version }}
+================================================================================
+
+The Quay Provisioner job has been created!
+
+Job Name: {{ include "quay-provisioner.fullname" . }}
+Namespace: {{ .Release.Namespace }}
+
+--------------------------------------------------------------------------------
+  Watch Job Status
+--------------------------------------------------------------------------------
+
+  kubectl get jobs -n {{ .Release.Namespace }} -w
+
+  kubectl logs -n {{ .Release.Namespace }} job/{{ include "quay-provisioner.fullname" . }} -f
+
+--------------------------------------------------------------------------------
+  Check Results
+--------------------------------------------------------------------------------
+
+  # View job status
+  kubectl describe job/{{ include "quay-provisioner.fullname" . }} -n {{ .Release.Namespace }}
+
+  # View pod logs
+  kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} --tail=100
+
+--------------------------------------------------------------------------------
+  Configuration
+--------------------------------------------------------------------------------
+
+  Pipeline ConfigMap: {{ include "quay-provisioner.pipelinesConfigMapName" . }}
+  Secret: {{ include "quay-provisioner.secretName" . }}
+
+{{- if .Values.settings.debug }}
+
+  DEBUG MODE ENABLED - CURL commands will be shown in logs
+{{- end }}
+
+{{- if .Values.caBundle.enabled }}
+
+  Custom CA Bundle: {{ .Values.caBundle.configMapName }}
+{{- end }}
+
+--------------------------------------------------------------------------------
+  Re-run the Job
+--------------------------------------------------------------------------------
+
+  # Delete and recreate the job
+  kubectl delete job/{{ include "quay-provisioner.fullname" . }} -n {{ .Release.Namespace }}
+  helm upgrade {{ .Release.Name }} {{ .Chart.Name }} -n {{ .Release.Namespace }}
+
+================================================================================

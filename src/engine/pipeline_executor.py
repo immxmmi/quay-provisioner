@@ -98,7 +98,7 @@ class PipelineExecutor:
                 continue
 
             if self.cfg.debug:
-                log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {}}")
+                log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {} }")
 
             try:
                 response = action.execute(step.params or {})

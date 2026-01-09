@@ -206,16 +206,16 @@ robot_accounts:
 
 ## Available Actions
 
-| Job Name | Description | Required Parameters |
-|----------|-------------|---------------------|
-| `create_organization` | Create a new organization | `name`, `email` (optional) |
-| `delete_organization` | Delete an organization | `name` |
-| `get_organization` | Get organization details | `name` |
-| `list_organizations` | List all organizations | - |
-| `create_robot_account` | Create a robot account | `organization`, `robot_shortname`, `description` (optional) |
-| `delete_robot_account` | Delete a robot account | `organization`, `robot_shortname` |
-| `get_robot_account` | Get robot account details | `organization`, `robot_shortname` |
-| `list_robot_accounts` | List robots in an org | `organization` |
+| Job Name               | Description               | Required Parameters                                         |
+|------------------------|---------------------------|-------------------------------------------------------------|
+| `create_organization`  | Create a new organization | `name`, `email` (optional)                                  |
+| `delete_organization`  | Delete an organization    | `name`                                                      |
+| `get_organization`     | Get organization details  | `name`                                                      |
+| `list_organizations`   | List all organizations    | -                                                           |
+| `create_robot_account` | Create a robot account    | `organization`, `robot_shortname`, `description` (optional) |
+| `delete_robot_account` | Delete a robot account    | `organization`, `robot_shortname`                           |
+| `get_robot_account`    | Get robot account details | `organization`, `robot_shortname`                           |
+| `list_robot_accounts`  | List robots in an org     | `organization`                                              |
 
 ## Debug Mode
 
@@ -342,17 +342,17 @@ make lint-fix
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `API_HOST` | Quay API host | from settings.yaml |
-| `API_PORT` | Quay API port | from settings.yaml |
-| `API_TOKEN` | Authentication token | from settings.yaml |
-| `API_AUTH_TYPE` | Auth type (bearer/basic/apikey) | `bearer` |
-| `DEBUG_ENABLED` | Enable debug logging | `false` |
-| `SHOW_CURL` | Show CURL commands | `false` |
-| `PIPELINE_FILE` | Path to pipeline.yaml | `pipelines/pipeline.yaml` |
-| `API_TIMEOUT` | Request timeout (seconds) | `30` |
-| `DISABLE_TLS_VERIFY` | Disable TLS verification | `false` |
+| Variable             | Description                     | Default                   |
+|----------------------|---------------------------------|---------------------------|
+| `API_HOST`           | Quay API host                   | from settings.yaml        |
+| `API_PORT`           | Quay API port                   | from settings.yaml        |
+| `API_TOKEN`          | Authentication token            | from settings.yaml        |
+| `API_AUTH_TYPE`      | Auth type (bearer/basic/apikey) | `bearer`                  |
+| `DEBUG_ENABLED`      | Enable debug logging            | `false`                   |
+| `SHOW_CURL`          | Show CURL commands              | `false`                   |
+| `PIPELINE_FILE`      | Path to pipeline.yaml           | `pipelines/pipeline.yaml` |
+| `API_TIMEOUT`        | Request timeout (seconds)       | `30`                      |
+| `DISABLE_TLS_VERIFY` | Disable TLS verification        | `false`                   |
 
 ### Auth Types
 
@@ -377,20 +377,20 @@ auth:
 
 ### Organizations
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/organization/` | Create organization |
-| GET | `/api/v1/organization/{name}` | Get organization |
+| Method | Endpoint                      | Description         |
+|--------|-------------------------------|---------------------|
+| POST   | `/api/v1/organization/`       | Create organization |
+| GET    | `/api/v1/organization/{name}` | Get organization    |
 | DELETE | `/api/v1/organization/{name}` | Delete organization |
 
 ### Robot Accounts
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| PUT | `/api/v1/organization/{org}/robots/{robot}` | Create/update robot |
-| GET | `/api/v1/organization/{org}/robots/{robot}` | Get robot |
-| DELETE | `/api/v1/organization/{org}/robots/{robot}` | Delete robot |
-| GET | `/api/v1/organization/{org}/robots/` | List all robots |
+| Method | Endpoint                                    | Description         |
+|--------|---------------------------------------------|---------------------|
+| PUT    | `/api/v1/organization/{org}/robots/{robot}` | Create/update robot |
+| GET    | `/api/v1/organization/{org}/robots/{robot}` | Get robot           |
+| DELETE | `/api/v1/organization/{org}/robots/{robot}` | Delete robot        |
+| GET    | `/api/v1/organization/{org}/robots/`        | List all robots     |
 
 ## Troubleshooting
 

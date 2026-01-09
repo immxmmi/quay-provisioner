@@ -76,15 +76,15 @@ src/
 
 ## Wichtige Dateien & Codelocations
 
-| Datei | Zeilen | Beschreibung |
-|-------|--------|--------------|
-| `src/main.py` | ~50 | Entry Point, lädt Config, startet Engine |
-| `src/engine/pipeline_engine.py` | ~100 | Hauptorchestrierung |
-| `src/engine/pipeline_executor.py` | ~150 | Step-Ausführung mit dynamischen Params |
-| `src/engine/action_registry.py` | ~20 | ACTION_REGISTRY Dictionary |
-| `src/gateway/quay_gateway.py` | ~100 | Alle Quay API Calls |
-| `src/gateway/client.py` | ~200 | HTTP-Client mit Auth & Error-Handling |
-| `src/config/loader.py` | ~80 | Config-Loading (YAML + Env) |
+| Datei                             | Zeilen | Beschreibung                             |
+|-----------------------------------|--------|------------------------------------------|
+| `src/main.py`                     | ~50    | Entry Point, lädt Config, startet Engine |
+| `src/engine/pipeline_engine.py`   | ~100   | Hauptorchestrierung                      |
+| `src/engine/pipeline_executor.py` | ~150   | Step-Ausführung mit dynamischen Params   |
+| `src/engine/action_registry.py`   | ~20    | ACTION_REGISTRY Dictionary               |
+| `src/gateway/quay_gateway.py`     | ~100   | Alle Quay API Calls                      |
+| `src/gateway/client.py`           | ~200   | HTTP-Client mit Auth & Error-Handling    |
+| `src/config/loader.py`            | ~80    | Config-Loading (YAML + Env)              |
 
 ---
 
@@ -108,6 +108,7 @@ ACTION_REGISTRY = {
 ## Pipeline-Syntax
 
 ### pipeline.yaml
+
 ```yaml
 pipeline:
   - name: create-organizations
@@ -122,6 +123,7 @@ pipeline:
 ```
 
 ### inputs.yaml
+
 ```yaml
 organizations:
   - name: "testhome"
@@ -135,6 +137,7 @@ robot_accounts:
 ```
 
 ### Template-Auflösung
+
 - `{{ organizations }}` → Liste aus inputs.yaml
 - Jedes Item wird einzeln an die Action übergeben
 - Statische Params: `params: {key: value}` statt `params_list`
@@ -144,6 +147,7 @@ robot_accounts:
 ## Konfiguration
 
 ### settings.yaml
+
 ```yaml
 api:
   host: "http://127.0.0.1"
@@ -159,6 +163,7 @@ app:
 ```
 
 ### Environment Variables (überschreiben settings.yaml)
+
 ```
 API_HOST, API_PORT, API_BASE_PATH
 API_AUTH_TYPE, API_TOKEN
@@ -170,11 +175,12 @@ DISABLE_TLS_VERIFY
 ## Response-Muster
 
 Alle Actions geben `ActionResponse` zurück:
+
 ```python
 ActionResponse(
-    success: bool,      # False → Pipeline stoppt
-    message: str,       # Fehlerbeschreibung
-    data: Any           # Zusätzliche Daten
+    success: bool,  # False → Pipeline stoppt
+message: str,  # Fehlerbeschreibung
+data: Any  # Zusätzliche Daten
 )
 ```
 
@@ -210,12 +216,14 @@ ActionResponse(
 ## Deployment
 
 ### Docker
+
 ```bash
 docker build -t quay-provisioner .
 docker-compose up
 ```
 
 ### Kubernetes/Helm
+
 ```bash
 helm install quay-provisioner ./helm \
   --set secrets.apiToken=xxx \
@@ -223,6 +231,7 @@ helm install quay-provisioner ./helm \
 ```
 
 Helm-Dateien in `helm/`:
+
 - `job.yaml` - Kubernetes Job
 - `pipeline-config.yaml` - ConfigMap für Pipelines
 - `quay-config-secret.yaml` - Secret für Credentials
@@ -232,11 +241,13 @@ Helm-Dateien in `helm/`:
 ## Logging
 
 Farbcodiert:
+
 - **Blau:** DEBUG
 - **Grün:** INFO
 - **Rot:** ERROR
 
 Debug aktivieren in `settings.yaml`:
+
 ```yaml
 debug:
   enabled: true

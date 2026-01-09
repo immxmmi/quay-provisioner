@@ -1,32 +1,162 @@
+# =============================================================================
+# Quay Provisioner Helm Chart - Values
+# =============================================================================
+
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the chart
+fullnameOverride: ""
+
+# =============================================================================
+# Image Configuration
+# =============================================================================
 image:
-  pullPolicy: Always
+  # -- Container image repository
   repository: ghcr.io/immxmmi/quay-provisioner
-  tag: "latest"
+  # -- Container image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
 
+# -- Image pull secrets for private registries
+imagePullSecrets: [ ]
+# - name: my-registry-secret
+
+# =============================================================================
+# Service Account
+# =============================================================================
 serviceAccount:
-  name: quay-provisioner
+  # -- Create a service account
+  create: true
+  # -- Service account name (generated if not set)
+  name: ""
+  # -- Annotations for the service account
+  annotations: { }
 
+# =============================================================================
+# Job Configuration
+# =============================================================================
+job:
+  # -- Number of retries before marking job as failed
+  backoffLimit: 3
+  # -- Seconds to keep job after completion (cleanup)
+  ttlSecondsAfterFinished: 300
+  # -- Restart policy (Never or OnFailure)
+  restartPolicy: Never
+  # -- Additional annotations for the job
+  annotations: { }
+  # -- Additional labels for the job
+  labels: { }
+
+# =============================================================================
+# Pod Configuration
+# =============================================================================
+pod:
+  # -- Additional annotations for the pod
+  annotations: { }
+  # -- Additional labels for the pod
+  labels: { }
+  # -- Node selector for pod scheduling
+  nodeSelector: { }
+  # -- Tolerations for pod scheduling
+  tolerations: [ ]
+  # -- Affinity rules for pod scheduling
+  affinity: { }
+  # -- Security context for the pod
+  securityContext: { }
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  # fsGroup: 1000
+
+# =============================================================================
+# Container Resources
+# =============================================================================
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# =============================================================================
+# Quay API Configuration (ConfigMap - not sensitive)
+# =============================================================================
+api:
+  # -- Quay API host (e.g., https://quay.example.com)
+  host: "http://127.0.0.1"
+  # -- Quay API port
+  port: "443"
+  # -- Quay API base path
+  basePath: "/api/v1"
+  # -- Authentication type: bearer, basic, or apikey
+  authType: "bearer"
+
+# =============================================================================
+# Secret Configuration (sensitive data only)
+# =============================================================================
 secrets:
-  name: quay-config
-
-  apiHost: "127.0.0.1"
-  apiPort: "9080"
-  apiBasePath: "/api/v1"
-  apiAuthType: "bearer"
+  # -- Name of the secret (generated if not set)
+  name: ""
+  # -- Use an existing secret instead of creating one (must contain API_TOKEN key)
+  existingSecret: ""
+  # -- API token (required if not using existingSecret)
   apiToken: ""
 
-  # Falls ein externes Secret genutzt wird (ESO etc.)
-  existingSecret: ""
-
+# =============================================================================
+# Pipeline Configuration
+# =============================================================================
 pipelines:
-  configMapName: quay-provisioner-pipelines
+  # -- Name of the ConfigMap for pipelines (generated if not set)
+  configMapName: ""
+  # -- Mount path inside the container
   mountPath: /app/pipelines
 
+  # -- Pipeline definition (pipeline.yaml content)
+  pipeline:
+    - name: create-organizations
+      job: create_organization
+      enabled: true
+      params_list: "{{ organizations }}"
+
+    - name: create-robot-accounts
+      job: create_robot_account
+      enabled: true
+      params_list: "{{ robot_accounts }}"
+
+  # -- Input data (inputs.yaml content)
+  inputs:
+    organizations:
+      - name: example-org
+        email: admin@example.com
+
+    robot_accounts:
+      - organization: example-org
+        robot_shortname: ci-bot
+        description: CI automation bot
+
+# =============================================================================
+# Application Settings
+# =============================================================================
 settings:
+  # -- Enable debug mode (shows detailed logs and CURL commands)
+  debug: false
+  # -- Show CURL commands for API calls
+  showCurl: false
+  # -- API request timeout in seconds
+  timeout: 30
+  # -- Disable TLS certificate verification (not recommended for production)
   disableTlsVerify: false
 
+# =============================================================================
+# Custom CA Bundle (for self-signed certificates)
+# =============================================================================
 caBundle:
+  # -- Enable custom CA bundle
   enabled: false
+  # -- Name of the ConfigMap containing the CA bundle
   configMapName: custom-ca-bundle
+  # -- Key in the ConfigMap
+  key: ca.crt
+  # -- Mount path for the CA bundle
   mountPath: /etc/ssl/certs/custom-ca.pem
-  envVar: CA_BUNDLE

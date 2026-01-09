@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "quay-provisioner.fullname" . }}-api-config
+  labels:
+    {{- include "quay-provisioner.labels" . | nindent 4 }}
+data:
+  API_HOST: {{ .Values.api.host | quote }}
+  API_PORT: {{ .Values.api.port | quote }}
+  API_BASE_PATH: {{ .Values.api.basePath | quote }}
+  API_AUTH_TYPE: {{ .Values.api.authType | quote }}

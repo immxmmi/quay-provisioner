@@ -13,4 +13,4 @@ services:
       API_BASE_PATH: "${API_BASE_PATH}"
       API_AUTH_TYPE: "${API_AUTH_TYPE}"
       API_TOKEN: "${API_TOKEN}"
-    command: ["sleep", "infinity"]
+    command: [ "sleep", "infinity" ]
