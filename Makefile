@@ -33,6 +33,12 @@ help:
 	@echo "  create_wheelhouse          Build Python wheels for offline builds"
 	@echo "  clean_wheelhouse           Clean the wheelhouse directory"
 	@echo "  check_python_version       Check Python version in the Docker image"
+
+	@echo "Docker Image Push Targets:"
+	@echo "  login_registry             Log in to the container registry"
+	@echo "  build_image                Build the Docker image using buildah"
+	@echo "  push_image                 Push the Docker image to the registry"
+
 	@echo ""
 	@echo "Usage:"
 	@echo "  make <target>"
