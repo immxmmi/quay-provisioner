@@ -1,3 +1,13 @@
+# ======================
+# Image / Registry
+# ======================
+REGISTRY ?= docker.io
+NAMESPACE ?= test
+IMAGE_NAME ?= quay-provisioner
+VERSION ?= 0.0.2
+
+IMAGE_REF := $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(VERSION)
+
 help:
 	@echo "======================================"
 	@echo " PipelineExecutionPlatform - Makefile "
@@ -188,3 +198,17 @@ run_offline:
 		--network host \
 		-v $(PWD)/src/pipelines:/app/pipelines \
 		quay-provisioner-offline
+
+login_registry:
+	@echo "Logging in to $(REGISTRY)..."
+	buildah login $(REGISTRY)
+
+build_image:
+	@echo "Building image with buildah..."
+	buildah bud -f Dockerfile -t $(IMAGE_REF) .
+	@echo "✓ Image built: $(IMAGE_REF)"
+
+push_image: login_registry
+	@echo "Pushing image to $(IMAGE_REF)..."
+	buildah push $(IMAGE_REF)
+	@echo "✓ Image pushed"
