@@ -1,8 +1,11 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class Organization(BaseModel):
     name: str
+    email: Optional[str] = None
     model_config = {"extra": "ignore"}
 
 

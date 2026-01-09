@@ -18,9 +18,11 @@ class QuayGateway:
     def __init__(self, client=None):
         self.client = client or ApiClient()
 
-    def create_organization(self, name: str):
+    def create_organization(self, name: str, email: str = None):
         payload = {"name": name}
-        log.debug("QuayGateway", f"create_organization name={name}")
+        if email:
+            payload["email"] = email
+        log.debug("QuayGateway", f"create_organization name={name} email={email}")
         return self.client.post("/organization/", json=payload)
 
     def delete_organization(self, name: str):
@@ -46,13 +48,23 @@ class QuayGateway:
                 json=payload
             )
         except Exception as e:
+            # Check both exception message and response body (if available)
             msg = str(e)
-            if "Existing robot with name" in msg:
+            response_body = ""
+            if hasattr(e, "response") and e.response is not None:
+                try:
+                    response_body = e.response.text
+                except Exception:
+                    pass
+
+            full_msg = f"{msg} {response_body}"
+
+            if "Existing robot with name" in full_msg:
                 raise RobotAlreadyExistsError(
                     f"Robot {robot_shortname} already exists in {organization}",
-                    response_body=msg
+                    response_body=response_body
                 ) from e
-            if "Could not find robot" in msg:
+            if "Could not find robot" in full_msg:
                 # Pre-check failed but creation might still succeed
                 return {
                     "created": True,

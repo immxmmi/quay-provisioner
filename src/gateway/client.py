@@ -101,15 +101,34 @@ class ApiClient:
             log.error("ApiClient", f"Unexpected request error: {e}")
             raise e
 
-        if response.status_code in (301, 308) and "Location" in response.headers:
+        if response.status_code in (301, 302, 307, 308) and "Location" in response.headers:
             redirect_url = response.headers["Location"]
-            log.debug("ApiClient", f"Following redirect to: {redirect_url}")
+            # Fix redirect URL if it's missing the port
+            if redirect_url.startswith("http://127.0.0.1/") or redirect_url.startswith("http://localhost/"):
+                from urllib.parse import urlparse, urlunparse
+                parsed_base = urlparse(self.base_url)
+                parsed_redirect = urlparse(redirect_url)
+                # Replace host:port with our configured host:port
+                fixed_redirect = urlunparse((
+                    parsed_base.scheme,
+                    parsed_base.netloc,  # includes port
+                    parsed_redirect.path,
+                    parsed_redirect.params,
+                    parsed_redirect.query,
+                    parsed_redirect.fragment
+                ))
+                log.debug("ApiClient", f"Fixed redirect URL: {redirect_url} -> {fixed_redirect}")
+                redirect_url = fixed_redirect
+            else:
+                log.debug("ApiClient", f"Following redirect to: {redirect_url}")
+            # Preserve original request body and other kwargs for the redirect
             response = self.session.request(
                 method=method,
                 url=redirect_url,
                 headers=self.headers,
                 verify=self.verify,
                 timeout=self.timeout,
+                **kwargs  # Pass original kwargs (includes json body)
             )
 
         # Raise HTTP errors (4xx, 5xx)

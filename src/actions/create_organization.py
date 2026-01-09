@@ -20,7 +20,7 @@ class CreateOrganizationAction(BaseAction):
                 return ActionResponse(success=True, data={"organization": org.name})
 
             # --- CREATE NEW ORG ---
-            result = self.gateway.create_organization(org.name)
+            result = self.gateway.create_organization(org.name, email=org.email)
             log.info("CreateOrganizationAction", "Organization created successfully")
 
             return ActionResponse(
