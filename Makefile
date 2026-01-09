@@ -12,11 +12,15 @@ REGISTRY   ?= quay.io
 NAMESPACE  ?= your-repo
 IMAGE_NAME ?= quay-provisioner
 VERSION    ?= 0.0.2
-TAG        ?= latest
+TAG        ?= $(VERSION)
 
-IMAGE_REF     := $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(VERSION)
+IMAGE_REF     := $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(TAG)
+IMAGE_LOCAL   := $(IMAGE_NAME):$(TAG)
 BASE_IMAGE    := quay.io/lib/python:$(PY_VERSION)
 COMPOSE_FILE  := environment/quay/docker-compose.yaml
+
+# Git-based version (optional, use with: make build TAG=$(shell git describe --tags --always))
+GIT_COMMIT    := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
 # --- .PHONY Declarations -----------------------------------------------------
 .PHONY: help run run-debug test lint lint-fix check clean \
@@ -51,13 +55,18 @@ help:
 	@echo "    quay-down        Stop Quay test environment"
 	@echo ""
 	@echo "  \033[1mDocker:\033[0m"
-	@echo "    build            Build Docker image"
+	@echo "    build            Build Docker image (TAG=x.x.x)"
 	@echo "    build-offline    Build offline Docker image"
 	@echo "    run-container    Run Docker container"
 	@echo "    run-offline      Run offline container"
 	@echo "    export           Export image to tar file"
 	@echo "    push             Push image to registry"
 	@echo "    login            Login to container registry"
+	@echo ""
+	@echo "  \033[1mVariables:\033[0m"
+	@echo "    TAG=1.0.0        Set image tag/version"
+	@echo "    REGISTRY=...     Set container registry"
+	@echo "    NAMESPACE=...    Set registry namespace"
 	@echo ""
 	@echo "  \033[1mUtilities:\033[0m"
 	@echo "    wheelhouse       Create Python wheels for offline builds"
@@ -141,14 +150,24 @@ quay-status:
 # ============================================================================
 
 build:
-	@echo "Building Docker image: $(IMAGE_NAME)..."
-	@docker build -t $(IMAGE_NAME) .
-	@echo "\033[32m✓ Image built: $(IMAGE_NAME)\033[0m"
+	@echo "Building Docker image: $(IMAGE_LOCAL)..."
+	@docker build \
+		--build-arg VERSION=$(TAG) \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
+		-t $(IMAGE_LOCAL) \
+		-t $(IMAGE_NAME):latest \
+		.
+	@echo "\033[32m✓ Image built: $(IMAGE_LOCAL)\033[0m"
 
 build-offline:
-	@echo "Building offline Docker image..."
-	@docker build -f Dockerfile_offline -t $(IMAGE_NAME)-offline .
-	@echo "\033[32m✓ Offline image built: $(IMAGE_NAME)-offline\033[0m"
+	@echo "Building offline Docker image: $(IMAGE_NAME)-offline:$(TAG)..."
+	@docker build \
+		--build-arg VERSION=$(TAG) \
+		-f Dockerfile_offline \
+		-t $(IMAGE_NAME)-offline:$(TAG) \
+		-t $(IMAGE_NAME)-offline:latest \
+		.
+	@echo "\033[32m✓ Offline image built: $(IMAGE_NAME)-offline:$(TAG)\033[0m"
 
 run-container:
 	@docker run --rm -it \
@@ -212,9 +231,21 @@ info:
 	@echo ""
 	@echo "  \033[1mConfiguration:\033[0m"
 	@echo "  ─────────────────────────────────────"
-	@echo "  Python:     $(PYTHON)"
-	@echo "  Source:     $(SRC_DIR)"
-	@echo "  Registry:   $(REGISTRY)"
-	@echo "  Image:      $(IMAGE_REF)"
-	@echo "  Base:       $(BASE_IMAGE)"
+	@echo "  Python:       $(PYTHON)"
+	@echo "  Source:       $(SRC_DIR)"
+	@echo ""
+	@echo "  \033[1mContainer:\033[0m"
+	@echo "  ─────────────────────────────────────"
+	@echo "  Registry:     $(REGISTRY)"
+	@echo "  Namespace:    $(NAMESPACE)"
+	@echo "  Image:        $(IMAGE_NAME)"
+	@echo "  Tag:          $(TAG)"
+	@echo "  Git Commit:   $(GIT_COMMIT)"
+	@echo "  Full Ref:     $(IMAGE_REF)"
+	@echo "  Local:        $(IMAGE_LOCAL)"
+	@echo "  Base Image:   $(BASE_IMAGE)"
+	@echo ""
+	@echo "  \033[2mExamples:\033[0m"
+	@echo "    make build TAG=1.0.0"
+	@echo "    make push TAG=1.0.0 REGISTRY=ghcr.io NAMESPACE=myuser"
 	@echo ""
