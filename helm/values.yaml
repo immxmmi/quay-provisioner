@@ -43,8 +43,10 @@ job:
   ttlSecondsAfterFinished: 300
   # -- Restart policy (Never or OnFailure)
   restartPolicy: Never
-  # -- Additional annotations for the job
-  annotations: { }
+  # -- Additional annotations for the job (ArgoCD hooks enabled by default)
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
   # -- Additional labels for the job
   labels: { }
 
