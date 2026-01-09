@@ -22,13 +22,20 @@ COMPOSE_FILE  := environment/quay/docker-compose.yaml
 # Git-based version (optional, use with: make build TAG=$(shell git describe --tags --always))
 GIT_COMMIT    := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
+# --- Helm Configuration ------------------------------------------------------
+HELM_CHART     := helm
+HELM_RELEASE   ?= quay-provisioner
+HELM_NAMESPACE ?= quay-system
+HELM_VALUES    ?= helm/values.yaml
+
 # --- .PHONY Declarations -----------------------------------------------------
 .PHONY: help run run-debug test lint lint-fix check clean \
-        quay-up quay-down \
+        quay-up quay-down quay-logs quay-status \
         build build-offline run-container run-offline \
-        export push login \
-        wheelhouse wheelhouse-clean \
-        check-python info
+        export push login push-buildah \
+        wheelhouse wheelhouse-clean check-python info \
+        helm-lint helm-template helm-package helm-install helm-uninstall \
+        helm-upgrade helm-dry-run helm-status helm-clean
 
 .DEFAULT_GOAL := help
 
@@ -68,11 +75,27 @@ help:
 	@echo "    REGISTRY=...     Set container registry"
 	@echo "    NAMESPACE=...    Set registry namespace"
 	@echo ""
+	@echo "  \033[1mHelm:\033[0m"
+	@echo "    helm-lint        Lint the Helm chart"
+	@echo "    helm-template    Render templates locally"
+	@echo "    helm-dry-run     Test install (no actual deploy)"
+	@echo "    helm-install     Install chart to Kubernetes"
+	@echo "    helm-upgrade     Upgrade existing release"
+	@echo "    helm-uninstall   Remove release from cluster"
+	@echo "    helm-status      Show release status"
+	@echo "    helm-package     Package chart into .tgz"
+	@echo "    helm-clean       Remove packaged charts"
+	@echo ""
 	@echo "  \033[1mUtilities:\033[0m"
 	@echo "    wheelhouse       Create Python wheels for offline builds"
 	@echo "    wheelhouse-clean Clean wheelhouse directory"
 	@echo "    check-python     Check Python version in base image"
 	@echo "    info             Show current configuration"
+	@echo ""
+	@echo "  \033[1mHelm Variables:\033[0m"
+	@echo "    HELM_RELEASE=... Release name (default: quay-provisioner)"
+	@echo "    HELM_NAMESPACE=. Namespace (default: quay-system)"
+	@echo "    HELM_VALUES=...  Custom values file"
 	@echo ""
 	@echo "  \033[2mUsage: make <target>\033[0m"
 	@echo ""
@@ -245,7 +268,72 @@ info:
 	@echo "  Local:        $(IMAGE_LOCAL)"
 	@echo "  Base Image:   $(BASE_IMAGE)"
 	@echo ""
+	@echo "  \033[1mHelm:\033[0m"
+	@echo "  ─────────────────────────────────────"
+	@echo "  Chart:        $(HELM_CHART)"
+	@echo "  Release:      $(HELM_RELEASE)"
+	@echo "  Namespace:    $(HELM_NAMESPACE)"
+	@echo "  Values:       $(HELM_VALUES)"
+	@echo ""
 	@echo "  \033[2mExamples:\033[0m"
 	@echo "    make build TAG=1.0.0"
 	@echo "    make push TAG=1.0.0 REGISTRY=ghcr.io NAMESPACE=myuser"
+	@echo "    make helm-install HELM_NAMESPACE=my-ns"
 	@echo ""
+
+# ============================================================================
+#  Helm Operations
+# ============================================================================
+
+helm-lint:
+	@echo "Linting Helm chart..."
+	@helm lint $(HELM_CHART)
+	@echo "\033[32m✓ Chart linted successfully\033[0m"
+
+helm-template:
+	@echo "Rendering Helm templates..."
+	@helm template $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(HELM_NAMESPACE) \
+		-f $(HELM_VALUES)
+
+helm-dry-run:
+	@echo "Dry-run Helm install..."
+	@helm install $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(HELM_NAMESPACE) \
+		--create-namespace \
+		-f $(HELM_VALUES) \
+		--dry-run --debug
+
+helm-install:
+	@echo "Installing Helm chart..."
+	@helm install $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(HELM_NAMESPACE) \
+		--create-namespace \
+		-f $(HELM_VALUES)
+	@echo "\033[32m✓ Chart installed: $(HELM_RELEASE)\033[0m"
+
+helm-upgrade:
+	@echo "Upgrading Helm release..."
+	@helm upgrade $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(HELM_NAMESPACE) \
+		-f $(HELM_VALUES) \
+		--install
+	@echo "\033[32m✓ Chart upgraded: $(HELM_RELEASE)\033[0m"
+
+helm-uninstall:
+	@echo "Uninstalling Helm release..."
+	@helm uninstall $(HELM_RELEASE) --namespace $(HELM_NAMESPACE)
+	@echo "\033[32m✓ Chart uninstalled: $(HELM_RELEASE)\033[0m"
+
+helm-status:
+	@helm status $(HELM_RELEASE) --namespace $(HELM_NAMESPACE)
+
+helm-package:
+	@echo "Packaging Helm chart..."
+	@helm package $(HELM_CHART)
+	@echo "\033[32m✓ Chart packaged\033[0m"
+
+helm-clean:
+	@echo "Cleaning packaged charts..."
+	@rm -f *.tgz
+	@echo "\033[32m✓ Cleaned\033[0m"
