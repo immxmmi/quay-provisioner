@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Add CURL command display utility; enhance API call visualization">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/organization_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/organization_model.py" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance Makefile; support version tagging and include Git commit in build output">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,22 +211,6 @@
       <workItem from="1765182075966" duration="17646000" />
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
-    </task>
-    <task id="LOCAL-00018" summary="Update pipeline-config.yaml to escape input parameters for proper rendering">
-      <option name="closed" value="true" />
-      <created>1764678205928</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1764678205928</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Update values.yaml to use 'latest' tag for image and modify workspace.xml for task tracking">
-      <option name="closed" value="true" />
-      <created>1764678240129</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1764678240129</updated>
     </task>
     <task id="LOCAL-00020" summary="Add helper template functions for chart name and service account resolution">
       <option name="closed" value="true" />
@@ -608,7 +588,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767972750595</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Enhance organization creation and API client; support email field and fix redirect URLs">
+      <option name="closed" value="true" />
+      <created>1767989322484</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1767989322484</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Enhance Makefile; support version tagging and include Git commit in build output">
+      <option name="closed" value="true" />
+      <created>1767989540243</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1767989540243</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -626,8 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update CA bundle environment variable in values.yaml and modify workspace.xml" />
-    <MESSAGE value="Add support for disabling TLS verification in client requests" />
     <MESSAGE value="Add DISABLE_TLS_VERIFY environment variable to job configuration" />
     <MESSAGE value="Refactor TLS verification handling and improve JSON response parsing" />
     <MESSAGE value="Refactor pipeline configuration to use absolute paths for inputs and update YAML references" />
@@ -651,7 +645,9 @@
     <MESSAGE value="Add Docker image push targets to Makefile; enhance build and deployment process" />
     <MESSAGE value="Add input overview display utility; enhance pipeline input visualization" />
     <MESSAGE value="Add CURL command display utility; enhance API call visualization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add CURL command display utility; enhance API call visualization" />
+    <MESSAGE value="Enhance organization creation and API client; support email field and fix redirect URLs" />
+    <MESSAGE value="Enhance Makefile; support version tagging and include Git commit in build output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance Makefile; support version tagging and include Git commit in build output" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
