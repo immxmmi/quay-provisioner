@@ -4,28 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor pipeline executor for improved dynamic parameter handling; enhance debug logging and error reporting">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/create_robot_account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/delete_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/delete_robot_account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/get_robot_account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/list_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/list_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/list_robot_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/list_robot_accounts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Refactor action classes to inherit from BaseAction; enhance validation and error handling across pipeline actions">
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/pipeline_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_engine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/pipeline_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_executor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine_reader/pipeline_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine_reader/pipeline_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/action_response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/action_response.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/pipeline_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/pipeline_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/logger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,14 +214,6 @@
       <workItem from="1765182075966" duration="17646000" />
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
-    </task>
-    <task id="LOCAL-00011" summary="Add multi-architecture support for Docker images in GitHub Actions workflow">
-      <option name="closed" value="true" />
-      <created>1764671455242</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1764671455242</updated>
     </task>
     <task id="LOCAL-00012" summary="Refactor loader.py to use BASE_DIR for pipeline file path resolution">
       <option name="closed" value="true" />
@@ -624,7 +599,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765467352502</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Refactor action classes to inherit from BaseAction; enhance validation and error handling across pipeline actions">
+      <option name="closed" value="true" />
+      <created>1767967208111</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1767967208111</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -642,7 +625,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Remove version extraction step from GitHub Actions workflow and hardcode version in Helm chart packaging" />
     <MESSAGE value="Set chart version as an environment variable in Helm push workflow" />
     <MESSAGE value="Refactor Dockerfile for offline installation and update Makefile to streamline wheelhouse creation" />
     <MESSAGE value="Add check_python_version target to Makefile and update Docker image reference" />
@@ -667,7 +649,8 @@
     <MESSAGE value="Add application version to configuration; enhance logging for app version" />
     <MESSAGE value="Enhance dynamic parameter handling in pipeline executor; improve logging and error handling for parameter validation" />
     <MESSAGE value="Refactor pipeline executor for improved dynamic parameter handling; enhance debug logging and error reporting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor pipeline executor for improved dynamic parameter handling; enhance debug logging and error reporting" />
+    <MESSAGE value="Refactor action classes to inherit from BaseAction; enhance validation and error handling across pipeline actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor action classes to inherit from BaseAction; enhance validation and error handling across pipeline actions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

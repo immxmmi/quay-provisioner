@@ -1,6 +1,9 @@
+import time
+
 from config.loader import Config
 from engine.action_registry import ACTION_REGISTRY
 from engine_reader.pipeline_reader import PipelineReader
+from utils.display import Display, PipelineStats, StepResult
 from utils.logger import Logger as log
 
 
@@ -9,6 +12,7 @@ class PipelineExecutor:
     def __init__(self):
         self.reader = PipelineReader()
         self.cfg = Config()
+        self.stats = PipelineStats()
 
     def run_pipeline(self, pipeline, inputs_file):
         inputs = self.reader.load_inputs(inputs_file)
@@ -16,14 +20,31 @@ class PipelineExecutor:
         if self.cfg.debug:
             log.debug("PipelineExecutor", f"Executor loaded inputs: {inputs}")
 
+        # Count total enabled steps
+        enabled_steps = [s for s in pipeline.pipeline if s.enabled]
+        self.stats.total_steps = len(enabled_steps)
+        self.stats.skipped_steps = len(pipeline.pipeline) - len(enabled_steps)
+
+        step_num = 0
         for step in pipeline.pipeline:
+            step_num += 1
             if not step.enabled:
+                Display.step_skipped(step_num, self.stats.total_steps + self.stats.skipped_steps, step.name)
                 continue
 
             action_class = ACTION_REGISTRY.get(step.job)
             if action_class is None:
                 raise ValueError(f"Unknown job type: '{step.job}'. Check ACTION_REGISTRY.")
             action = action_class()
+
+            # Show step start
+            Display.step_start(
+                step_num - self.stats.skipped_steps,
+                self.stats.total_steps,
+                step.name,
+                step.job
+            )
+            step_start_time = time.time()
 
             if step.params_list:
                 key = step.params_list.replace("{{ ", "").replace(" }}", "")
@@ -41,16 +62,14 @@ class PipelineExecutor:
                               f"Invalid params list for key='{key}'. Expected list, got: {type(items)}")
                     raise ValueError(f"Invalid params list for key='{key}'")
 
+                all_success = True
                 for index, params in enumerate(items):
                     try:
+                        Display.dynamic_iteration(index + 1, len(items), params)
+
                         if self.cfg.debug:
                             log.debug("PipelineExecutor",
                                       f"[{step.name}] Executing dynamic iteration {index + 1}/{len(items)} with params={params}")
-                        if self.cfg.debug:
-                            log.debug(
-                                "PipelineExecutor",
-                                f"[{step.name}] Iteration {index + 1}/{len(items)} validation start | type={type(params)}, value={params}"
-                            )
 
                         if not isinstance(params, dict):
                             log.error(
@@ -59,39 +78,48 @@ class PipelineExecutor:
                             )
                             raise ValueError(f"Invalid params in dynamic list for step '{step.name}'")
 
-                        if self.cfg.debug:
-                            log.debug(
-                                "PipelineExecutor",
-                                f"[{step.name}] Iteration {index + 1}: validation passed"
-                            )
+                        response = action.execute(params)
+                        Display.dynamic_iteration_result(response.success)
 
-                        self._run_action(step, action, params)
+                        if not response.success:
+                            all_success = False
+                            log.error("PipelineExecutor", f"Iteration {index + 1} failed: {response.message}")
 
                     except Exception as ex:
-                        if self.cfg.debug:
-                            log.debug("PipelineExecutor",
-                                      f"[{step.name}] Iteration {index + 1}: exception occurred → {ex}")
+                        Display.dynamic_iteration_result(False)
                         log.error("PipelineExecutor",
                                   f"Exception while executing step '{step.name}' with dynamic params: {ex}")
+                        step_duration = time.time() - step_start_time
+                        self.stats.add_result(StepResult(step.name, step.job, False, str(ex), step_duration))
                         raise
+
+                step_duration = time.time() - step_start_time
+                self.stats.add_result(StepResult(step.name, step.job, all_success, None, step_duration))
+                Display.step_result(all_success, None, step_duration)
+
+                if not all_success:
+                    raise RuntimeError(f"Step '{step.name}' failed during dynamic iteration")
 
                 continue
 
             if self.cfg.debug:
-                log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {} }")
-            self._run_action(step, action, step.params or {})
+                log.debug("PipelineExecutor", f"Executing step {step.name} with params: {step.params or {}}")
 
-    def _run_action(self, step, action, params):
-        cfg = self.cfg
-        if cfg.debug:
-            log.debug("PipelineExecutor", f"_run_action invoked for {step.name}")
-            log.debug("PipelineExecutor", f"_run_action parameters for step '{step.name}': {params}")
-        log.info("PipelineExecutor", f"Running step: {step.name} ({step.job})")
-        response = action.execute(params)
+            try:
+                response = action.execute(step.params or {})
+                step_duration = time.time() - step_start_time
 
-        log.info("PipelineExecutor",
-                 f"Result(success={response.success}, message={response.message}, data={response.data})")
+                self.stats.add_result(StepResult(
+                    step.name, step.job, response.success, response.message, step_duration
+                ))
+                Display.step_result(response.success, response.message, step_duration)
 
-        if not response.success:
-            log.error("PipelineExecutor", "Pipeline failed.")
-            raise RuntimeError("Pipeline execution aborted due to failed step.")
+                if not response.success:
+                    raise RuntimeError(f"Step '{step.name}' failed: {response.message}")
+
+            except Exception as ex:
+                step_duration = time.time() - step_start_time
+                if step.name not in [r.name for r in self.stats.results]:
+                    self.stats.add_result(StepResult(step.name, step.job, False, str(ex), step_duration))
+                    Display.step_result(False, str(ex), step_duration)
+                raise

@@ -2,6 +2,7 @@ from engine.pipeline_executor import PipelineExecutor
 from engine.pipeline_validator import PipelineValidator
 from engine_reader.pipeline_reader import PipelineReader
 from exceptions import PipelineError
+from utils.display import Display
 from utils.logger import Logger as log
 
 
@@ -36,15 +37,9 @@ class PipelineEngine:
             log.error("PipelineEngine", f"Pipeline validation failed: {e}")
             raise PipelineError(f"Pipeline load/validation failed: {e}") from e
 
-    def debug_print(self, pipeline):
-        print("📌 Loaded Pipeline:")
-        for step in pipeline.pipeline:
-            print(f"Step: {step.name}")
-            print(f"  job: {step.job}")
-            print(f"  enabled: {step.enabled}")
-            print(f"  params: {step.params}")
-            print(f"  params_list: {step.params_list}")
-            print()
+    def show_overview(self, pipeline, debug: bool = False):
+        """Show pipeline overview with optional debug details."""
+        Display.pipeline_overview(pipeline, debug=debug)
 
     def run(self, pipeline):
         try:
