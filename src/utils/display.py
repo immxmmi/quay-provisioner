@@ -166,6 +166,47 @@ class Display:
         print(f"{Colors.DIM}{'─' * 60}{Colors.RESET}")
 
     @staticmethod
+    def curl_command(method: str, url: str, headers: dict, body: dict = None, masked: bool = True):
+        """Print a copyable CURL command."""
+        print()
+        print(f"    {Colors.DIM}┌─ CURL Command ─────────────────────────{Colors.RESET}")
+
+        parts = [f"curl -X {method}"]
+
+        for key, value in headers.items():
+            if masked and key.lower() in ("authorization", "x-api-key"):
+                value = "$API_TOKEN"  # Use env var placeholder
+            parts.append(f"-H '{key}: {value}'")
+
+        if body:
+            import json
+            body_str = json.dumps(body)
+            parts.append(f"-d '{body_str}'")
+
+        parts.append(f"'{url}'")
+
+        # Format for display
+        curl_str = " \\\n      ".join(parts)
+        print(f"    {Colors.DIM}│{Colors.RESET} {Colors.YELLOW}{curl_str}{Colors.RESET}")
+        print(f"    {Colors.DIM}└────────────────────────────────────────{Colors.RESET}")
+
+    @staticmethod
+    def api_call(method: str, endpoint: str, show_curl: bool = False,
+                 url: str = None, headers: dict = None, body: dict = None):
+        """Print API call info with optional CURL command."""
+        method_colors = {
+            "GET": Colors.GREEN,
+            "POST": Colors.BLUE,
+            "PUT": Colors.YELLOW,
+            "DELETE": Colors.RED,
+        }
+        color = method_colors.get(method, Colors.WHITE)
+        print(f"      {Colors.DIM}API:{Colors.RESET} {color}{method}{Colors.RESET} {endpoint}")
+
+        if show_curl and url and headers:
+            Display.curl_command(method, url, headers, body)
+
+    @staticmethod
     def inputs_overview(inputs: dict, debug: bool = False):
         """Print a formatted overview of loaded inputs."""
         print()

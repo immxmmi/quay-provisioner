@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 import requests
 
 from config.loader import Config
+from utils.display import Display
 from utils.logger import Logger as log
 
 # Sensitive headers that should be masked in logs
@@ -20,6 +21,7 @@ class ApiClient:
         cfg = Config()
         self.cfg = cfg
         self.timeout = int(os.getenv("API_TIMEOUT", DEFAULT_TIMEOUT))
+        self.show_curl = os.getenv("SHOW_CURL", "false").lower() == "true" or cfg.debug
 
         log.debug("ApiClient", f"base_url={cfg.base_url}")
         log.debug("ApiClient", f"auth_type={cfg.auth_type}")
@@ -64,22 +66,20 @@ class ApiClient:
     def _request(self, method: str, endpoint: str, **kwargs) -> Any:
         endpoint = endpoint.strip("/")
         url = f"{self.base_url}/{endpoint}"
-        safe_headers = self._mask_sensitive_headers(self.headers)
+        body = kwargs.get("json")
+
+        # Show API call with optional CURL command
+        if self.show_curl:
+            Display.api_call(
+                method=method,
+                endpoint=f"/{endpoint}",
+                show_curl=True,
+                url=url,
+                headers=self.headers,
+                body=body
+            )
 
         log.debug("ApiClient", f"Calling {method} {url}")
-        log.debug("ApiClient", f"Headers: {safe_headers}")
-        log.debug("ApiClient", f"Verify: {self.verify}")
-        log.debug("ApiClient", f"Timeout: {self.timeout}s")
-
-        # Build CURL command with masked sensitive data for debugging
-        curl_parts = ["curl", "-X", method]
-        for k, v in safe_headers.items():
-            curl_parts.append(f"-H '{k}: {v}'")
-        if "json" in kwargs:
-            import json as _json
-            curl_parts.append(f"-d '{_json.dumps(kwargs.get('json'))}'")
-        curl_parts.append(f"'{url}'")
-        log.debug("ApiClient", f"[CURL]: {' '.join(curl_parts)}")
 
         try:
             response = self.session.request(
