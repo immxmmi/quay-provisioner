@@ -46,7 +46,7 @@ job:
   # -- Additional annotations for the job (ArgoCD hooks enabled by default)
   annotations:
     argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
   # -- Additional labels for the job
   labels: { }
 
