@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition">
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance team management; add jobs for creating teams and adding team members with corresponding parameters">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/exceptions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/add_team_member.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/add_team_member.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,23 +213,7 @@
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
-      <workItem from="1768298220691" duration="3292000" />
-    </task>
-    <task id="LOCAL-00031" summary="Add export_image and run_image targets to Makefile">
-      <option name="closed" value="true" />
-      <created>1764851255440</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1764851255440</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Add export_image and run_image targets to Makefile">
-      <option name="closed" value="true" />
-      <created>1764851267831</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1764851267831</updated>
+      <workItem from="1768298220691" duration="4170000" />
     </task>
     <task id="LOCAL-00033" summary="Add export_image and run_image targets to Makefile">
       <option name="closed" value="true" />
@@ -613,7 +591,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768312774560</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Enhance team management; add actions for creating, deleting, and retrieving teams, and adding team members">
+      <option name="closed" value="true" />
+      <created>1768314725737</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1768314725737</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Enhance team management; add jobs for creating teams and adding team members with corresponding parameters">
+      <option name="closed" value="true" />
+      <created>1768314737284</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1768314737284</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -631,8 +625,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor API client and robot account actions for improved error handling and logging; streamline endpoint formatting" />
-    <MESSAGE value="Refactor API client and robot account actions for improved error handling; raise exceptions instead of exiting" />
     <MESSAGE value="Refactor API client and robot account actions for improved logging; streamline endpoint handling and update organization names" />
     <MESSAGE value="Refactor API client and organization actions for improved logging; streamline debug output and enhance clarity" />
     <MESSAGE value="Add application version to configuration; enhance logging for app version" />
@@ -656,7 +648,9 @@
     <MESSAGE value="Update workspace configuration; modify task summaries and last commit message for clarity" />
     <MESSAGE value="Enhance pipeline configuration; rename configmap definitions and add inputs configmap with checksum annotations" />
     <MESSAGE value="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
+    <MESSAGE value="Enhance team management; add actions for creating, deleting, and retrieving teams, and adding team members" />
+    <MESSAGE value="Enhance team management; add jobs for creating teams and adding team members with corresponding parameters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance team management; add jobs for creating teams and adding team members with corresponding parameters" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

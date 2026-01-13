@@ -34,18 +34,39 @@ class AddTeamMemberAction(BaseAction):
                 )
 
             # --- ADD MEMBER ---
-            result = self.gateway.add_team_member(org, dto.team_name, dto.member_name)
-            log.info("AddTeamMemberAction", f"ADDED -> {dto.member_name} to {org}/{dto.team_name}")
+            try:
+                result = self.gateway.add_team_member(org, dto.team_name, dto.member_name)
+                log.info("AddTeamMemberAction", f"ADDED -> {dto.member_name} to {org}/{dto.team_name}")
 
-            return ActionResponse(
-                success=True,
-                data={
-                    "organization": org,
-                    "team": dto.team_name,
-                    "member": dto.member_name,
-                    "result": result
-                }
-            )
+                return ActionResponse(
+                    success=True,
+                    data={
+                        "organization": org,
+                        "team": dto.team_name,
+                        "member": dto.member_name,
+                        "result": result
+                    }
+                )
+            except Exception as e:
+                error_msg = str(e)
+                if hasattr(e, "response") and e.response is not None:
+                    try:
+                        error_msg = e.response.text
+                    except Exception:
+                        pass
+
+                if "already a member" in error_msg.lower():
+                    log.info("AddTeamMemberAction", f"Member already exists: {dto.member_name} in {dto.team_name}")
+                    return ActionResponse(
+                        success=True,
+                        message="Member already exists in team",
+                        data={
+                            "organization": org,
+                            "team": dto.team_name,
+                            "member": dto.member_name
+                        }
+                    )
+                raise
 
         except ValidationError as e:
             log.error("AddTeamMemberAction", f"Validation error: {e}")
