@@ -46,7 +46,7 @@ class Config:
         BASE_DIR = Path(__file__).resolve().parent.parent
 
         self.pipeline_file = Path(os.getenv("PIPELINE_FILE", BASE_DIR / "pipelines/pipeline.yaml")).resolve()
-        self.inputs_file = (BASE_DIR / "pipelines" / "inputs.yaml").resolve()
+        self.inputs_file = Path(os.getenv("INPUTS_FILE", BASE_DIR / "pipelines/inputs.yaml")).resolve()
 
         api = data["api"]
         auth = data.get("auth", {})
