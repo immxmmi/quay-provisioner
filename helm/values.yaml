@@ -67,7 +67,7 @@ pod:
   # -- Security context for the pod
   securityContext: { }
     # runAsNonRoot: true
-    # runAsUser: 1000
+  # runAsUser: 1000
   # fsGroup: 1000
 
 # =============================================================================

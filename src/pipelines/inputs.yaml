@@ -1,10 +1,10 @@
 organizations:
-  - name: "testhome"
+  - name: "admin-testhome"
     visibility: "private"
-    email: "test@test.ch"
-    owner: "test"
+    email: "admin@test.ch"
+    owner: "admin"
 
 robot_accounts:
-  - organization: "testhome"
+  - organization: "admin-testhome"
     robot_shortname: "ci-bot"
     description: "CI automation bot"

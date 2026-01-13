@@ -1014,6 +1014,7 @@ curl -X POST \
 Success is HTTP `201`, no success is HTTP `409` if a mirror config already exists
 
 ### Update a part of the mirror config of the mirrored repository `$repo` within the organization
+
 `$orga` (quay.io/minio/mc:latest)
 
 Here only the sync interval will be updated
@@ -1115,6 +1116,7 @@ The provided manifest digest has to be the full digest in format `sha256:64-char
 Success is HTTP`201`
 
 ### Set or change the expiration date to `Tue May 2 16:33:45 CEST 2023` of tag `$tag` for repository
+
 `$repo` in organization `$orga`
 
 Convert given date into a UNIX time stamp
@@ -1141,6 +1143,7 @@ curl -X PUT -H "Authorization: Bearer ${bearer_token}" -H "Content-Type: applica
 Success is HTTP `201`
 
 ### Reset the expiration date to `Never` (delete the expiration date) of tag `$tag` in reopsitory
+
 `$repo` within organization `$orga`
 
 ```
@@ -1562,6 +1565,7 @@ curl -X GET -H "Authorization: Bearer ${bearer_token}" https://${quay_registry}/
 Success is HTTP `200`, no success is HTTP `400`
 
 ### Set or replace current permission to `admin` for orgrobot `$robot` for repository `$repo` within the organization
+
 `$orga`
 
 ```

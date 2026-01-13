@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance Helm chart; add configuration for job, pod, and pipeline settings">
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance values.yaml; add ArgoCD hook annotations for job configuration">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/environment/quay/API.md" beforeDir="false" afterPath="$PROJECT_DIR$/environment/quay/API.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helm/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,22 +216,8 @@
       <workItem from="1765182075966" duration="17646000" />
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
-    </task>
-    <task id="LOCAL-00022" summary="Remove version extraction step from GitHub Actions workflow and hardcode version in Helm chart packaging">
-      <option name="closed" value="true" />
-      <created>1764678617912</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1764678617912</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Set chart version as an environment variable in Helm push workflow">
-      <option name="closed" value="true" />
-      <created>1764678664012</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1764678664012</updated>
+      <workItem from="1768050268763" duration="136000" />
+      <workItem from="1768298220691" duration="365000" />
     </task>
     <task id="LOCAL-00024" summary="Add error handling for pipeline failures in pipeline_engine.py">
       <option name="closed" value="true" />
@@ -604,7 +595,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767990305775</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Enhance Helm chart; add configuration for job, pod, and pipeline settings">
+      <option name="closed" value="true" />
+      <created>1767990741123</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1767990741123</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Enhance values.yaml; add ArgoCD hook annotations for job configuration">
+      <option name="closed" value="true" />
+      <created>1767990943436</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1767990943436</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,7 +629,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor pipeline configuration to use absolute paths for inputs and update YAML references" />
     <MESSAGE value="Refactor pipeline execution and validation logic; disable robot account creation in pipeline.yaml" />
     <MESSAGE value="Refactor API client to improve error handling and response parsing; add support for disabling TLS verification" />
     <MESSAGE value="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
@@ -647,7 +653,8 @@
     <MESSAGE value="Enhance Makefile; support version tagging and include Git commit in build output" />
     <MESSAGE value="Update README.md; enhance documentation for pipeline features and configuration" />
     <MESSAGE value="Enhance Helm chart; add configuration for job, pod, and pipeline settings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance Helm chart; add configuration for job, pod, and pipeline settings" />
+    <MESSAGE value="Enhance values.yaml; add ArgoCD hook annotations for job configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance values.yaml; add ArgoCD hook annotations for job configuration" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

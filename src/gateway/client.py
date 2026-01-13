@@ -41,10 +41,16 @@ class ApiClient:
         self.headers["X-Requested-With"] = "XMLHttpRequest"
 
         disable_verify = os.getenv("DISABLE_TLS_VERIFY", "false").lower() == "true"
-        self.verify = False if disable_verify else os.getenv("CA_BUNDLE", "/etc/ssl/certs/custom-ca.pem")
+        ca_bundle = os.getenv("CA_BUNDLE", "")
 
         if disable_verify:
+            self.verify = False
             log.debug("ApiClient", "WARNING: TLS verification is disabled")
+        elif ca_bundle:
+            self.verify = ca_bundle
+            log.debug("ApiClient", f"Using custom CA bundle: {ca_bundle}")
+        else:
+            self.verify = True  # Use system CA bundle
 
     @property
     def session(self) -> requests.Session:
