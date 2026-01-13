@@ -24,7 +24,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
-        checksum/pipeline-config: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
+        checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
+        checksum/inputs: {{ include (print $.Template.BasePath "/inputs-config.yaml") . | sha256sum }}
         checksum/api-config: {{ include (print $.Template.BasePath "/api-config.yaml") . | sha256sum }}
         {{- with .Values.pod.annotations }}
         {{- toYaml . | nindent 8 }}
@@ -96,8 +97,13 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: pipelines
-              mountPath: {{ .Values.pipelines.mountPath }}
+            - name: pipeline
+              mountPath: {{ .Values.pipelines.mountPath }}/pipeline.yaml
+              subPath: pipeline.yaml
+              readOnly: true
+            - name: inputs
+              mountPath: {{ .Values.pipelines.mountPath }}/inputs.yaml
+              subPath: inputs.yaml
               readOnly: true
             {{- if .Values.caBundle.enabled }}
             - name: ca-bundle
@@ -106,9 +112,12 @@ spec:
               readOnly: true
             {{- end }}
       volumes:
-        - name: pipelines
+        - name: pipeline
           configMap:
-            name: {{ include "quay-provisioner.pipelinesConfigMapName" . }}
+            name: {{ include "quay-provisioner.pipelineConfigMapName" . }}
+        - name: inputs
+          configMap:
+            name: {{ include "quay-provisioner.inputsConfigMapName" . }}
         {{- if .Values.caBundle.enabled }}
         - name: ca-bundle
           configMap:

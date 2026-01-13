@@ -71,8 +71,15 @@ Create the name of the secret to use
 {{- end }}
 
 {{/*
-Create the name of the configmap for pipelines
+Create the name of the configmap for pipeline structure
 */}}
-{{- define "quay-provisioner.pipelinesConfigMapName" -}}
-{{- default (printf "%s-pipelines" (include "quay-provisioner.fullname" .)) .Values.pipelines.configMapName }}
+{{- define "quay-provisioner.pipelineConfigMapName" -}}
+{{- default (printf "%s-pipeline" (include "quay-provisioner.fullname" .)) .Values.pipelines.pipelineConfigMapName }}
+{{- end }}
+
+{{/*
+Create the name of the configmap for inputs
+*/}}
+{{- define "quay-provisioner.inputsConfigMapName" -}}
+{{- default (printf "%s-inputs" (include "quay-provisioner.fullname" .)) .Values.pipelines.inputsConfigMapName }}
 {{- end }}

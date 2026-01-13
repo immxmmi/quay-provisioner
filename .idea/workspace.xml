@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Update loader.py; allow configurable inputs file path via environment variable" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Update workspace configuration; modify task summaries and last commit message for clarity">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,23 +212,7 @@
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
-      <workItem from="1768298220691" duration="1016000" />
-    </task>
-    <task id="LOCAL-00026" summary="Refactor Dockerfile for offline installation and update Makefile to streamline wheelhouse creation">
-      <option name="closed" value="true" />
-      <created>1764848334580</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1764848334580</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Add check_python_version target to Makefile and update Docker image reference">
-      <option name="closed" value="true" />
-      <created>1764848894337</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1764848894337</updated>
+      <workItem from="1768298220691" duration="1588000" />
     </task>
     <task id="LOCAL-00028" summary="Update PyYAML version in requirements.txt and modify workspace.xml for consistency">
       <option name="closed" value="true" />
@@ -604,7 +590,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768303992544</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Enhance job configuration; add checksum annotations for pipeline and API configs, and update hook-delete-policy">
+      <option name="closed" value="true" />
+      <created>1768306070986</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1768306070986</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Update workspace configuration; modify task summaries and last commit message for clarity">
+      <option name="closed" value="true" />
+      <created>1768306092056</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1768306092056</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,8 +624,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor API client and configuration loader to enhance debugging capabilities and error handling; improve response parsing and organization management" />
-    <MESSAGE value="Add timestamps to pipeline execution logs for better tracking and debugging" />
     <MESSAGE value="Add configuration and logger utility; refactor API client and actions for improved logging and error handling" />
     <MESSAGE value="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings" />
     <MESSAGE value="Refactor API client and robot account actions for improved error handling and logging; streamline endpoint formatting" />
@@ -647,7 +647,9 @@
     <MESSAGE value="Enhance values.yaml; add ArgoCD hook annotations for job configuration" />
     <MESSAGE value="Refactor API client; improve TLS verification handling and logging" />
     <MESSAGE value="Update loader.py; allow configurable inputs file path via environment variable" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update loader.py; allow configurable inputs file path via environment variable" />
+    <MESSAGE value="Enhance job configuration; add checksum annotations for pipeline and API configs, and update hook-delete-policy" />
+    <MESSAGE value="Update workspace configuration; modify task summaries and last commit message for clarity" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update workspace configuration; modify task summaries and last commit message for clarity" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

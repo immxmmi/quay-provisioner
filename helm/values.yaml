@@ -8,6 +8,19 @@ nameOverride: ""
 fullnameOverride: ""
 
 # =============================================================================
+# Namespace Configuration
+# =============================================================================
+namespace:
+  # -- Create the namespace
+  create: false
+  # -- Namespace name (uses Release.Namespace if not set)
+  name: ""
+  # -- Annotations for the namespace
+  annotations: { }
+  # -- Labels for the namespace
+  labels: { }
+
+# =============================================================================
 # Image Configuration
 # =============================================================================
 image:
@@ -109,8 +122,10 @@ secrets:
 # Pipeline Configuration
 # =============================================================================
 pipelines:
-  # -- Name of the ConfigMap for pipelines (generated if not set)
-  configMapName: ""
+  # -- Name of the ConfigMap for pipeline structure (generated if not set)
+  pipelineConfigMapName: ""
+  # -- Name of the ConfigMap for inputs (generated if not set)
+  inputsConfigMapName: ""
   # -- Mount path inside the container
   mountPath: /app/pipelines
 
