@@ -40,6 +40,11 @@ class RobotNotFoundError(ResourceNotFoundError):
     pass
 
 
+class TeamNotFoundError(ResourceNotFoundError):
+    """Raised when a team does not exist."""
+    pass
+
+
 class ResourceAlreadyExistsError(QuayApiError):
     """Raised when trying to create a resource that already exists."""
     pass
@@ -52,4 +57,9 @@ class OrganizationAlreadyExistsError(ResourceAlreadyExistsError):
 
 class RobotAlreadyExistsError(ResourceAlreadyExistsError):
     """Raised when a robot account already exists."""
+    pass
+
+
+class TeamAlreadyExistsError(ResourceAlreadyExistsError):
+    """Raised when a team already exists."""
     pass

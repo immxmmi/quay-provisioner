@@ -142,11 +142,16 @@ PipelineExecutionPlatform/
 │   │   ├── create_robot_account.py
 │   │   ├── delete_robot_account.py
 │   │   ├── get_robot_account.py
-│   │   └── list_robot_accounts.py
+│   │   ├── list_robot_accounts.py
+│   │   ├── create_team.py
+│   │   ├── delete_team.py
+│   │   ├── get_team.py
+│   │   └── add_team_member.py
 │   ├── model/                     # Pydantic models
 │   │   ├── action_response.py
 │   │   ├── organization_model.py
 │   │   ├── robot_account_model.py
+│   │   ├── team_model.py
 │   │   └── pipeline_model.py
 │   └── utils/
 │       ├── display.py             # Visual output (colors, progress)
@@ -184,6 +189,18 @@ pipeline:
     job: create_robot_account
     enabled: true
     params_list: "{{ robot_accounts }}"
+
+  # Create teams in organizations
+  - name: create-teams
+    job: create_team
+    enabled: true
+    params_list: "{{ teams }}"
+
+  # Add members to teams
+  - name: add-team-members
+    job: add_team_member
+    enabled: true
+    params_list: "{{ team_members }}"
 ```
 
 ### Input Data (`inputs.yaml`)
@@ -202,20 +219,69 @@ robot_accounts:
   - organization: "staging"
     robot_shortname: "ci-runner"
     description: "CI/CD pipeline runner"
+
+teams:
+  - organization: "production"
+    team_name: "ops-team"
+    role: "admin"
+    description: "Operations team with full access"
+  - organization: "production"
+    team_name: "developers"
+    role: "creator"
+    description: "Development team"
+  - organization: "staging"
+    team_name: "qa-team"
+    role: "member"
+    description: "QA read-only access"
+
+team_members:
+  - organization: "production"
+    team_name: "ops-team"
+    member_name: "admin"
+  - organization: "production"
+    team_name: "developers"
+    member_name: "dev-user1"
+  - organization: "production"
+    team_name: "developers"
+    member_name: "dev-user2"
 ```
 
 ## Available Actions
 
+### Organization Actions
+
+| Job Name              | Description               | Required Parameters        |
+|-----------------------|---------------------------|----------------------------|
+| `create_organization` | Create a new organization | `name`, `email` (optional) |
+| `delete_organization` | Delete an organization    | `name`                     |
+| `get_organization`    | Get organization details  | `name`                     |
+| `list_organizations`  | List all organizations    | -                          |
+
+### Robot Account Actions
+
 | Job Name               | Description               | Required Parameters                                         |
 |------------------------|---------------------------|-------------------------------------------------------------|
-| `create_organization`  | Create a new organization | `name`, `email` (optional)                                  |
-| `delete_organization`  | Delete an organization    | `name`                                                      |
-| `get_organization`     | Get organization details  | `name`                                                      |
-| `list_organizations`   | List all organizations    | -                                                           |
 | `create_robot_account` | Create a robot account    | `organization`, `robot_shortname`, `description` (optional) |
 | `delete_robot_account` | Delete a robot account    | `organization`, `robot_shortname`                           |
 | `get_robot_account`    | Get robot account details | `organization`, `robot_shortname`                           |
 | `list_robot_accounts`  | List robots in an org     | `organization`                                              |
+
+### Team Actions
+
+| Job Name          | Description              | Required Parameters                                                        |
+|-------------------|--------------------------|----------------------------------------------------------------------------|
+| `create_team`     | Create a team            | `organization`, `team_name`, `role` (member/creator/admin), `description`  |
+| `delete_team`     | Delete a team            | `organization`, `team_name`                                                |
+| `get_team`        | Get team and members     | `organization`, `team_name`                                                |
+| `add_team_member` | Add a member to a team   | `organization`, `team_name`, `member_name`                                 |
+
+#### Team Roles
+
+| Role      | Description                                      |
+|-----------|--------------------------------------------------|
+| `member`  | Read-only access to repositories                 |
+| `creator` | Can create new repositories                      |
+| `admin`   | Full admin access (manage team members, repos)   |
 
 ## Debug Mode
 
@@ -391,6 +457,15 @@ auth:
 | GET    | `/api/v1/organization/{org}/robots/{robot}` | Get robot           |
 | DELETE | `/api/v1/organization/{org}/robots/{robot}` | Delete robot        |
 | GET    | `/api/v1/organization/{org}/robots/`        | List all robots     |
+
+### Teams
+
+| Method | Endpoint                                              | Description         |
+|--------|-------------------------------------------------------|---------------------|
+| PUT    | `/api/v1/organization/{org}/team/{team}`              | Create/update team  |
+| GET    | `/api/v1/organization/{org}/team/{team}/members`      | Get team members    |
+| DELETE | `/api/v1/organization/{org}/team/{team}`              | Delete team         |
+| PUT    | `/api/v1/organization/{org}/team/{team}/members/{member}` | Add team member |
 
 ## Troubleshooting
 

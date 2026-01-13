@@ -3,6 +3,8 @@ from urllib.parse import quote
 from exceptions import (
     RobotNotFoundError,
     RobotAlreadyExistsError,
+    TeamNotFoundError,
+    TeamAlreadyExistsError,
     QuayApiError,
 )
 from gateway.client import ApiClient
@@ -95,3 +97,60 @@ class QuayGateway:
         log.debug("QuayGateway", f"list_robot_accounts org={organization}")
         safe_org = _safe_path(organization)
         return self.client.get(f"/organization/{safe_org}/robots/")
+
+    # --- TEAM OPERATIONS ---
+
+    def create_team(self, organization: str, team_name: str, role: str = "member", description: str | None = None):
+        payload = {"role": role}
+        if description:
+            payload["description"] = description
+        log.debug("QuayGateway", f"create_team org={organization} team={team_name} role={role}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        try:
+            return self.client.put(
+                f"/organization/{safe_org}/team/{safe_team}",
+                json=payload
+            )
+        except Exception as e:
+            msg = str(e)
+            response_body = ""
+            if hasattr(e, "response") and e.response is not None:
+                try:
+                    response_body = e.response.text
+                except Exception:
+                    pass
+
+            full_msg = f"{msg} {response_body}"
+
+            if "Team already exists" in full_msg or "already exists" in full_msg.lower():
+                raise TeamAlreadyExistsError(
+                    f"Team {team_name} already exists in {organization}",
+                    response_body=response_body
+                ) from e
+            raise QuayApiError(f"Failed to create team: {msg}") from e
+
+    def get_team(self, organization: str, team_name: str):
+        log.debug("QuayGateway", f"get_team org={organization} team={team_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        result = self.client.get(f"/organization/{safe_org}/team/{safe_team}/members")
+        if result is None:
+            raise TeamNotFoundError(
+                f"Team {team_name} not found in {organization}",
+                status_code=404
+            )
+        return result
+
+    def delete_team(self, organization: str, team_name: str):
+        log.debug("QuayGateway", f"delete_team org={organization} team={team_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        return self.client.delete(f"/organization/{safe_org}/team/{safe_team}")
+
+    def add_team_member(self, organization: str, team_name: str, member_name: str):
+        log.debug("QuayGateway", f"add_team_member org={organization} team={team_name} member={member_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_member = _safe_path(member_name)
+        return self.client.put(f"/organization/{safe_org}/team/{safe_team}/members/{safe_member}")

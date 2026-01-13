@@ -8,3 +8,18 @@ robot_accounts:
   - organization: "admin-testhome"
     robot_shortname: "ci-bot"
     description: "CI automation bot"
+
+teams:
+  - organization: "admin-testhome"
+    team_name: "developers"
+    role: "creator"
+    description: "Development team"
+  - organization: "admin-testhome"
+    team_name: "viewers"
+    role: "member"
+    description: "Read-only access team"
+
+team_members:
+  - organization: "admin-testhome"
+    team_name: "developers"
+    member_name: "admin"

@@ -4,11 +4,11 @@ api:
   base_path: "/api/v1"
 
 auth:
-  token: "o2dqTZIwQKRs7pCWn2zHW133SP1MlR8l9hilyisl"
+  token: "WW0CigzowagyHu7jhtsyxnQrEQ9CAKUjQAFGCQjB"
   type: "bearer"
 
 debug:
   enabled: false
 
 app:
-  version: "2.2.1"
+  version: "1.0.0"

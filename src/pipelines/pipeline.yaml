@@ -8,3 +8,13 @@ pipeline:
     job: create_robot_account
     enabled: true
     params_list: "{{ robot_accounts }}"
+
+  - name: create-teams
+    job: create_team
+    enabled: true
+    params_list: "{{ teams }}"
+
+  - name: add-team-members
+    job: add_team_member
+    enabled: true
+    params_list: "{{ team_members }}"

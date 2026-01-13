@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/settings.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,15 +219,7 @@
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
-      <workItem from="1768298220691" duration="2254000" />
-    </task>
-    <task id="LOCAL-00030" summary="Add export_image and run_image targets to Makefile">
-      <option name="closed" value="true" />
-      <created>1764850984487</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1764850984487</updated>
+      <workItem from="1768298220691" duration="3292000" />
     </task>
     <task id="LOCAL-00031" summary="Add export_image and run_image targets to Makefile">
       <option name="closed" value="true" />
@@ -604,7 +605,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768311516191</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition">
+      <option name="closed" value="true" />
+      <created>1768312774560</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1768312774560</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
