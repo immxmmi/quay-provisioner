@@ -79,7 +79,7 @@ pod:
   affinity: { }
   # -- Security context for the pod
   securityContext: { }
-    # runAsNonRoot: true
+  # runAsNonRoot: true
   # runAsUser: 1000
   # fsGroup: 1000
 
@@ -122,14 +122,14 @@ secrets:
 # Pipeline Configuration
 # =============================================================================
 pipelines:
-  # -- Name of the ConfigMap for pipeline structure (generated if not set)
-  pipelineConfigMapName: ""
-  # -- Name of the ConfigMap for inputs (generated if not set)
-  inputsConfigMapName: ""
+  # -- Use an existing ConfigMap for pipeline structure (must contain pipeline.yaml key)
+  existingPipelineConfigMap: ""
+  # -- Use an existing ConfigMap for inputs (must contain inputs.yaml key)
+  existingInputsConfigMap: ""
   # -- Mount path inside the container
   mountPath: /app/pipelines
 
-  # -- Pipeline definition (pipeline.yaml content)
+  # -- Pipeline definition (pipeline.yaml content) - only used if existingPipelineConfigMap is not set
   pipeline:
     - name: create-organizations
       job: create_organization
@@ -141,7 +141,7 @@ pipelines:
       enabled: true
       params_list: "{{ robot_accounts }}"
 
-  # -- Input data (inputs.yaml content)
+  # -- Input data (inputs.yaml content) - only used if existingInputsConfigMap is not set
   inputs:
     organizations:
       - name: example-org

@@ -74,12 +74,27 @@ Create the name of the secret to use
 Create the name of the configmap for pipeline structure
 */}}
 {{- define "quay-provisioner.pipelineConfigMapName" -}}
-{{- default (printf "%s-pipeline" (include "quay-provisioner.fullname" .)) .Values.pipelines.pipelineConfigMapName }}
+{{- if .Values.pipelines.existingPipelineConfigMap }}
+{{- .Values.pipelines.existingPipelineConfigMap }}
+{{- else }}
+{{- printf "%s-pipeline" (include "quay-provisioner.fullname" .) }}
+{{- end }}
 {{- end }}
 
 {{/*
 Create the name of the configmap for inputs
 */}}
 {{- define "quay-provisioner.inputsConfigMapName" -}}
-{{- default (printf "%s-inputs" (include "quay-provisioner.fullname" .)) .Values.pipelines.inputsConfigMapName }}
+{{- if .Values.pipelines.existingInputsConfigMap }}
+{{- .Values.pipelines.existingInputsConfigMap }}
+{{- else }}
+{{- printf "%s-inputs" (include "quay-provisioner.fullname" .) }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the namespace name
+*/}}
+{{- define "quay-provisioner.namespace" -}}
+{{- default .Release.Namespace .Values.namespace.name }}
 {{- end }}
