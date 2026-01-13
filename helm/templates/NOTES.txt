@@ -30,8 +30,20 @@ Namespace: {{ .Release.Namespace }}
   Configuration
 --------------------------------------------------------------------------------
 
-  Pipeline ConfigMap: {{ include "quay-provisioner.pipelinesConfigMapName" . }}
+  Pipeline ConfigMap: {{ include "quay-provisioner.pipelineConfigMapName" . }}
+  {{- if .Values.pipelines.existingPipelineConfigMap }}
+    (using existing ConfigMap)
+  {{- end }}
+  Inputs ConfigMap: {{ include "quay-provisioner.inputsConfigMapName" . }}
+  {{- if .Values.pipelines.existingInputsConfigMap }}
+    (using existing ConfigMap)
+  {{- end }}
   Secret: {{ include "quay-provisioner.secretName" . }}
+
+{{- if .Values.namespace.create }}
+
+  Namespace: {{ include "quay-provisioner.namespace" . }} (created by chart)
+{{- end }}
 
 {{- if .Values.settings.debug }}
 

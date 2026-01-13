@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance pipeline configuration; rename configmap definitions and add inputs configmap with checksum annotations">
-      <change beforePath="$PROJECT_DIR$/helm/templates/_helpers.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/helm/templates/_helpers.tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/templates/inputs-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/templates/inputs-config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/templates/job.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/templates/job.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/templates/pipeline-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/templates/pipeline-config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helm/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helm/values.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -216,15 +210,7 @@
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
-      <workItem from="1768298220691" duration="2012000" />
-    </task>
-    <task id="LOCAL-00029" summary="Update PyYAML version in requirements.txt and modify workspace.xml for consistency">
-      <option name="closed" value="true" />
-      <created>1764849580977</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1764849580977</updated>
+      <workItem from="1768298220691" duration="2254000" />
     </task>
     <task id="LOCAL-00030" summary="Add export_image and run_image targets to Makefile">
       <option name="closed" value="true" />
@@ -610,7 +596,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768311338816</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition">
+      <option name="closed" value="true" />
+      <created>1768311516191</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1768311516191</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -628,7 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor logging in API client and organization actions for improved clarity; disable debug logging in settings" />
     <MESSAGE value="Refactor API client and robot account actions for improved error handling and logging; streamline endpoint formatting" />
     <MESSAGE value="Refactor API client and robot account actions for improved error handling; raise exceptions instead of exiting" />
     <MESSAGE value="Refactor API client and robot account actions for improved logging; streamline endpoint handling and update organization names" />
@@ -653,7 +646,8 @@
     <MESSAGE value="Enhance job configuration; add checksum annotations for pipeline and API configs, and update hook-delete-policy" />
     <MESSAGE value="Update workspace configuration; modify task summaries and last commit message for clarity" />
     <MESSAGE value="Enhance pipeline configuration; rename configmap definitions and add inputs configmap with checksum annotations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance pipeline configuration; rename configmap definitions and add inputs configmap with checksum annotations" />
+    <MESSAGE value="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance pipeline configuration; add support for existing configmaps and introduce namespace definition" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
