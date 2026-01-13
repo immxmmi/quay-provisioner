@@ -36,3 +36,16 @@ class TeamResponse(BaseModel):
     description: Optional[str] = None
 
     model_config = {"extra": "ignore"}
+
+
+class SyncTeamLdap(BaseModel):
+    team_name: str
+    group_dn: str
+
+    model_config = {"extra": "ignore"}
+
+
+class UnsyncTeamLdap(BaseModel):
+    team_name: str
+
+    model_config = {"extra": "ignore"}

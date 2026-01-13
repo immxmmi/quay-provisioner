@@ -23,3 +23,9 @@ team_members:
   - organization: "admin-testhome"
     team_name: "developers"
     member_name: "admin"
+
+# LDAP Team Sync (requires LDAP to be configured in Quay)
+team_ldap_sync:
+  - organization: "admin-testhome"
+    team_name: "developers"
+    group_dn: "cn=developers,ou=groups,dc=example,dc=com"

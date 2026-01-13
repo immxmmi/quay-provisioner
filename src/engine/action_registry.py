@@ -10,6 +10,7 @@ from actions.get_robot_account import GetRobotAccountAction
 from actions.get_team import GetTeamAction
 from actions.list_organizations import ListOrganizationsAction
 from actions.list_robot_accounts import ListRobotAccountsAction
+from actions.sync_team_ldap import SyncTeamLdapAction
 
 ACTION_REGISTRY = {
     # Organization actions
@@ -27,4 +28,5 @@ ACTION_REGISTRY = {
     "delete_team": DeleteTeamAction,
     "get_team": GetTeamAction,
     "add_team_member": AddTeamMemberAction,
+    "sync_team_ldap": SyncTeamLdapAction,
 }

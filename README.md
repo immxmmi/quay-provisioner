@@ -146,7 +146,8 @@ PipelineExecutionPlatform/
 │   │   ├── create_team.py
 │   │   ├── delete_team.py
 │   │   ├── get_team.py
-│   │   └── add_team_member.py
+│   │   ├── add_team_member.py
+│   │   └── sync_team_ldap.py
 │   ├── model/                     # Pydantic models
 │   │   ├── action_response.py
 │   │   ├── organization_model.py
@@ -201,6 +202,12 @@ pipeline:
     job: add_team_member
     enabled: true
     params_list: "{{ team_members }}"
+
+  # Sync teams with LDAP groups (optional)
+  - name: sync-teams-ldap
+    job: sync_team_ldap
+    enabled: false
+    params_list: "{{ team_ldap_sync }}"
 ```
 
 ### Input Data (`inputs.yaml`)
@@ -244,6 +251,12 @@ team_members:
   - organization: "production"
     team_name: "developers"
     member_name: "dev-user2"
+
+# Optional: LDAP Team Sync (requires LDAP configured in Quay)
+team_ldap_sync:
+  - organization: "production"
+    team_name: "ops-team"
+    group_dn: "cn=ops,ou=groups,dc=company,dc=com"
 ```
 
 ## Available Actions
@@ -274,6 +287,7 @@ team_members:
 | `delete_team`     | Delete a team            | `organization`, `team_name`                                                |
 | `get_team`        | Get team and members     | `organization`, `team_name`                                                |
 | `add_team_member` | Add a member to a team   | `organization`, `team_name`, `member_name`                                 |
+| `sync_team_ldap`  | Sync team with LDAP group| `organization`, `team_name`, `group_dn`                                    |
 
 #### Team Roles
 
@@ -282,6 +296,22 @@ team_members:
 | `member`  | Read-only access to repositories                 |
 | `creator` | Can create new repositories                      |
 | `admin`   | Full admin access (manage team members, repos)   |
+
+#### LDAP Team Sync
+
+Teams can be synchronized with LDAP groups. When enabled, team membership is automatically managed based on LDAP group membership.
+
+**Requirements:**
+- LDAP must be configured in Quay
+- The LDAP group DN must exist and be accessible
+
+**Example:**
+```yaml
+team_ldap_sync:
+  - organization: "my-org"
+    team_name: "developers"
+    group_dn: "cn=developers,ou=groups,dc=example,dc=com"
+```
 
 ## Debug Mode
 
@@ -466,6 +496,9 @@ auth:
 | GET    | `/api/v1/organization/{org}/team/{team}/members`      | Get team members    |
 | DELETE | `/api/v1/organization/{org}/team/{team}`              | Delete team         |
 | PUT    | `/api/v1/organization/{org}/team/{team}/members/{member}` | Add team member |
+| POST   | `/api/v1/organization/{org}/team/{team}/syncing`      | Enable LDAP sync    |
+| DELETE | `/api/v1/organization/{org}/team/{team}/syncing`      | Disable LDAP sync   |
+| GET    | `/api/v1/organization/{org}/team/{team}/syncing`      | Get LDAP sync status|
 
 ## Troubleshooting
 

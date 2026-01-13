@@ -18,3 +18,8 @@ pipeline:
     job: add_team_member
     enabled: true
     params_list: "{{ team_members }}"
+
+  - name: sync-teams-ldap
+    job: sync_team_ldap
+    enabled: false
+    params_list: "{{ team_ldap_sync }}"

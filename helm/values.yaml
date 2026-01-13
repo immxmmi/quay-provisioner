@@ -151,6 +151,11 @@ pipelines:
       enabled: true
       params_list: "{{ team_members }}"
 
+    - name: sync-teams-ldap
+      job: sync_team_ldap
+      enabled: false
+      params_list: "{{ team_ldap_sync }}"
+
   # -- Input data (inputs.yaml content) - only used if existingInputsConfigMap is not set
   inputs:
     organizations:
@@ -172,6 +177,12 @@ pipelines:
       - organization: example-org
         team_name: developers
         member_name: admin
+
+    # LDAP Team Sync (requires LDAP to be configured in Quay)
+    team_ldap_sync: []
+    # - organization: example-org
+    #   team_name: developers
+    #   group_dn: "cn=developers,ou=groups,dc=example,dc=com"
 
 # =============================================================================
 # Application Settings

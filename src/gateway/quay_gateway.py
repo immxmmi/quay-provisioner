@@ -154,3 +154,25 @@ class QuayGateway:
         safe_team = _safe_path(team_name)
         safe_member = _safe_path(member_name)
         return self.client.put(f"/organization/{safe_org}/team/{safe_team}/members/{safe_member}")
+
+    def sync_team_ldap(self, organization: str, team_name: str, group_dn: str):
+        """Enable LDAP sync for a team with the specified LDAP group DN."""
+        payload = {"group_dn": group_dn}
+        log.debug("QuayGateway", f"sync_team_ldap org={organization} team={team_name} group_dn={group_dn}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        return self.client.post(f"/organization/{safe_org}/team/{safe_team}/syncing", json=payload)
+
+    def unsync_team_ldap(self, organization: str, team_name: str):
+        """Disable LDAP sync for a team."""
+        log.debug("QuayGateway", f"unsync_team_ldap org={organization} team={team_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        return self.client.delete(f"/organization/{safe_org}/team/{safe_team}/syncing")
+
+    def get_team_sync_status(self, organization: str, team_name: str):
+        """Get LDAP sync status for a team."""
+        log.debug("QuayGateway", f"get_team_sync_status org={organization} team={team_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        return self.client.get(f"/organization/{safe_org}/team/{safe_team}/syncing")
