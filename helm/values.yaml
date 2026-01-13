@@ -141,6 +141,16 @@ pipelines:
       enabled: true
       params_list: "{{ robot_accounts }}"
 
+    - name: create-teams
+      job: create_team
+      enabled: true
+      params_list: "{{ teams }}"
+
+    - name: add-team-members
+      job: add_team_member
+      enabled: true
+      params_list: "{{ team_members }}"
+
   # -- Input data (inputs.yaml content) - only used if existingInputsConfigMap is not set
   inputs:
     organizations:
@@ -151,6 +161,17 @@ pipelines:
       - organization: example-org
         robot_shortname: ci-bot
         description: CI automation bot
+
+    teams:
+      - organization: example-org
+        team_name: developers
+        role: creator
+        description: Development team
+
+    team_members:
+      - organization: example-org
+        team_name: developers
+        member_name: admin
 
 # =============================================================================
 # Application Settings
