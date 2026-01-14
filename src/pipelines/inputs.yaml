@@ -23,6 +23,9 @@ team_members:
   - organization: "admin-testhome"
     team_name: "developers"
     member_name: "admin"
+  - organization: "admin-testhome"
+    team_name: "developers"
+    member_name: "admin-testhome+ci-bot"
 
 # Default permissions for repositories created by certain users
 default_repo_permissions:

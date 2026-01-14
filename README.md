@@ -304,6 +304,11 @@ team_members:
   - organization: "production"
     team_name: "developers"
     member_name: "dev-user2"
+  - organization: "production"
+    team_name: "developers"
+    member_name: "production+ci-bot"
+
+# Use `organization+robotname` when adding robot accounts as team members so the pipeline calls the proper API path.
 
 # Configure repository permissions that teams need
 team_repo_permissions:
