@@ -1,6 +1,6 @@
-from actions.base_action import BaseAction
+from ..base_action import BaseAction
 from model.action_response import ActionResponse
-from model.organization_model import DeleteOrganization
+from quay.model.organization_model import DeleteOrganization
 from utils.logger import Logger as log
 
 

@@ -1,7 +1,7 @@
-from actions.base_action import BaseAction
+from ..base_action import BaseAction
 from exceptions import ValidationError
 from model.action_response import ActionResponse
-from model.robot_account_model import DeleteRobotAccount
+from quay.model.robot_account_model import DeleteRobotAccount
 from utils.logger import Logger as log
 
 

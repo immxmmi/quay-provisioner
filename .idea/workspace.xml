@@ -4,9 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance team management; improve error handling for adding team members and log existing member scenarios">
-      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gateway/quay_gateway.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/team_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/team_model.py" afterDir="false" />
+    <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance team management; add LDAP sync functionality for teams with validation and logging">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile_build_only" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile_offline" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/add_team_member.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/base_action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/create_robot_account.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/create_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/delete_organization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/delete_robot_account.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/delete_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/get_robot_account.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/get_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/list_organizations.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/list_robot_accounts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/sync_team_ldap.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/pipeline_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_executor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/organization_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/robot_account_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/team_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/annotated_types-0.7.0-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/certifi-2025.11.12-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/charset_normalizer-3.4.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/idna-3.11-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/pydantic-2.12.5-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/pydantic_core-2.41.5-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/requests-2.32.5-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/typing_extensions-4.15.0-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/typing_inspection-0.4.2-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wheels/urllib3-2.5.0-py3-none-any.whl" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,11 +136,11 @@
       <recent name="$PROJECT_DIR$/src/actions" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/model" />
       <recent name="$PROJECT_DIR$/env" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/config" />
-      <recent name="$PROJECT_DIR$/src/gateway" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -213,15 +247,8 @@
       <workItem from="1765374734459" duration="8293000" />
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
-      <workItem from="1768298220691" duration="4517000" />
-    </task>
-    <task id="LOCAL-00034" summary="Add export_image and run_image targets to Makefile">
-      <option name="closed" value="true" />
-      <created>1764861351100</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1764861351100</updated>
+      <workItem from="1768298220691" duration="5730000" />
+      <workItem from="1768392900107" duration="1973000" />
     </task>
     <task id="LOCAL-00035" summary="Add download_image target to Makefile and update workspace.xml">
       <option name="closed" value="true" />
@@ -607,7 +634,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768317463477</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="Enhance team management; add LDAP sync functionality for teams with validation and logging">
+      <option name="closed" value="true" />
+      <created>1768318040985</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1768318040985</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -625,7 +660,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor API client and organization actions for improved logging; streamline debug output and enhance clarity" />
     <MESSAGE value="Add application version to configuration; enhance logging for app version" />
     <MESSAGE value="Enhance dynamic parameter handling in pipeline executor; improve logging and error handling for parameter validation" />
     <MESSAGE value="Refactor pipeline executor for improved dynamic parameter handling; enhance debug logging and error reporting" />
@@ -650,7 +684,8 @@
     <MESSAGE value="Enhance team management; add actions for creating, deleting, and retrieving teams, and adding team members" />
     <MESSAGE value="Enhance team management; add jobs for creating teams and adding team members with corresponding parameters" />
     <MESSAGE value="Enhance team management; improve error handling for adding team members and log existing member scenarios" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance team management; improve error handling for adding team members and log existing member scenarios" />
+    <MESSAGE value="Enhance team management; add LDAP sync functionality for teams with validation and logging" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance team management; add LDAP sync functionality for teams with validation and logging" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PipelineExecutionPlatform$main.coverage" NAME="main Coverage Results" MODIFIED="1765468574029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

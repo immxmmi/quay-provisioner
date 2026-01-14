@@ -1,7 +1,7 @@
-from actions.base_action import BaseAction
-from actions.get_organization import GetOrganizationAction
+from ..base_action import BaseAction
+from .get_organization import GetOrganizationAction
 from model.action_response import ActionResponse
-from model.organization_model import Organization
+from quay.model.organization_model import Organization
 from utils.logger import Logger as log
 
 

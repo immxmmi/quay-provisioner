@@ -1,9 +1,9 @@
-from actions.base_action import BaseAction
-from actions.get_organization import GetOrganizationAction
-from actions.get_team import GetTeamAction
+from ..base_action import BaseAction
+from ..organization.get_organization import GetOrganizationAction
+from .get_team import GetTeamAction
 from exceptions import ValidationError
 from model.action_response import ActionResponse
-from model.team_model import SyncTeamLdap
+from quay.model.team_model import SyncTeamLdap
 from utils.logger import Logger as log
 
 

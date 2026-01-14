@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from exceptions import ValidationError
-from gateway.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 
 
@@ -17,8 +16,12 @@ class BaseAction(ABC):
     - Standardized execute interface
     """
 
-    def __init__(self, gateway: QuayGateway = None):
-        self.gateway = gateway or QuayGateway()
+    def __init__(self, gateway=None):
+        """
+        Args:
+            gateway: External gateway client to be used by the action.
+        """
+        self.gateway = gateway
 
     @abstractmethod
     def execute(self, data: dict) -> ActionResponse:

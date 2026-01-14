@@ -1,7 +1,7 @@
-from actions.base_action import BaseAction
-from gateway.quay_gateway import QuayGateway
+from ..base_action import BaseAction
+from quay.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
-from model.organization_model import GetOrganization
+from quay.model.organization_model import GetOrganization
 from utils.logger import Logger as log
 
 

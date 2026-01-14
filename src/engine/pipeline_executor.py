@@ -3,6 +3,7 @@ import time
 from config.loader import Config
 from engine.action_registry import ACTION_REGISTRY
 from engine_reader.pipeline_reader import PipelineReader
+from quay.quay_gateway import QuayGateway
 from utils.display import Display, PipelineStats, StepResult
 from utils.logger import Logger as log
 
@@ -13,6 +14,7 @@ class PipelineExecutor:
         self.reader = PipelineReader()
         self.cfg = Config()
         self.stats = PipelineStats()
+        self.gateway = QuayGateway()
 
     def run_pipeline(self, pipeline, inputs_file):
         inputs = self.reader.load_inputs(inputs_file)
@@ -34,7 +36,7 @@ class PipelineExecutor:
             action_class = ACTION_REGISTRY.get(step.job)
             if action_class is None:
                 raise ValueError(f"Unknown job type: '{step.job}'. Check ACTION_REGISTRY.")
-            action = action_class()
+            action = action_class(gateway=self.gateway)
 
             # Show step start
             Display.step_start(
