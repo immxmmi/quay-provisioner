@@ -116,7 +116,7 @@ test:
 	@echo "\033[32m✓ Syntax check passed\033[0m"
 	@echo ""
 	@echo "\033[1;34m=== Import Tests ===\033[0m"
-	@cd $(SRC_DIR) && $(PYTHON) -c "from exceptions import PipelineError, QuayApiError, ValidationError; print('\033[32m✓\033[0m exceptions')"
+	@cd $(SRC_DIR) && $(PYTHON) -c "from exceptions import PipelineError, ValidationError; from quay.exceptions import QuayApiError; print('\033[32m✓\033[0m exceptions')"
 	@cd $(SRC_DIR) && $(PYTHON) -c "from quay.actions.base_action import BaseAction; print('\033[32m✓\033[0m base_action')"
 	@cd $(SRC_DIR) && $(PYTHON) -c "from quay.actions.organization.create_organization import CreateOrganizationAction; print('\033[32m✓\033[0m actions')"
 	@cd $(SRC_DIR) && $(PYTHON) -c "from config.loader import Config; print('\033[32m✓\033[0m config')"

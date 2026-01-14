@@ -29,3 +29,16 @@ team_ldap_sync:
   - organization: "admin-testhome"
     team_name: "developers"
     group_dn: "cn=developers,ou=groups,dc=example,dc=com"
+
+team_members_to_remove:
+  - organization: "admin-testhome"
+    team_name: "viewers"
+    member_name: "admin"
+
+team_ldap_unsync:
+  - organization: "admin-testhome"
+    team_name: "viewers"
+
+team_sync_status:
+  - organization: "admin-testhome"
+    team_name: "developers"

@@ -126,33 +126,24 @@ PipelineExecutionPlatform/
 │   │   └── inputs.yaml            # Input data (orgs, robots)
 │   ├── engine/
 │   │   ├── pipeline_engine.py     # Pipeline orchestration
-│   │   ├── pipeline_executor.py   # Step execution
+│   │   ├── pipeline_executor.py   # Step execution (injects QuayGateway per action)
 │   │   └── action_registry.py     # Job-to-Action mapping
 │   ├── engine_reader/
 │   │   └── pipeline_reader.py     # YAML parsing
 │   ├── gateway/
-│   │   ├── client.py              # HTTP client with pooling
-│   │   └── quay_gateway.py        # Quay API wrapper
-│   ├── actions/                   # Action implementations
-│   │   ├── base_action.py         # Abstract base class
-│   │   ├── create_organization.py
-│   │   ├── delete_organization.py
-│   │   ├── get_organization.py
-│   │   ├── list_organizations.py
-│   │   ├── create_robot_account.py
-│   │   ├── delete_robot_account.py
-│   │   ├── get_robot_account.py
-│   │   ├── list_robot_accounts.py
-│   │   ├── create_team.py
-│   │   ├── delete_team.py
-│   │   ├── get_team.py
-│   │   ├── add_team_member.py
-│   │   └── sync_team_ldap.py
-│   ├── model/                     # Pydantic models
-│   │   ├── action_response.py
-│   │   ├── organization_model.py
-│   │   ├── robot_account_model.py
-│   │   ├── team_model.py
+│   │   └── client.py              # HTTP client with pooling (shared by Quay gateway)
+│   ├── quay/
+│   │   ├── quay_gateway.py        # Quay-specific API wrapper
+│   │   ├── actions/               # Quay action implementations
+│   │   │   ├── base_action.py     # Gateway-agnostic base class
+│   │   │   ├── organization/
+│   │   │   ├── robot_account/
+│   │   │   └── team/
+│   │   └── model/                 # Domain models used by Quay actions
+│   │       ├── organization_model.py
+│   │       ├── robot_account_model.py
+│   │       └── team_model.py
+│   ├── model/                     # Shared Pydantic models
 │   │   └── pipeline_model.py
 │   └── utils/
 │       ├── display.py             # Visual output (colors, progress)
@@ -165,6 +156,14 @@ PipelineExecutionPlatform/
 ├── requirements.txt
 └── README.md
 ```
+
+## Architecture Notes
+
+- **Gateway layer**: `src/gateway/client.py` exposes a reusable HTTP client; `src/quay/quay_gateway.py` wraps Quay APIs and consumes that client.
+- **Actions**: All Quay-specific actions now live under `src/quay/actions/...` and inherit from `BaseAction`, which only holds a gateway reference. This keeps the action logic agnostic and testable.
+- **Execution**: `PipelineExecutor` instantiates a single `QuayGateway` and injects it into every action before calling `execute`, so swapping to another backend only requires providing a different gateway implementation and wiring it through the registry.
+- **Models**: Quay domain models (organizations, teams, robots) sit under `src/quay/model/` while shared schemas like `PipelineDefinition` remain in `src/model/`, keeping reusable DTOs separate from backend-specific data.
+- **Responses**: `ActionResponse` lives in `src/model/action_response.py` to keep the action output interface consistent for any executor or frontend component that needs to inspect results.
 
 ## Pipeline Configuration
 
@@ -208,6 +207,24 @@ pipeline:
     job: sync_team_ldap
     enabled: false
     params_list: "{{ team_ldap_sync }}"
+
+  # Remove stale team members
+  - name: remove-team-members
+    job: remove_team_member
+    enabled: false
+    params_list: "{{ team_members_to_remove }}"
+
+  # Disable LDAP sync for a team
+  - name: disable-team-ldap-sync
+    job: unsync_team_ldap
+    enabled: false
+    params_list: "{{ team_ldap_unsync }}"
+
+  # Inspect LDAP sync status
+  - name: get-team-ldap-sync-status
+    job: get_team_sync_status
+    enabled: false
+    params_list: "{{ team_sync_status }}"
 ```
 
 ### Input Data (`inputs.yaml`)
@@ -257,6 +274,22 @@ team_ldap_sync:
   - organization: "production"
     team_name: "ops-team"
     group_dn: "cn=ops,ou=groups,dc=company,dc=com"
+
+# Optional: remove team members that should no longer have access
+team_members_to_remove:
+  - organization: "production"
+    team_name: "viewers"
+    member_name: "admin"
+
+# Optional: disable LDAP sync once the team should no longer follow a group
+team_ldap_unsync:
+  - organization: "production"
+    team_name: "viewers"
+
+# Optional: check the current LDAP sync configuration for auditing
+team_sync_status:
+  - organization: "production"
+    team_name: "ops-team"
 ```
 
 ## Available Actions
@@ -288,6 +321,11 @@ team_ldap_sync:
 | `get_team`        | Get team and members     | `organization`, `team_name`                                                |
 | `add_team_member` | Add a member to a team   | `organization`, `team_name`, `member_name`                                 |
 | `sync_team_ldap`  | Sync team with LDAP group| `organization`, `team_name`, `group_dn`                                    |
+| `remove_team_member` | Remove a member from a team | `organization`, `team_name`, `member_name`                                 |
+| `unsync_team_ldap`   | Disable LDAP sync for team | `organization`, `team_name`                                                |
+| `get_team_sync_status` | Report LDAP sync status | `organization`, `team_name`                                                |
+
+These actions mirror the [Quay Managing Teams API](https://docs.redhat.com/en/documentation/red_hat_quay/3.15/html/red_hat_quay_api_guide/quay-api-examples#managing-teams-api), so the pipeline can drive every supported endpoint for teams and LDAP sync.
 
 #### Team Roles
 

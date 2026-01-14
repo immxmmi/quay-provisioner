@@ -1,5 +1,6 @@
 from ..base_action import BaseAction
-from exceptions import RobotNotFoundError, ValidationError
+from exceptions import ValidationError
+from quay.exceptions import RobotNotFoundError
 from quay.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 from quay.model.robot_account_model import GetRobotAccount

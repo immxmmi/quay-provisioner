@@ -1,6 +1,7 @@
 from ..base_action import BaseAction
 from ..organization.get_organization import GetOrganizationAction
-from exceptions import RobotAlreadyExistsError, ValidationError
+from exceptions import ValidationError
+from quay.exceptions import RobotAlreadyExistsError
 from model.action_response import ActionResponse
 from quay.model.robot_account_model import CreateRobotAccount
 from utils.logger import Logger as log

@@ -1,6 +1,7 @@
 from ..base_action import BaseAction
 from ..organization.get_organization import GetOrganizationAction
-from exceptions import TeamAlreadyExistsError, ValidationError
+from exceptions import ValidationError
+from quay.exceptions import TeamAlreadyExistsError
 from model.action_response import ActionResponse
 from quay.model.team_model import CreateTeam
 from utils.logger import Logger as log

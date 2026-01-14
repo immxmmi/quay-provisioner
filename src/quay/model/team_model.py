@@ -30,6 +30,13 @@ class AddTeamMember(BaseModel):
     model_config = {"extra": "ignore"}
 
 
+class RemoveTeamMember(BaseModel):
+    team_name: str
+    member_name: str
+
+    model_config = {"extra": "ignore"}
+
+
 class TeamResponse(BaseModel):
     name: str
     role: Optional[str] = None
@@ -46,6 +53,12 @@ class SyncTeamLdap(BaseModel):
 
 
 class UnsyncTeamLdap(BaseModel):
+    team_name: str
+
+    model_config = {"extra": "ignore"}
+
+
+class TeamSyncStatusRequest(BaseModel):
     team_name: str
 
     model_config = {"extra": "ignore"}

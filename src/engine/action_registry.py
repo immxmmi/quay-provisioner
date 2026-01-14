@@ -11,6 +11,9 @@ from quay.actions.team.get_team import GetTeamAction
 from quay.actions.organization.list_organizations import ListOrganizationsAction
 from quay.actions.robot_account.list_robot_accounts import ListRobotAccountsAction
 from quay.actions.team.sync_team_ldap import SyncTeamLdapAction
+from quay.actions.team.get_team_sync_status import GetTeamSyncStatusAction
+from quay.actions.team.remove_team_member import RemoveTeamMemberAction
+from quay.actions.team.unsync_team_ldap import UnsyncTeamLdapAction
 
 ACTION_REGISTRY = {
     # Organization actions
@@ -28,5 +31,8 @@ ACTION_REGISTRY = {
     "delete_team": DeleteTeamAction,
     "get_team": GetTeamAction,
     "add_team_member": AddTeamMemberAction,
+    "remove_team_member": RemoveTeamMemberAction,
     "sync_team_ldap": SyncTeamLdapAction,
+    "unsync_team_ldap": UnsyncTeamLdapAction,
+    "get_team_sync_status": GetTeamSyncStatusAction,
 }

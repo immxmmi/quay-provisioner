@@ -6,41 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="35ff7bb3-9dac-41ec-ba6d-268cdd149d9b" name="Changes" comment="Enhance team management; add LDAP sync functionality for teams with validation and logging">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile_build_only" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile_offline" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/add_team_member.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/base_action.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_organization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_robot_account.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/create_team.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_organization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_robot_account.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/delete_team.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_organization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_robot_account.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/get_team.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/list_organizations.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/list_robot_accounts.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/sync_team_ldap.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/action_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/action_registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/pipeline_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/pipeline_executor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gateway/quay_gateway.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/organization_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/robot_account_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/team_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/annotated_types-0.7.0-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/certifi-2025.11.12-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/charset_normalizer-3.4.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/idna-3.11-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/pydantic-2.12.5-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/pydantic_core-2.41.5-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/requests-2.32.5-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/typing_extensions-4.15.0-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/typing_inspection-0.4.2-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wheels/urllib3-2.5.0-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/inputs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/inputs.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/pipeline.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/actions/robot_account/create_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/actions/robot_account/create_robot_account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/actions/robot_account/get_robot_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/actions/robot_account/get_robot_account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/actions/team/create_team.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/actions/team/create_team.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/actions/team/get_team.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/actions/team/get_team.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/model/team_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/model/team_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/quay/quay_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quay/quay_gateway.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,15 +225,7 @@
       <workItem from="1765441093481" duration="14697000" />
       <workItem from="1768050268763" duration="136000" />
       <workItem from="1768298220691" duration="5730000" />
-      <workItem from="1768392900107" duration="1973000" />
-    </task>
-    <task id="LOCAL-00035" summary="Add download_image target to Makefile and update workspace.xml">
-      <option name="closed" value="true" />
-      <created>1764862777267</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1764862777267</updated>
+      <workItem from="1768392900107" duration="2583000" />
     </task>
     <task id="LOCAL-00036" summary="Add CA bundle support in API client and update Helm chart configuration">
       <option name="closed" value="true" />
@@ -642,7 +611,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768318040985</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Enhance team management; add LDAP sync functionality for teams with validation and logging">
+      <option name="closed" value="true" />
+      <created>1768395739386</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1768395739387</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

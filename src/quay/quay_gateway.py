@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from exceptions import (
+from quay.exceptions import (
     RobotNotFoundError,
     RobotAlreadyExistsError,
     TeamNotFoundError,
@@ -154,6 +154,13 @@ class QuayGateway:
         safe_team = _safe_path(team_name)
         safe_member = _safe_path(member_name)
         return self.client.put(f"/organization/{safe_org}/team/{safe_team}/members/{safe_member}")
+
+    def remove_team_member(self, organization: str, team_name: str, member_name: str):
+        log.debug("QuayGateway", f"remove_team_member org={organization} team={team_name} member={member_name}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_member = _safe_path(member_name)
+        return self.client.delete(f"/organization/{safe_org}/team/{safe_team}/members/{safe_member}")
 
     def sync_team_ldap(self, organization: str, team_name: str, group_dn: str):
         """Enable LDAP sync for a team with the specified LDAP group DN."""

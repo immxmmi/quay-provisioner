@@ -1,6 +1,7 @@
 from ..base_action import BaseAction
 from ..organization.get_organization import GetOrganizationAction
-from exceptions import TeamNotFoundError, ValidationError
+from exceptions import ValidationError
+from quay.exceptions import TeamNotFoundError
 from quay.quay_gateway import QuayGateway
 from model.action_response import ActionResponse
 from quay.model.team_model import GetTeam
