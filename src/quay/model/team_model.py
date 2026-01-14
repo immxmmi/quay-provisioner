@@ -62,3 +62,54 @@ class TeamSyncStatusRequest(BaseModel):
     team_name: str
 
     model_config = {"extra": "ignore"}
+
+
+class TeamRepositoryPermission(BaseModel):
+    team_name: str
+    repository: str
+    permission: Literal["read", "write", "admin"] = "read"
+
+    model_config = {"extra": "ignore"}
+
+
+class RemoveTeamRepositoryPermission(BaseModel):
+    team_name: str
+    repository: str
+
+    model_config = {"extra": "ignore"}
+
+
+class PrototypeDelegate(BaseModel):
+    name: str
+    kind: Literal["team", "user"]
+
+    model_config = {"extra": "ignore"}
+
+
+class DefaultRepositoryPermission(BaseModel):
+    delegate: PrototypeDelegate
+    role: Literal["read", "write", "admin"] = "read"
+    activating_user: Optional[str] = None
+
+    model_config = {"extra": "ignore"}
+
+
+class RemoveDefaultRepositoryPermission(BaseModel):
+    delegate: PrototypeDelegate
+    role: Optional[Literal["read", "write", "admin"]] = None
+
+    model_config = {"extra": "ignore"}
+
+
+class InviteTeamMember(BaseModel):
+    team_name: str
+    email: str
+
+    model_config = {"extra": "ignore"}
+
+
+class DeleteTeamInvite(BaseModel):
+    team_name: str
+    email: str
+
+    model_config = {"extra": "ignore"}

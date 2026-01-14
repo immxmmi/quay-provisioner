@@ -24,6 +24,14 @@ team_members:
     team_name: "developers"
     member_name: "admin"
 
+# Default permissions for repositories created by certain users
+default_repo_permissions:
+  - organization: "admin-testhome"
+    delegate:
+      kind: "team"
+      name: "developers"
+    role: "admin"
+
 # LDAP Team Sync (requires LDAP to be configured in Quay)
 team_ldap_sync:
   - organization: "admin-testhome"

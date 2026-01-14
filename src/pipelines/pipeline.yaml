@@ -19,22 +19,8 @@ pipeline:
     enabled: true
     params_list: "{{ team_members }}"
 
-  - name: sync-teams-ldap
-    job: sync_team_ldap
-    enabled: false
-    params_list: "{{ team_ldap_sync }}"
+  - name: set-default-repo-permissions
+    job: set_default_repository_permission
+    enabled: true
+    params_list: "{{ default_repo_permissions }}"
 
-  - name: remove-team-members
-    job: remove_team_member
-    enabled: false
-    params_list: "{{ team_members_to_remove }}"
-
-  - name: disable-team-ldap-sync
-    job: unsync_team_ldap
-    enabled: false
-    params_list: "{{ team_ldap_unsync }}"
-
-  - name: get-team-ldap-sync-status
-    job: get_team_sync_status
-    enabled: false
-    params_list: "{{ team_sync_status }}"

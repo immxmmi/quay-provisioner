@@ -202,11 +202,47 @@ pipeline:
     enabled: true
     params_list: "{{ team_members }}"
 
+  # Grant team repository permissions (optional)
+  - name: set-team-repo-permissions
+    job: set_team_repository_permission
+    enabled: false
+    params_list: "{{ team_repo_permissions }}"
+
+  # Revoke repository permissions when teams should no longer access a repo
+  - name: remove-team-repo-permissions
+    job: remove_team_repository_permission
+    enabled: false
+    params_list: "{{ team_repo_permissions_to_remove }}"
+
+  # Configure default permission prototypes (applied to future repositories)
+  - name: set-default-repo-permissions
+    job: set_default_repository_permission
+    enabled: false
+    params_list: "{{ default_repo_permissions }}"
+
+  # Remove obsolete default permission prototypes
+  - name: remove-default-repo-permissions
+    job: remove_default_repository_permission
+    enabled: false
+    params_list: "{{ default_repo_permissions_to_remove }}"
+
   # Sync teams with LDAP groups (optional)
   - name: sync-teams-ldap
     job: sync_team_ldap
     enabled: false
     params_list: "{{ team_ldap_sync }}"
+
+  # Invite workspace members by email
+  - name: invite-team-members
+    job: invite_team_member
+    enabled: false
+    params_list: "{{ team_member_invites }}"
+
+  # Revoke outstanding invites
+  - name: delete-team-invites
+    job: delete_team_invite
+    enabled: false
+    params_list: "{{ team_invites_to_remove }}"
 
   # Remove stale team members
   - name: remove-team-members
@@ -269,6 +305,36 @@ team_members:
     team_name: "developers"
     member_name: "dev-user2"
 
+# Configure repository permissions that teams need
+team_repo_permissions:
+  - organization: "production"
+    team_name: "developers"
+    repository: "production/dev-app"
+    permission: "write"
+
+# Revoke outdated permissions before rotating access
+team_repo_permissions_to_remove:
+  - organization: "production"
+    team_name: "viewers"
+    repository: "production/old-app"
+
+# Optional: grant default permissions via permission prototypes on the organization
+# The `delegate` block mirrors the Quay prototype payload (kind=team|user, name=entity).
+default_repo_permissions:
+  - organization: "production"
+    delegate:
+      kind: "team"
+      name: "developers"
+    role: "write"
+
+# Optional: revoke prototype entries when defaults should change
+default_repo_permissions_to_remove:
+  - organization: "production"
+    delegate:
+      kind: "team"
+      name: "viewers"
+    role: "read"
+
 # Optional: LDAP Team Sync (requires LDAP configured in Quay)
 team_ldap_sync:
   - organization: "production"
@@ -290,6 +356,18 @@ team_ldap_unsync:
 team_sync_status:
   - organization: "production"
     team_name: "ops-team"
+
+# Optional: invite users by email to a team
+team_member_invites:
+  - organization: "production"
+    team_name: "qa-team"
+    email: "new-tester@example.com"
+
+# Optional: cancel pending invites
+team_invites_to_remove:
+  - organization: "production"
+    team_name: "staging"
+    email: "old-invite@example.com"
 ```
 
 ## Available Actions
@@ -321,11 +399,17 @@ team_sync_status:
 | `get_team`        | Get team and members     | `organization`, `team_name`                                                |
 | `add_team_member` | Add a member to a team   | `organization`, `team_name`, `member_name`                                 |
 | `sync_team_ldap`  | Sync team with LDAP group| `organization`, `team_name`, `group_dn`                                    |
+| `set_team_repository_permission` | Assign repository permission to a team | `organization`, `team_name`, `repository`, `permission` |
+| `remove_team_repository_permission` | Revoke repository permission from a team | `organization`, `team_name`, `repository` |
+| `set_default_repository_permission` | Create a permission prototype (`POST /prototypes`) for the provided delegate | `organization`, `delegate`, `role` |
+| `remove_default_repository_permission` | Delete matching prototypes (`DELETE /prototypes/{id}`) | `organization`, `delegate`, `role` |
+| `invite_team_member` | Invite a user via email to a team | `organization`, `team_name`, `email` |
+| `delete_team_invite` | Delete a pending invite | `organization`, `team_name`, `email` |
 | `remove_team_member` | Remove a member from a team | `organization`, `team_name`, `member_name`                                 |
 | `unsync_team_ldap`   | Disable LDAP sync for team | `organization`, `team_name`                                                |
 | `get_team_sync_status` | Report LDAP sync status | `organization`, `team_name`                                                |
 
-These actions mirror the [Quay Managing Teams API](https://docs.redhat.com/en/documentation/red_hat_quay/3.15/html/red_hat_quay_api_guide/quay-api-examples#managing-teams-api), so the pipeline can drive every supported endpoint for teams and LDAP sync.
+These actions mirror the [Quay Managing Teams API](https://docs.redhat.com/en/documentation/red_hat_quay/3.15/html/red_hat_quay_api_guide/quay-api-examples#managing-teams-api) plus the “Managing team members and repository permissions” subsection (6.19.1) and the “Default permissions” panel (6.19.2), so the pipeline can drive every supported endpoint for team membership, invitations, repository permissions, default repository permissions, and LDAP sync.
 
 #### Team Roles
 

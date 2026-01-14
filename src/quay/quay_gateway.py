@@ -162,6 +162,78 @@ class QuayGateway:
         safe_member = _safe_path(member_name)
         return self.client.delete(f"/organization/{safe_org}/team/{safe_team}/members/{safe_member}")
 
+    def invite_team_member(self, organization: str, team_name: str, email: str):
+        log.debug("QuayGateway", f"invite_team_member org={organization} team={team_name} email={email}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_email = quote(email, safe="")
+        return self.client.put(f"/organization/{safe_org}/team/{safe_team}/invite/{safe_email}")
+
+    def delete_team_invite(self, organization: str, team_name: str, email: str):
+        log.debug("QuayGateway", f"delete_team_invite org={organization} team={team_name} email={email}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_email = quote(email, safe="")
+        return self.client.delete(f"/organization/{safe_org}/team/{safe_team}/invite/{safe_email}")
+
+    def set_team_repository_permission(
+        self,
+        organization: str,
+        team_name: str,
+        repository: str,
+        permission: str = "read"
+    ):
+        log.debug(
+            "QuayGateway",
+            f"set_team_repository_permission org={organization} team={team_name} repo={repository} permission={permission}"
+        )
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_repo = _safe_path(repository)
+        payload = {"permission": permission}
+        return self.client.put(
+            f"/organization/{safe_org}/team/{safe_team}/repositories/{safe_repo}",
+            json=payload
+        )
+
+    def remove_team_repository_permission(self, organization: str, team_name: str, repository: str):
+        log.debug("QuayGateway", f"remove_team_repository_permission org={organization} team={team_name} repo={repository}")
+        safe_org = _safe_path(organization)
+        safe_team = _safe_path(team_name)
+        safe_repo = _safe_path(repository)
+        return self.client.delete(f"/organization/{safe_org}/team/{safe_team}/repositories/{safe_repo}")
+
+    def list_prototypes(self, organization: str):
+        log.debug("QuayGateway", f"list_prototypes org={organization}")
+        safe_org = _safe_path(organization)
+        return self.client.get(f"/organization/{safe_org}/prototypes")
+
+    def set_default_repository_permission(
+        self,
+        organization: str,
+        delegate: dict,
+        role: str,
+        activating_user: str | None = None
+    ):
+        log.debug(
+            "QuayGateway",
+            f"set_default_repository_permission org={organization} delegate={delegate} role={role} user={activating_user}"
+        )
+        safe_org = _safe_path(organization)
+        payload = {"delegate": delegate, "role": role}
+        if activating_user:
+            payload["activating_user"] = {"name": activating_user}
+        return self.client.post(
+            f"/organization/{safe_org}/prototypes",
+            json=payload
+        )
+
+    def delete_prototype(self, organization: str, prototype_id: str):
+        log.debug("QuayGateway", f"delete_prototype org={organization} prototype_id={prototype_id}")
+        safe_org = _safe_path(organization)
+        safe_id = _safe_path(str(prototype_id))
+        return self.client.delete(f"/organization/{safe_org}/prototypes/{safe_id}")
+
     def sync_team_ldap(self, organization: str, team_name: str, group_dn: str):
         """Enable LDAP sync for a team with the specified LDAP group DN."""
         payload = {"group_dn": group_dn}
