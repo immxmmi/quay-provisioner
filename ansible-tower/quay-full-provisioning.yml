@@ -1,6 +1,6 @@
 # Full Quay organization provisioning.
-# Generates an inputs.yaml from survey variables and runs the quay-provisioner
-# with the full-provisioning-pipeline.yaml.
+# Generates a Kubernetes ConfigMap with inputs.yaml from survey variables.
+# The ConfigMap is used by the quay-provisioner Helm chart / ArgoCD.
 #
 # This creates in one workflow:
 # - Organization
@@ -25,6 +25,11 @@
   hosts: localhost
   gather_facts: false
   force_handlers: true
+
+  vars:
+    quay_provisioner_namespace: quay-provisioner
+    quay_provisioner_release_name: cluster
+    quay_provisioner_configmap_name: "{{ quay_provisioner_release_name }}-quay-provisioner-inputs"
 
   tasks:
     - name: Check required arguments
@@ -53,6 +58,7 @@
           organizations:
             - name: "{{ survey_organization_name }}"
               email: "{{ survey_organization_email }}"
+              visibility: "private"
 
     - name: Build robot accounts input
       set_fact:
@@ -61,7 +67,7 @@
         robot:
           organization: "{{ survey_organization_name }}"
           robot_shortname: "{{ survey_robot_shortname }}"
-          description: "CI/CD automation bot"
+          description: "CI automation bot"
 
     - name: Build teams input
       set_fact:
@@ -128,42 +134,40 @@
         - survey_ldap_group_dn is not defined or survey_ldap_group_dn | length == 0
 
     # -------------------------------------------------------------------------
-    # Write inputs.yaml and run quay-provisioner
+    # Generate and apply ConfigMap
     # -------------------------------------------------------------------------
 
-    - name: Create temp directory
-      tempfile:
-        state: directory
-        prefix: quay-provisioner-
-      register: tmp_dir
+    - name: Build ConfigMap
+      set_fact:
+        quay_configmap:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "{{ quay_provisioner_configmap_name }}"
+            namespace: "{{ quay_provisioner_namespace }}"
+            labels:
+              app.kubernetes.io/name: quay-provisioner
+              app.kubernetes.io/instance: "{{ quay_provisioner_release_name }}"
+              app.kubernetes.io/managed-by: Helm
+          data:
+            inputs.yaml: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
 
-    - name: Write inputs.yaml
-      copy:
-        content: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
-        dest: "{{ tmp_dir.path }}/inputs.yaml"
-
-    - name: Display generated inputs
+    - name: Display generated ConfigMap
       debug:
-        msg: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
+        msg: "{{ quay_configmap | to_nice_yaml(indent=2) }}"
 
-    - name: Run quay-provisioner
-      include_role:
-        name: quay-provisioner-run
-      vars:
-        quay_pipeline_file: "pipelines/full-provisioning-pipeline.yaml"
-        quay_inputs_file: "{{ tmp_dir.path }}/inputs.yaml"
+    - name: Apply ConfigMap to cluster
+      k8s:
+        state: present
+        definition: "{{ quay_configmap }}"
 
     - name: Display result
       debug:
         msg: |
-          Quay Organization '{{ survey_organization_name }}' fully provisioned.
+          Quay Organization '{{ survey_organization_name }}' - ConfigMap generated and applied.
+          ConfigMap:     {{ quay_provisioner_configmap_name }}
+          Namespace:     {{ quay_provisioner_namespace }}
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
           LDAP Sync:     {{ survey_ldap_group_dn | default('not configured') }}
           Requester:     {{ tower_user_name | default(lookup('env', 'USER')) }}
-
-    - name: Cleanup temp directory
-      file:
-        path: "{{ tmp_dir.path }}"
-        state: absent
-      listen: cleanup
