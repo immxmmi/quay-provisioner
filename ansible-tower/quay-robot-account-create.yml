@@ -1,7 +1,6 @@
 # Create a Quay robot account.
 #
 # Required arguments:
-# - survey_quay_instance: The Quay instance
 # - survey_organization_name: The organization
 # - survey_robot_shortname: The robot account short name
 #
@@ -19,17 +18,10 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_robot_shortname
       loop_control:
         loop_var: param
-
-    - name: Set Quay API configuration
-      include_role:
-        name: quay-provisioner-config
-      vars:
-        quay_instance: "{{ survey_quay_instance }}"
 
     - name: Generate pipeline definition
       set_fact:

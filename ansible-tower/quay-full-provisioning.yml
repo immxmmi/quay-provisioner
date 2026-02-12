@@ -2,7 +2,6 @@
 # Creates organization, robot account, teams, team members, and default permissions.
 #
 # Required arguments:
-# - survey_quay_instance: The Quay instance
 # - survey_organization_name: Organization name
 # - survey_organization_email: Contact email
 # - survey_robot_shortname: Robot account name
@@ -25,7 +24,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_organization_email
         - survey_robot_shortname
@@ -33,12 +31,6 @@
         - survey_team_role
       loop_control:
         loop_var: param
-
-    - name: Set Quay API configuration
-      include_role:
-        name: quay-provisioner-config
-      vars:
-        quay_instance: "{{ survey_quay_instance }}"
 
     - name: Parse team names
       set_fact:
@@ -146,7 +138,6 @@
       debug:
         msg: |
           Quay Organization '{{ survey_organization_name }}' fully provisioned.
-          Instance:      {{ survey_quay_instance }}
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
           Requester:     {{ tower_user_name | default(lookup('env', 'USER')) }}

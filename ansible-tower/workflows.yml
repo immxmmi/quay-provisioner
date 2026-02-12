@@ -19,13 +19,6 @@ workflows:
     - quay-organization-create-validate.yml
     - quay-organization-create.yml
   survey:
-    - question_name: Quay Instance
-      question_description: Choose on which Quay instance the organization should be created
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: 'Name of the Quay organization. Allowed characters: a-z, 0-9 and dash (-)'
       required: true
@@ -85,13 +78,6 @@ workflows:
     - approval
     - quay-organization-delete.yml
   survey:
-    - question_name: Quay Instance
-      question_description: Choose on which Quay instance the organization should be deleted
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: 'Select the organization to delete. WARNING: This will permanently delete the organization and all its repositories!'
       required: true
@@ -109,12 +95,6 @@ workflows:
     - quay-robot-account-create-validate.yml
     - quay-robot-account-create.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: Select the organization where the robot account should be created
       required: true
@@ -145,12 +125,6 @@ workflows:
     - approval
     - quay-robot-account-delete.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: Select the organization
       required: true
@@ -176,12 +150,6 @@ workflows:
     - quay-team-create-validate.yml
     - quay-team-create.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: Select the organization where the team should be created
       required: true
@@ -222,12 +190,6 @@ workflows:
     - approval
     - quay-team-delete.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -252,12 +214,6 @@ workflows:
     - quay-team-member-add-validate.yml
     - quay-team-member-add.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -286,12 +242,6 @@ workflows:
     - quay-team-member-remove-validate.yml
     - quay-team-member-remove.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -324,12 +274,6 @@ workflows:
     - quay-team-permission-set-validate.yml
     - quay-team-permission-set.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -368,12 +312,6 @@ workflows:
     - quay-team-permission-remove-validate.yml
     - quay-team-permission-remove.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -405,12 +343,6 @@ workflows:
     - quay-default-permission-set-validate.yml
     - quay-default-permission-set.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -454,12 +386,6 @@ workflows:
     - quay-ldap-sync-validate.yml
     - quay-ldap-sync.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -489,12 +415,6 @@ workflows:
     - approval
     - quay-ldap-unsync.yml
   survey:
-    - question_name: Quay Instance
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       required: true
       type: multiselect
@@ -520,13 +440,6 @@ workflows:
     - approval
     - quay-full-provisioning.yml
   survey:
-    - question_name: Quay Instance
-      question_description: Choose on which Quay instance the organization should be provisioned
-      required: true
-      type: multiplechoice
-      variable: survey_quay_instance
-      default: "{{ quay_instances | first }}"
-      choices: "{{ quay_instances | join('\n') }}"
     - question_name: Organization name
       question_description: 'Name of the Quay organization. Allowed characters: a-z, 0-9 and dash (-)'
       required: true

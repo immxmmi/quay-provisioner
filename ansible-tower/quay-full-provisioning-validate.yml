@@ -11,7 +11,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_organization_email
         - survey_robot_shortname
@@ -48,7 +47,6 @@
       debug:
         msg: |
           Quay Full Organization Provisioning - Validation passed
-          Instance:      {{ survey_quay_instance }}
           Organization:  {{ survey_organization_name }}
           Email:         {{ survey_organization_email }}
           Robot account: {{ survey_robot_shortname }}

@@ -10,7 +10,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_team_name
         - survey_team_role
@@ -33,7 +32,6 @@
       debug:
         msg: |
           Quay Team Create - Validation passed
-          Instance:     {{ survey_quay_instance }}
           Organization: {{ survey_organization_name }}
           Team name:    {{ survey_team_name }}
           Team role:    {{ survey_team_role }}

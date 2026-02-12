@@ -10,7 +10,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_delegate_kind
         - survey_delegate_name
@@ -34,7 +33,6 @@
       debug:
         msg: |
           Quay Default Repository Permission Set - Validation passed
-          Instance:     {{ survey_quay_instance }}
           Organization: {{ survey_organization_name }}
           Delegate:     {{ survey_delegate_kind }}/{{ survey_delegate_name }}
           Permission:   {{ survey_permission_level }}

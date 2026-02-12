@@ -10,7 +10,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_team_name
       loop_control:
@@ -20,7 +19,6 @@
       debug:
         msg: |
           WARNING: Quay Team LDAP Unsync
-          Instance:     {{ survey_quay_instance }}
           Organization: {{ survey_organization_name }}
           Team name:    {{ survey_team_name }}
           This will disconnect the team from its LDAP group!

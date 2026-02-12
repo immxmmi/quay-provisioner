@@ -1,7 +1,6 @@
 # Validate inputs for Quay organization creation.
 #
 # Required arguments:
-# - survey_quay_instance: The Quay instance
 # - survey_organization_name: The organization name
 # - survey_organization_email: Contact email
 #
@@ -16,7 +15,6 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_organization_email
       loop_control:
@@ -38,7 +36,6 @@
       debug:
         msg: |
           Quay Organization Create - Validation passed
-          Instance:     {{ survey_quay_instance }}
           Organization: {{ survey_organization_name }}
           Email:        {{ survey_organization_email }}
           Create Robot: {{ survey_create_robot_account | default('false') }}

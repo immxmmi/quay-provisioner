@@ -1,7 +1,6 @@
 # Create a Quay organization with optional robot accounts and teams.
 #
 # Required arguments:
-# - survey_quay_instance: The Quay instance
 # - survey_organization_name: The organization name
 # - survey_organization_email: Contact email
 #
@@ -22,17 +21,10 @@
       assert:
         that: "{{ param }} is defined and {{ param }} | length"
       loop:
-        - survey_quay_instance
         - survey_organization_name
         - survey_organization_email
       loop_control:
         loop_var: param
-
-    - name: Set Quay API configuration
-      include_role:
-        name: quay-provisioner-config
-      vars:
-        quay_instance: "{{ survey_quay_instance }}"
 
     - name: Generate pipeline definition
       set_fact:
@@ -144,5 +136,4 @@
       debug:
         msg: |
           Quay Organization '{{ survey_organization_name }}' created successfully.
-          Instance: {{ survey_quay_instance }}
           Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}
