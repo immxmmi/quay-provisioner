@@ -1,7 +1,7 @@
 # Full Quay organization provisioning.
-# Generates inputs.yaml content from survey variables and commits it to the
-# self-service Git repository. ArgoCD picks up the change and the Helm chart
-# generates the ConfigMap for the quay-provisioner.
+# Clones the cluster-config Gitea repository, generates a ConfigMap YAML file
+# with the inputs.yaml in the Helm templates directory, commits and pushes.
+# ArgoCD picks up the change and the quay-provisioner Job runs.
 #
 # This creates in one workflow:
 # - Organization
@@ -28,6 +28,15 @@
   gather_facts: false
   force_handlers: true
 
+  vars:
+    # Git repository
+    git_repo_url: "https://drcsp02.hel.kko.ch/openshift/cluster-config.git"
+    git_branch: main
+    # Path inside the repo where the ConfigMap file will be created
+    templates_path: "helm/chartrepo/quay-provisioner/templates"
+    # Generated file prefix (result: auto-generated-<org-name>-inputs.yaml)
+    generated_file_prefix: "auto-generated"
+
   tasks:
     - name: Check required arguments
       assert:
@@ -46,27 +55,34 @@
       set_fact:
         team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
 
+    - name: Set generated filename
+      set_fact:
+        generated_filename: "{{ generated_file_prefix }}-{{ survey_organization_name }}-inputs.yaml"
+
     # -------------------------------------------------------------------------
     # Clone Git repository
     # -------------------------------------------------------------------------
 
-    - name: Clone self-service repository
-      include_role:
-        name: quay-provisioner-git
+    - name: Create temp directory for git clone
+      tempfile:
+        state: directory
+        prefix: quay-provisioner-git-
+      register: tmp_dir
+
+    - name: Clone cluster-config repository
+      git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ tmp_dir.path }}/cluster-config"
+        version: "{{ git_branch }}"
+        depth: 1
+
+    - name: Set git path fact
+      set_fact:
+        fact_git_repo_path: "{{ tmp_dir.path }}/cluster-config"
+        fact_templates_path: "{{ tmp_dir.path }}/cluster-config/{{ templates_path }}"
 
     # -------------------------------------------------------------------------
-    # Read existing values
-    # -------------------------------------------------------------------------
-
-    - name: Read existing values
-      include_role:
-        name: quay-provisioner-values
-      vars:
-        quay_values_git_path: "{{ fact_quay_git_path }}"
-        quay_values_organization_name: "{{ survey_organization_name }}"
-
-    # -------------------------------------------------------------------------
-    # Build inputs from survey variables
+    # Build inputs.yaml content from survey variables
     # -------------------------------------------------------------------------
 
     - name: Build organization entry
@@ -140,14 +156,12 @@
         - survey_ldap_group_dn is not defined or survey_ldap_group_dn | length == 0
 
     # -------------------------------------------------------------------------
-    # Update values dict
+    # Assemble inputs dict
     # -------------------------------------------------------------------------
 
-    - name: Update values dict
+    - name: Assemble inputs
       set_fact:
-        fact_quay_values_dict: "{{ fact_quay_values_dict | default({}) | combine(values, recursive=True) }}"
-      vars:
-        values:
+        fact_quay_inputs:
           organizations:
             - "{{ fact_organization }}"
           robot_accounts:
@@ -158,35 +172,76 @@
           team_ldap_sync: "{{ fact_team_ldap_sync }}"
 
     # -------------------------------------------------------------------------
-    # Write values and commit to Git
+    # Generate ConfigMap YAML and write to templates directory
     # -------------------------------------------------------------------------
 
-    - name: Write updated values
-      include_role:
-        name: quay-provisioner-values
-      vars:
-        quay_values_dict: "{{ fact_quay_values_dict }}"
-        quay_values_git_path: "{{ fact_quay_git_path }}"
-        quay_values_organization_name: "{{ survey_organization_name }}"
+    - name: Build ConfigMap content
+      set_fact:
+        fact_configmap_content:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "quay-provisioner-{{ survey_organization_name }}-inputs"
+            labels:
+              app.kubernetes.io/name: quay-provisioner
+              app.kubernetes.io/managed-by: ansible-tower
+              quay-provisioner/auto-generated: "true"
+              quay-provisioner/organization: "{{ survey_organization_name }}"
+            annotations:
+              quay-provisioner/generated-by: "{{ tower_user_name | default(lookup('env', 'USER')) }}"
+              quay-provisioner/generated-at: "{{ now(utc=true).isoformat() }}"
+          data:
+            inputs.yaml: "{{ fact_quay_inputs | to_nice_yaml(indent=2) }}"
 
-    - name: Commit and push changes
-      include_role:
-        name: quay-provisioner-git
-      vars:
-        quay_git_path: "{{ fact_quay_git_path }}"
+    - name: Write ConfigMap to templates directory
+      copy:
+        content: "{{ fact_configmap_content | to_nice_yaml(indent=2) }}"
+        dest: "{{ fact_templates_path }}/{{ generated_filename }}"
+      diff: yes
+
+    - name: Display generated ConfigMap
+      debug:
+        msg: |
+          Generated file: {{ templates_path }}/{{ generated_filename }}
+          {{ fact_configmap_content | to_nice_yaml(indent=2) }}
 
     # -------------------------------------------------------------------------
-    # Trigger ArgoCD sync
+    # Commit and push to Gitea
     # -------------------------------------------------------------------------
 
-    - name: Trigger ArgoCD sync
-      include_role:
-        name: quay-provisioner-argocd
+    - name: Git add generated file
+      command:
+        cmd: git add "{{ templates_path }}/{{ generated_filename }}"
+        chdir: "{{ fact_git_repo_path }}"
+
+    - name: Git commit
+      command:
+        cmd: >
+          git commit -m "quay-provisioner: add organization {{ survey_organization_name }}
+
+          Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}
+          Auto-generated by Ansible Tower"
+        chdir: "{{ fact_git_repo_path }}"
+
+    - name: Git push
+      command:
+        cmd: git push origin {{ git_branch }}
+        chdir: "{{ fact_git_repo_path }}"
+
+    # -------------------------------------------------------------------------
+    # Cleanup
+    # -------------------------------------------------------------------------
+
+    - name: Cleanup temp directory
+      file:
+        path: "{{ tmp_dir.path }}"
+        state: absent
 
     - name: Display result
       debug:
         msg: |
-          Quay Organization '{{ survey_organization_name }}' fully provisioned.
+          Quay Organization '{{ survey_organization_name }}' - ConfigMap committed to Git.
+          File:          {{ templates_path }}/{{ generated_filename }}
           Visibility:    {{ survey_organization_visibility }}
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
