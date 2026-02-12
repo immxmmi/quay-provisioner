@@ -1,0 +1,49 @@
+# Set team repository permission in Quay.
+
+- name: Run - Quay - Team Repository Permission Set
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_team_name
+        - survey_repository_name
+        - survey_permission_level
+      loop_control:
+        loop_var: param
+
+    - name: Set Quay API configuration
+      include_role:
+        name: quay-provisioner-config
+      vars:
+        quay_instance: "{{ survey_quay_instance }}"
+
+    - name: Generate pipeline definition
+      set_fact:
+        quay_pipeline:
+          pipeline:
+            - name: set-team-repository-permission
+              job: set_team_repository_permission
+              enabled: true
+              params:
+                organization: "{{ survey_organization_name }}"
+                team_name: "{{ survey_team_name }}"
+                repository: "{{ survey_repository_name }}"
+                permission: "{{ survey_permission_level }}"
+
+    - name: Write pipeline file
+      copy:
+        content: "{{ quay_pipeline | to_nice_yaml(indent=2) }}"
+        dest: "{{ fact_quay_pipeline_path }}"
+
+    - name: Run quay-provisioner
+      include_role:
+        name: quay-provisioner-run
+      vars:
+        quay_pipeline_file: "{{ fact_quay_pipeline_path }}"

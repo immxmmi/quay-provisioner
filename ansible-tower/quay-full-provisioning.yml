@@ -1,0 +1,152 @@
+# Full Quay organization provisioning.
+# Creates organization, robot account, teams, team members, and default permissions.
+#
+# Required arguments:
+# - survey_quay_instance: The Quay instance
+# - survey_organization_name: Organization name
+# - survey_organization_email: Contact email
+# - survey_robot_shortname: Robot account name
+# - survey_team_names: Comma-separated team names
+# - survey_team_role: Default role for teams
+#
+# Optional arguments:
+# - survey_ldap_group_dn: LDAP group DN for developers team
+# - survey_permissions_groups_edit: LDAP groups with admin access
+# - survey_permissions_groups_view: LDAP groups with read access
+#
+
+- name: Run - Quay - Full Organization Provisioning
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_organization_email
+        - survey_robot_shortname
+        - survey_team_names
+        - survey_team_role
+      loop_control:
+        loop_var: param
+
+    - name: Set Quay API configuration
+      include_role:
+        name: quay-provisioner-config
+      vars:
+        quay_instance: "{{ survey_quay_instance }}"
+
+    - name: Parse team names
+      set_fact:
+        team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
+
+    - name: Build pipeline - organization
+      set_fact:
+        quay_pipeline_steps:
+          - name: create-organization
+            job: create_organization
+            enabled: true
+            params:
+              name: "{{ survey_organization_name }}"
+              email: "{{ survey_organization_email }}"
+
+    - name: Build pipeline - robot account
+      set_fact:
+        quay_pipeline_steps: "{{ quay_pipeline_steps + [robot_step] }}"
+      vars:
+        robot_step:
+          name: create-robot-account
+          job: create_robot_account
+          enabled: true
+          params:
+            organization: "{{ survey_organization_name }}"
+            robot_shortname: "{{ survey_robot_shortname }}"
+            description: "CI/CD automation bot - created by Tower"
+
+    - name: Build pipeline - teams
+      set_fact:
+        quay_pipeline_steps: "{{ quay_pipeline_steps + [team_step] }}"
+      vars:
+        team_step:
+          name: "create-team-{{ item }}"
+          job: create_team
+          enabled: true
+          params:
+            organization: "{{ survey_organization_name }}"
+            team_name: "{{ item }}"
+            role: "{{ survey_team_role }}"
+            description: "Team {{ item }} - created by Tower"
+      loop: "{{ team_list }}"
+
+    - name: Build pipeline - add robot to first team
+      set_fact:
+        quay_pipeline_steps: "{{ quay_pipeline_steps + [member_step] }}"
+      vars:
+        member_step:
+          name: add-robot-to-team
+          job: add_team_member
+          enabled: true
+          params:
+            organization: "{{ survey_organization_name }}"
+            team_name: "{{ team_list | first }}"
+            member_name: "{{ survey_organization_name }}+{{ survey_robot_shortname }}"
+
+    - name: Build pipeline - default repo permission for first team
+      set_fact:
+        quay_pipeline_steps: "{{ quay_pipeline_steps + [perm_step] }}"
+      vars:
+        perm_step:
+          name: set-default-repo-permission
+          job: set_default_repository_permission
+          enabled: true
+          params:
+            organization: "{{ survey_organization_name }}"
+            delegate:
+              kind: "team"
+              name: "{{ team_list | first }}"
+            role: "admin"
+
+    - name: Build pipeline - LDAP sync
+      set_fact:
+        quay_pipeline_steps: "{{ quay_pipeline_steps + [ldap_step] }}"
+      vars:
+        ldap_step:
+          name: sync-team-ldap
+          job: sync_team_ldap
+          enabled: true
+          params:
+            organization: "{{ survey_organization_name }}"
+            team_name: "{{ team_list | first }}"
+            group_dn: "{{ survey_ldap_group_dn }}"
+      when:
+        - survey_ldap_group_dn is defined
+        - survey_ldap_group_dn | length
+
+    - name: Assemble pipeline
+      set_fact:
+        quay_pipeline:
+          pipeline: "{{ quay_pipeline_steps }}"
+
+    - name: Write pipeline file
+      copy:
+        content: "{{ quay_pipeline | to_nice_yaml(indent=2) }}"
+        dest: "{{ fact_quay_pipeline_path }}"
+
+    - name: Run quay-provisioner
+      include_role:
+        name: quay-provisioner-run
+      vars:
+        quay_pipeline_file: "{{ fact_quay_pipeline_path }}"
+
+    - name: Display result
+      debug:
+        msg: |
+          Quay Organization '{{ survey_organization_name }}' fully provisioned.
+          Instance:      {{ survey_quay_instance }}
+          Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
+          Teams:         {{ team_list | join(', ') }}
+          Requester:     {{ tower_user_name | default(lookup('env', 'USER')) }}

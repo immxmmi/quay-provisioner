@@ -1,0 +1,33 @@
+# Validate inputs for LDAP team sync.
+
+- name: Run - Quay - Team LDAP Sync - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_team_name
+        - survey_ldap_group_dn
+      loop_control:
+        loop_var: param
+
+    - name: Validate LDAP DN format
+      assert:
+        that:
+          - "'=' in survey_ldap_group_dn"
+        fail_msg: "LDAP Group DN '{{ survey_ldap_group_dn }}' does not appear to be a valid distinguished name"
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          Quay Team LDAP Sync - Validation passed
+          Instance:     {{ survey_quay_instance }}
+          Organization: {{ survey_organization_name }}
+          Team name:    {{ survey_team_name }}
+          LDAP Group:   {{ survey_ldap_group_dn }}

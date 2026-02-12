@@ -1,0 +1,58 @@
+# Validate inputs for full Quay organization provisioning.
+# This workflow creates an organization with robot accounts, teams, and permissions in one step.
+
+- name: Run - Quay - Full Organization Provisioning - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_organization_email
+        - survey_robot_shortname
+        - survey_team_names
+        - survey_team_role
+      loop_control:
+        loop_var: param
+
+    - name: Validate organization name format
+      assert:
+        that:
+          - survey_organization_name is match('^[a-z0-9][a-z0-9-]*[a-z0-9]$')
+        fail_msg: "Organization name '{{ survey_organization_name }}' is invalid. Allowed characters: a-z, 0-9 and dash (-)"
+
+    - name: Validate email format
+      assert:
+        that:
+          - survey_organization_email is match('^[^@]+@[^@]+\.[^@]+$')
+        fail_msg: "Email '{{ survey_organization_email }}' is not a valid email address."
+
+    - name: Validate robot account name format
+      assert:
+        that:
+          - survey_robot_shortname is match('^[a-z0-9][a-z0-9-]*[a-z0-9]$')
+        fail_msg: "Robot account name '{{ survey_robot_shortname }}' is invalid."
+
+    - name: Validate team role
+      assert:
+        that:
+          - survey_team_role in ['member', 'creator', 'admin']
+        fail_msg: "Team role '{{ survey_team_role }}' is invalid."
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          Quay Full Organization Provisioning - Validation passed
+          Instance:      {{ survey_quay_instance }}
+          Organization:  {{ survey_organization_name }}
+          Email:         {{ survey_organization_email }}
+          Robot account: {{ survey_robot_shortname }}
+          Teams:         {{ survey_team_names }}
+          Team role:     {{ survey_team_role }}
+          LDAP Group:    {{ survey_ldap_group_dn | default('N/A') }}
+          Requester:     {{ tower_user_name | default(lookup('env', 'USER')) }}
