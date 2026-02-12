@@ -58,7 +58,7 @@
           organizations:
             - name: "{{ survey_organization_name }}"
               email: "{{ survey_organization_email }}"
-              visibility: "private"
+              visibility: "{{ survey_organization_visibility }}"
 
     - name: Build robot accounts input
       set_fact:
