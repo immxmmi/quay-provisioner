@@ -1,0 +1,597 @@
+# Quay Provisioner - Ansible Tower Workflow Definitions
+#
+# Supported options:
+# - name: Tower workflow name
+# - nodes: List of workflow nodes. The value may be either a playbook filename or 'approval' (multiple approvals supported by appending something unique: approval1, approval2). Before making changes to this list it is best to manually delete all nodes in the Tower GUI.
+# - survey: The survey spec (see Tower documentation or tower-cli)
+# - publish: Disable developer access to the workflow (boolean, optional)
+# - notifications: Which Tower notification template to use for notifications (optional)
+#
+
+workflows:
+
+# =============================================================================
+# Organization Workflows
+# =============================================================================
+
+- name: Quay - Organization Create
+  nodes:
+    - quay-organization-create-validate.yml
+    - quay-organization-create.yml
+  survey:
+    - question_name: Quay Instance
+      question_description: Choose on which Quay instance the organization should be created
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: 'Name of the Quay organization. Allowed characters: a-z, 0-9 and dash (-)'
+      required: true
+      type: text
+      variable: survey_organization_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Organization email
+      question_description: Contact email address for the organization
+      required: true
+      type: text
+      variable: survey_organization_email
+      min: 0
+      max: 256
+      default: ''
+    - question_name: Create default robot account?
+      question_description: Automatically create a ci-bot robot account for CI/CD pipelines
+      required: true
+      type: multiplechoice
+      variable: survey_create_robot_account
+      default: 'true'
+      choices: |-
+        true
+        false
+    - question_name: Create default teams?
+      question_description: Automatically create default teams (developers, viewers) for the organization
+      required: true
+      type: multiplechoice
+      variable: survey_create_default_teams
+      default: 'true'
+      choices: |-
+        true
+        false
+    - question_name: Edit group
+      question_description: 'Specify which LDAP groups should have admin access to the organization (e.g. "QUAY-MYORG-EDIT")'
+      required: false
+      type: multiselect
+      variable: survey_permissions_groups_edit
+      min: 0
+      max: 256
+      default: ''
+      choices: "{{ fact_groups | select('search', '-EDIT') | list | join('\n') }}"
+    - question_name: View group (optional)
+      question_description: Specify which LDAP groups should have read access to the organization
+      required: false
+      type: multiselect
+      variable: survey_permissions_groups_view
+      min: 0
+      max: 256
+      default: ''
+      choices: "{{ fact_groups | select('search', '-VIEW') | list | join('\n') }}"
+
+- name: Quay - Organization Delete
+  nodes:
+    - quay-organization-delete-validate.yml
+    - approval
+    - quay-organization-delete.yml
+  survey:
+    - question_name: Quay Instance
+      question_description: Choose on which Quay instance the organization should be deleted
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: 'Select the organization to delete. WARNING: This will permanently delete the organization and all its repositories!'
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+
+# =============================================================================
+# Robot Account Workflows
+# =============================================================================
+
+- name: Quay - Robot Account Create
+  nodes:
+    - quay-robot-account-create-validate.yml
+    - quay-robot-account-create.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: Select the organization where the robot account should be created
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Robot account name
+      question_description: 'Short name of the robot account (e.g. ci-bot, deploy-bot). Allowed characters: a-z, 0-9 and dash (-)'
+      required: true
+      type: text
+      variable: survey_robot_shortname
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Description
+      question_description: Description of the robot account (e.g. "CI/CD pipeline automation")
+      required: false
+      type: text
+      variable: survey_robot_description
+      min: 0
+      max: 256
+      default: ''
+
+- name: Quay - Robot Account Delete
+  nodes:
+    - quay-robot-account-delete-validate.yml
+    - approval
+    - quay-robot-account-delete.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: Select the organization
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Robot account name
+      question_description: 'Short name of the robot account to delete'
+      required: true
+      type: text
+      variable: survey_robot_shortname
+      min: 2
+      max: 64
+      default: ''
+
+# =============================================================================
+# Team Workflows
+# =============================================================================
+
+- name: Quay - Team Create
+  nodes:
+    - quay-team-create-validate.yml
+    - quay-team-create.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: Select the organization where the team should be created
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: 'Name of the team (e.g. developers, ops-team). Allowed characters: a-z, 0-9 and dash (-)'
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Team role
+      question_description: 'Role of the team within the organization'
+      required: true
+      type: multiplechoice
+      variable: survey_team_role
+      default: member
+      choices: |-
+        member
+        creator
+        admin
+    - question_name: Team description
+      question_description: Description of the team
+      required: false
+      type: text
+      variable: survey_team_description
+      min: 0
+      max: 256
+      default: ''
+
+- name: Quay - Team Delete
+  nodes:
+    - quay-team-delete-validate.yml
+    - approval
+    - quay-team-delete.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team to delete
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+
+# =============================================================================
+# Team Member Workflows
+# =============================================================================
+
+- name: Quay - Team Member Add
+  nodes:
+    - quay-team-member-add-validate.yml
+    - quay-team-member-add.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Member name
+      question_description: 'Username or robot account name to add (e.g. "john.doe" or "orgname+ci-bot" for robot accounts)'
+      required: true
+      type: text
+      variable: survey_member_name
+      min: 1
+      max: 256
+      default: ''
+
+- name: Quay - Team Member Remove
+  nodes:
+    - quay-team-member-remove-validate.yml
+    - quay-team-member-remove.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Member name
+      question_description: 'Username or robot account name to remove'
+      required: true
+      type: text
+      variable: survey_member_name
+      min: 1
+      max: 256
+      default: ''
+
+# =============================================================================
+# Repository Permission Workflows
+# =============================================================================
+
+- name: Quay - Team Repository Permission Set
+  nodes:
+    - quay-team-permission-set-validate.yml
+    - quay-team-permission-set.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team that should receive the permission
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Repository name
+      question_description: 'Name of the repository (without organization prefix)'
+      required: true
+      type: text
+      variable: survey_repository_name
+      min: 1
+      max: 256
+      default: ''
+    - question_name: Permission level
+      question_description: The permission level for the team on this repository
+      required: true
+      type: multiplechoice
+      variable: survey_permission_level
+      default: read
+      choices: |-
+        read
+        write
+        admin
+
+- name: Quay - Team Repository Permission Remove
+  nodes:
+    - quay-team-permission-remove-validate.yml
+    - quay-team-permission-remove.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Repository name
+      question_description: 'Name of the repository (without organization prefix)'
+      required: true
+      type: text
+      variable: survey_repository_name
+      min: 1
+      max: 256
+      default: ''
+
+# =============================================================================
+# Default Repository Permission Workflows
+# =============================================================================
+
+- name: Quay - Default Repository Permission Set
+  nodes:
+    - quay-default-permission-set-validate.yml
+    - quay-default-permission-set.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Delegate type
+      question_description: Apply default permissions to a team or a specific user
+      required: true
+      type: multiplechoice
+      variable: survey_delegate_kind
+      default: team
+      choices: |-
+        team
+        user
+    - question_name: Delegate name
+      question_description: 'Name of the team or user that should receive the default permission'
+      required: true
+      type: text
+      variable: survey_delegate_name
+      min: 1
+      max: 256
+      default: ''
+    - question_name: Permission level
+      question_description: Default permission level for new repositories
+      required: true
+      type: multiplechoice
+      variable: survey_permission_level
+      default: read
+      choices: |-
+        read
+        write
+        admin
+
+# =============================================================================
+# LDAP Sync Workflows
+# =============================================================================
+
+- name: Quay - Team LDAP Sync
+  nodes:
+    - quay-ldap-sync-validate.yml
+    - quay-ldap-sync.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team to sync with LDAP
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: LDAP Group DN
+      question_description: 'Distinguished name of the LDAP group (e.g. cn=developers,ou=groups,dc=example,dc=com)'
+      required: true
+      type: text
+      variable: survey_ldap_group_dn
+      min: 1
+      max: 1024
+      default: ''
+
+- name: Quay - Team LDAP Unsync
+  nodes:
+    - quay-ldap-unsync-validate.yml
+    - approval
+    - quay-ldap-unsync.yml
+  survey:
+    - question_name: Quay Instance
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
+    - question_name: Team name
+      question_description: Name of the team to unsync from LDAP
+      required: true
+      type: text
+      variable: survey_team_name
+      min: 2
+      max: 64
+      default: ''
+
+# =============================================================================
+# Full Provisioning Workflow (combined)
+# =============================================================================
+
+- name: Quay - Full Organization Provisioning
+  nodes:
+    - quay-full-provisioning-validate.yml
+    - approval
+    - quay-full-provisioning.yml
+  survey:
+    - question_name: Quay Instance
+      question_description: Choose on which Quay instance the organization should be provisioned
+      required: true
+      type: multiplechoice
+      variable: survey_quay_instance
+      default: "{{ quay_instances | first }}"
+      choices: "{{ quay_instances | join('\n') }}"
+    - question_name: Organization name
+      question_description: 'Name of the Quay organization. Allowed characters: a-z, 0-9 and dash (-)'
+      required: true
+      type: text
+      variable: survey_organization_name
+      min: 2
+      max: 64
+      default: ''
+    - question_name: Organization email
+      question_description: Contact email address for the organization
+      required: true
+      type: text
+      variable: survey_organization_email
+      min: 0
+      max: 256
+      default: ''
+    - question_name: Robot account name
+      question_description: 'Name of the CI/CD robot account (e.g. ci-bot)'
+      required: true
+      type: text
+      variable: survey_robot_shortname
+      min: 2
+      max: 64
+      default: 'ci-bot'
+    - question_name: Team names (comma separated)
+      question_description: 'Teams to create in the organization (e.g. developers,viewers,ops)'
+      required: true
+      type: text
+      variable: survey_team_names
+      min: 0
+      max: 1024
+      default: 'developers,viewers'
+    - question_name: Default team role
+      question_description: Role for the created teams
+      required: true
+      type: multiplechoice
+      variable: survey_team_role
+      default: member
+      choices: |-
+        member
+        creator
+        admin
+    - question_name: LDAP Group DN for developers team (optional)
+      question_description: 'If specified, the developers team will be synced with this LDAP group'
+      required: false
+      type: text
+      variable: survey_ldap_group_dn
+      min: 0
+      max: 1024
+      default: ''
+    - question_name: Edit group
+      question_description: 'LDAP groups that should have admin access'
+      required: false
+      type: multiselect
+      variable: survey_permissions_groups_edit
+      min: 0
+      max: 256
+      default: ''
+      choices: "{{ fact_groups | select('search', '-EDIT') | list | join('\n') }}"
+    - question_name: View group (optional)
+      question_description: LDAP groups that should have read access
+      required: false
+      type: multiselect
+      variable: survey_permissions_groups_view
+      min: 0
+      max: 256
+      default: ''
+      choices: "{{ fact_groups | select('search', '-VIEW') | list | join('\n') }}"

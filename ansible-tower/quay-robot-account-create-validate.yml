@@ -1,0 +1,38 @@
+# Validate inputs for Quay robot account creation.
+#
+# Required arguments:
+# - survey_quay_instance: The Quay instance
+# - survey_organization_name: The organization
+# - survey_robot_shortname: The robot account short name
+#
+
+- name: Run - Quay - Robot Account Create - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_robot_shortname
+      loop_control:
+        loop_var: param
+
+    - name: Validate robot account name format
+      assert:
+        that:
+          - survey_robot_shortname is match('^[a-z0-9][a-z0-9-]*[a-z0-9]$')
+        fail_msg: "Robot account name '{{ survey_robot_shortname }}' is invalid. Allowed characters: a-z, 0-9 and dash (-)"
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          Quay Robot Account Create - Validation passed
+          Instance:     {{ survey_quay_instance }}
+          Organization: {{ survey_organization_name }}
+          Robot name:   {{ survey_robot_shortname }}
+          Description:  {{ survey_robot_description | default('N/A') }}

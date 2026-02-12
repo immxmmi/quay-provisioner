@@ -1,0 +1,48 @@
+# Delete a Quay organization.
+#
+# Required arguments:
+# - survey_quay_instance: The Quay instance
+# - survey_organization_name: The organization name to delete
+#
+
+- name: Run - Quay - Organization Delete
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+      loop_control:
+        loop_var: param
+
+    - name: Set Quay API configuration
+      include_role:
+        name: quay-provisioner-config
+      vars:
+        quay_instance: "{{ survey_quay_instance }}"
+
+    - name: Generate pipeline definition
+      set_fact:
+        quay_pipeline:
+          pipeline:
+            - name: delete-organization
+              job: delete_organization
+              enabled: true
+              params:
+                name: "{{ survey_organization_name }}"
+
+    - name: Write pipeline file
+      copy:
+        content: "{{ quay_pipeline | to_nice_yaml(indent=2) }}"
+        dest: "{{ fact_quay_pipeline_path }}"
+
+    - name: Run quay-provisioner
+      include_role:
+        name: quay-provisioner-run
+      vars:
+        quay_pipeline_file: "{{ fact_quay_pipeline_path }}"

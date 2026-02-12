@@ -1,0 +1,26 @@
+# Validate inputs for Quay team deletion.
+
+- name: Run - Quay - Team Delete - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+        - survey_team_name
+      loop_control:
+        loop_var: param
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          WARNING: Quay Team Delete
+          Instance:     {{ survey_quay_instance }}
+          Organization: {{ survey_organization_name }}
+          Team name:    {{ survey_team_name }}
+          This will permanently delete the team and all its permissions!

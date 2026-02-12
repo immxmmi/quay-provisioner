@@ -1,0 +1,30 @@
+# Validate inputs for Quay organization deletion.
+#
+# Required arguments:
+# - survey_quay_instance: The Quay instance
+# - survey_organization_name: The organization name to delete
+#
+
+- name: Run - Quay - Organization Delete - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_quay_instance
+        - survey_organization_name
+      loop_control:
+        loop_var: param
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          WARNING: Quay Organization Delete
+          Instance:     {{ survey_quay_instance }}
+          Organization: {{ survey_organization_name }}
+          This will permanently delete the organization and ALL its repositories, teams, and robot accounts!
+          Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}
