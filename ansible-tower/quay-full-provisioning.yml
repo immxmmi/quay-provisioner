@@ -1,5 +1,14 @@
 # Full Quay organization provisioning.
-# Creates organization, robot account, teams, team members, and default permissions.
+# Generates an inputs.yaml from survey variables and runs the quay-provisioner
+# with the full-provisioning-pipeline.yaml.
+#
+# This creates in one workflow:
+# - Organization
+# - Robot Account(s)
+# - Teams
+# - Team Members (robot account added to teams)
+# - Default Repository Permissions
+# - LDAP Team Sync (optional)
 #
 # Required arguments:
 # - survey_organization_name: Organization name
@@ -9,9 +18,7 @@
 # - survey_team_role: Default role for teams
 #
 # Optional arguments:
-# - survey_ldap_group_dn: LDAP group DN for developers team
-# - survey_permissions_groups_edit: LDAP groups with admin access
-# - survey_permissions_groups_view: LDAP groups with read access
+# - survey_ldap_group_dn: LDAP group DN for first team
 #
 
 - name: Run - Quay - Full Organization Provisioning
@@ -36,103 +43,115 @@
       set_fact:
         team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
 
-    - name: Build pipeline - organization
+    # -------------------------------------------------------------------------
+    # Build inputs.yaml content from survey variables
+    # -------------------------------------------------------------------------
+
+    - name: Build organizations input
       set_fact:
-        quay_pipeline_steps:
-          - name: create-organization
-            job: create_organization
-            enabled: true
-            params:
-              name: "{{ survey_organization_name }}"
+        quay_inputs:
+          organizations:
+            - name: "{{ survey_organization_name }}"
               email: "{{ survey_organization_email }}"
 
-    - name: Build pipeline - robot account
+    - name: Build robot accounts input
       set_fact:
-        quay_pipeline_steps: "{{ quay_pipeline_steps + [robot_step] }}"
+        quay_inputs: "{{ quay_inputs | combine({'robot_accounts': [robot]}, recursive=True) }}"
       vars:
-        robot_step:
-          name: create-robot-account
-          job: create_robot_account
-          enabled: true
-          params:
-            organization: "{{ survey_organization_name }}"
-            robot_shortname: "{{ survey_robot_shortname }}"
-            description: "CI/CD automation bot - created by Tower"
+        robot:
+          organization: "{{ survey_organization_name }}"
+          robot_shortname: "{{ survey_robot_shortname }}"
+          description: "CI/CD automation bot"
 
-    - name: Build pipeline - teams
+    - name: Build teams input
       set_fact:
-        quay_pipeline_steps: "{{ quay_pipeline_steps + [team_step] }}"
+        quay_inputs: "{{ quay_inputs | combine({'teams': teams_list}, recursive=True) }}"
       vars:
-        team_step:
-          name: "create-team-{{ item }}"
-          job: create_team
-          enabled: true
-          params:
-            organization: "{{ survey_organization_name }}"
-            team_name: "{{ item }}"
-            role: "{{ survey_team_role }}"
-            description: "Team {{ item }} - created by Tower"
-      loop: "{{ team_list }}"
+        teams_list: >-
+          [
+          {% for team in team_list %}
+            {
+              "organization": "{{ survey_organization_name }}",
+              "team_name": "{{ team }}",
+              "role": "{{ survey_team_role }}",
+              "description": "Team {{ team }}"
+            }{% if not loop.last %},{% endif %}
+          {% endfor %}
+          ]
 
-    - name: Build pipeline - add robot to first team
+    - name: Build team members input (add robot to all teams)
       set_fact:
-        quay_pipeline_steps: "{{ quay_pipeline_steps + [member_step] }}"
+        quay_inputs: "{{ quay_inputs | combine({'team_members': members_list}, recursive=True) }}"
       vars:
-        member_step:
-          name: add-robot-to-team
-          job: add_team_member
-          enabled: true
-          params:
-            organization: "{{ survey_organization_name }}"
-            team_name: "{{ team_list | first }}"
-            member_name: "{{ survey_organization_name }}+{{ survey_robot_shortname }}"
+        members_list: >-
+          [
+          {% for team in team_list %}
+            {
+              "organization": "{{ survey_organization_name }}",
+              "team_name": "{{ team }}",
+              "member_name": "{{ survey_organization_name }}+{{ survey_robot_shortname }}"
+            }{% if not loop.last %},{% endif %}
+          {% endfor %}
+          ]
 
-    - name: Build pipeline - default repo permission for first team
+    - name: Build default repo permissions input
       set_fact:
-        quay_pipeline_steps: "{{ quay_pipeline_steps + [perm_step] }}"
+        quay_inputs: "{{ quay_inputs | combine({'default_repo_permissions': perms_list}, recursive=True) }}"
       vars:
-        perm_step:
-          name: set-default-repo-permission
-          job: set_default_repository_permission
-          enabled: true
-          params:
-            organization: "{{ survey_organization_name }}"
-            delegate:
-              kind: "team"
-              name: "{{ team_list | first }}"
-            role: "admin"
+        perms_list: >-
+          [
+          {% for team in team_list %}
+            {
+              "organization": "{{ survey_organization_name }}",
+              "delegate": {"kind": "team", "name": "{{ team }}"},
+              "role": "admin"
+            }{% if not loop.last %},{% endif %}
+          {% endfor %}
+          ]
 
-    - name: Build pipeline - LDAP sync
+    - name: Build LDAP sync input
       set_fact:
-        quay_pipeline_steps: "{{ quay_pipeline_steps + [ldap_step] }}"
+        quay_inputs: "{{ quay_inputs | combine({'team_ldap_sync': [ldap_entry]}, recursive=True) }}"
       vars:
-        ldap_step:
-          name: sync-team-ldap
-          job: sync_team_ldap
-          enabled: true
-          params:
-            organization: "{{ survey_organization_name }}"
-            team_name: "{{ team_list | first }}"
-            group_dn: "{{ survey_ldap_group_dn }}"
+        ldap_entry:
+          organization: "{{ survey_organization_name }}"
+          team_name: "{{ team_list | first }}"
+          group_dn: "{{ survey_ldap_group_dn }}"
       when:
         - survey_ldap_group_dn is defined
         - survey_ldap_group_dn | length
 
-    - name: Assemble pipeline
+    - name: Set empty LDAP sync input if not configured
       set_fact:
-        quay_pipeline:
-          pipeline: "{{ quay_pipeline_steps }}"
+        quay_inputs: "{{ quay_inputs | combine({'team_ldap_sync': []}, recursive=True) }}"
+      when:
+        - survey_ldap_group_dn is not defined or survey_ldap_group_dn | length == 0
 
-    - name: Write pipeline file
+    # -------------------------------------------------------------------------
+    # Write inputs.yaml and run quay-provisioner
+    # -------------------------------------------------------------------------
+
+    - name: Create temp directory
+      tempfile:
+        state: directory
+        prefix: quay-provisioner-
+      register: tmp_dir
+
+    - name: Write inputs.yaml
       copy:
-        content: "{{ quay_pipeline | to_nice_yaml(indent=2) }}"
-        dest: "{{ fact_quay_pipeline_path }}"
+        content: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
+        dest: "{{ tmp_dir.path }}/inputs.yaml"
+
+    - name: Display generated inputs
+      debug:
+        msg: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
 
     - name: Run quay-provisioner
       include_role:
         name: quay-provisioner-run
       vars:
-        quay_pipeline_file: "{{ fact_quay_pipeline_path }}"
+        quay_pipeline_file: "pipelines/full-provisioning-pipeline.yaml"
+        quay_inputs_file: "{{ tmp_dir.path }}/inputs.yaml"
 
     - name: Display result
       debug:
@@ -140,4 +159,11 @@
           Quay Organization '{{ survey_organization_name }}' fully provisioned.
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
+          LDAP Sync:     {{ survey_ldap_group_dn | default('not configured') }}
           Requester:     {{ tower_user_name | default(lookup('env', 'USER')) }}
+
+    - name: Cleanup temp directory
+      file:
+        path: "{{ tmp_dir.path }}"
+        state: absent
+      listen: cleanup
