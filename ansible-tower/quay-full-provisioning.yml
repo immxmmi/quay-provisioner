@@ -1,6 +1,7 @@
 # Full Quay organization provisioning.
-# Generates a Kubernetes ConfigMap with inputs.yaml from survey variables.
-# The ConfigMap is used by the quay-provisioner Helm chart / ArgoCD.
+# Generates inputs.yaml content from survey variables and commits it to the
+# self-service Git repository. ArgoCD picks up the change and the Helm chart
+# generates the ConfigMap for the quay-provisioner.
 #
 # This creates in one workflow:
 # - Organization
@@ -13,6 +14,7 @@
 # Required arguments:
 # - survey_organization_name: Organization name
 # - survey_organization_email: Contact email
+# - survey_organization_visibility: private or public
 # - survey_robot_shortname: Robot account name
 # - survey_team_names: Comma-separated team names
 # - survey_team_role: Default role for teams
@@ -26,11 +28,6 @@
   gather_facts: false
   force_handlers: true
 
-  vars:
-    quay_provisioner_namespace: quay-provisioner
-    quay_provisioner_release_name: cluster
-    quay_provisioner_configmap_name: "{{ quay_provisioner_release_name }}-quay-provisioner-inputs"
-
   tasks:
     - name: Check required arguments
       assert:
@@ -38,6 +35,7 @@
       loop:
         - survey_organization_name
         - survey_organization_email
+        - survey_organization_visibility
         - survey_robot_shortname
         - survey_team_names
         - survey_team_role
@@ -49,31 +47,45 @@
         team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
 
     # -------------------------------------------------------------------------
-    # Build inputs.yaml content from survey variables
+    # Clone Git repository
     # -------------------------------------------------------------------------
 
-    - name: Build organizations input
-      set_fact:
-        quay_inputs:
-          organizations:
-            - name: "{{ survey_organization_name }}"
-              email: "{{ survey_organization_email }}"
-              visibility: "{{ survey_organization_visibility }}"
+    - name: Clone self-service repository
+      include_role:
+        name: quay-provisioner-git
 
-    - name: Build robot accounts input
-      set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'robot_accounts': [robot]}, recursive=True) }}"
+    # -------------------------------------------------------------------------
+    # Read existing values
+    # -------------------------------------------------------------------------
+
+    - name: Read existing values
+      include_role:
+        name: quay-provisioner-values
       vars:
-        robot:
+        quay_values_git_path: "{{ fact_quay_git_path }}"
+        quay_values_organization_name: "{{ survey_organization_name }}"
+
+    # -------------------------------------------------------------------------
+    # Build inputs from survey variables
+    # -------------------------------------------------------------------------
+
+    - name: Build organization entry
+      set_fact:
+        fact_organization:
+          name: "{{ survey_organization_name }}"
+          email: "{{ survey_organization_email }}"
+          visibility: "{{ survey_organization_visibility }}"
+
+    - name: Build robot account entry
+      set_fact:
+        fact_robot_account:
           organization: "{{ survey_organization_name }}"
           robot_shortname: "{{ survey_robot_shortname }}"
           description: "CI automation bot"
 
-    - name: Build teams input
+    - name: Build teams list
       set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'teams': teams_list}, recursive=True) }}"
-      vars:
-        teams_list: >-
+        fact_teams: >-
           [
           {% for team in team_list %}
             {
@@ -85,11 +97,9 @@
           {% endfor %}
           ]
 
-    - name: Build team members input (add robot to all teams)
+    - name: Build team members list (add robot to all teams)
       set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'team_members': members_list}, recursive=True) }}"
-      vars:
-        members_list: >-
+        fact_team_members: >-
           [
           {% for team in team_list %}
             {
@@ -100,11 +110,9 @@
           {% endfor %}
           ]
 
-    - name: Build default repo permissions input
+    - name: Build default repo permissions list
       set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'default_repo_permissions': perms_list}, recursive=True) }}"
-      vars:
-        perms_list: >-
+        fact_default_repo_permissions: >-
           [
           {% for team in team_list %}
             {
@@ -115,58 +123,71 @@
           {% endfor %}
           ]
 
-    - name: Build LDAP sync input
+    - name: Build LDAP sync entry
       set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'team_ldap_sync': [ldap_entry]}, recursive=True) }}"
-      vars:
-        ldap_entry:
-          organization: "{{ survey_organization_name }}"
-          team_name: "{{ team_list | first }}"
-          group_dn: "{{ survey_ldap_group_dn }}"
+        fact_team_ldap_sync:
+          - organization: "{{ survey_organization_name }}"
+            team_name: "{{ team_list | first }}"
+            group_dn: "{{ survey_ldap_group_dn }}"
       when:
         - survey_ldap_group_dn is defined
         - survey_ldap_group_dn | length
 
-    - name: Set empty LDAP sync input if not configured
+    - name: Set empty LDAP sync if not configured
       set_fact:
-        quay_inputs: "{{ quay_inputs | combine({'team_ldap_sync': []}, recursive=True) }}"
+        fact_team_ldap_sync: []
       when:
         - survey_ldap_group_dn is not defined or survey_ldap_group_dn | length == 0
 
     # -------------------------------------------------------------------------
-    # Generate and apply ConfigMap
+    # Update values dict
     # -------------------------------------------------------------------------
 
-    - name: Build ConfigMap
+    - name: Update values dict
       set_fact:
-        quay_configmap:
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: "{{ quay_provisioner_configmap_name }}"
-            namespace: "{{ quay_provisioner_namespace }}"
-            labels:
-              app.kubernetes.io/name: quay-provisioner
-              app.kubernetes.io/instance: "{{ quay_provisioner_release_name }}"
-              app.kubernetes.io/managed-by: Helm
-          data:
-            inputs.yaml: "{{ quay_inputs | to_nice_yaml(indent=2) }}"
+        fact_quay_values_dict: "{{ fact_quay_values_dict | default({}) | combine(values, recursive=True) }}"
+      vars:
+        values:
+          organizations:
+            - "{{ fact_organization }}"
+          robot_accounts:
+            - "{{ fact_robot_account }}"
+          teams: "{{ fact_teams }}"
+          team_members: "{{ fact_team_members }}"
+          default_repo_permissions: "{{ fact_default_repo_permissions }}"
+          team_ldap_sync: "{{ fact_team_ldap_sync }}"
 
-    - name: Display generated ConfigMap
-      debug:
-        msg: "{{ quay_configmap | to_nice_yaml(indent=2) }}"
+    # -------------------------------------------------------------------------
+    # Write values and commit to Git
+    # -------------------------------------------------------------------------
 
-    - name: Apply ConfigMap to cluster
-      k8s:
-        state: present
-        definition: "{{ quay_configmap }}"
+    - name: Write updated values
+      include_role:
+        name: quay-provisioner-values
+      vars:
+        quay_values_dict: "{{ fact_quay_values_dict }}"
+        quay_values_git_path: "{{ fact_quay_git_path }}"
+        quay_values_organization_name: "{{ survey_organization_name }}"
+
+    - name: Commit and push changes
+      include_role:
+        name: quay-provisioner-git
+      vars:
+        quay_git_path: "{{ fact_quay_git_path }}"
+
+    # -------------------------------------------------------------------------
+    # Trigger ArgoCD sync
+    # -------------------------------------------------------------------------
+
+    - name: Trigger ArgoCD sync
+      include_role:
+        name: quay-provisioner-argocd
 
     - name: Display result
       debug:
         msg: |
-          Quay Organization '{{ survey_organization_name }}' - ConfigMap generated and applied.
-          ConfigMap:     {{ quay_provisioner_configmap_name }}
-          Namespace:     {{ quay_provisioner_namespace }}
+          Quay Organization '{{ survey_organization_name }}' fully provisioned.
+          Visibility:    {{ survey_organization_visibility }}
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
           LDAP Sync:     {{ survey_ldap_group_dn | default('not configured') }}
