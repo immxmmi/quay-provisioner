@@ -1,7 +1,9 @@
-# Full Quay organization provisioning.
-# Clones the cluster-config Gitea repository, generates a ConfigMap YAML file
-# with the inputs.yaml in the Helm templates directory, commits and pushes.
-# ArgoCD picks up the change and the quay-provisioner Job runs.
+# Provisions a complete Quay organization by generating a ConfigMap with the
+# required inputs, committing it to the cluster-config Git repository, and
+# triggering an ArgoCD sync.
+#
+# If an existing inputs ConfigMap file is found in the templates directory,
+# the new organization data is merged into it. Otherwise a new file is created.
 #
 # This creates in one workflow:
 # - Organization
@@ -22,6 +24,12 @@
 # Optional arguments:
 # - survey_ldap_group_dn: LDAP group DN for first team
 #
+# Global variables (from vars file):
+# - gitea_url: Gitea base URL
+# - gitea_username: Gitea username
+# - gitea_password: Gitea password
+# - gitea_token: Gitea personal access token
+#
 
 - name: Run - Quay - Full Organization Provisioning
   hosts: localhost
@@ -31,11 +39,12 @@
   vars:
     # Git repository (gitea_url, gitea_username, gitea_password, gitea_token come from global vars)
     git_repo: "openshift/cluster-config"
-    git_repo_url: "{{ gitea_url }}/{{ git_repo }}.git"
     git_branch: main
-    # Path inside the repo where the ConfigMap file will be created
+    # Path inside the repo where the ConfigMap file will be created or updated
     templates_path: "helm/chartrepo/quay-provisioner/templates"
-    # Generated file prefix (result: auto-generated-<org-name>-inputs.yaml)
+    # Name of the existing inputs ConfigMap file (if it exists, it will be extended)
+    inputs_configmap_file: "inputs-config.yaml"
+    # Fallback filename if no existing file is found
     generated_file_prefix: "auto-generated"
 
   tasks:
@@ -55,10 +64,6 @@
     - name: Parse team names
       set_fact:
         team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
-
-    - name: Set generated filename
-      set_fact:
-        generated_filename: "{{ generated_file_prefix }}-{{ survey_organization_name }}-inputs.yaml"
 
     # -------------------------------------------------------------------------
     # Clone Git repository
@@ -91,26 +96,58 @@
         - git config user.email "{{ gitea_username }}@ansible-tower"
 
     # -------------------------------------------------------------------------
-    # Build inputs.yaml content from survey variables
+    # Check for existing inputs ConfigMap file
+    # -------------------------------------------------------------------------
+
+    - name: Check if inputs ConfigMap file exists
+      stat:
+        path: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
+      register: existing_configmap_file
+
+    - name: Read existing ConfigMap file
+      slurp:
+        src: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
+      register: existing_configmap_raw
+      when: existing_configmap_file.stat.exists
+
+    - name: Parse existing inputs from ConfigMap
+      set_fact:
+        existing_configmap: "{{ existing_configmap_raw.content | b64decode | from_yaml }}"
+        existing_inputs: "{{ (existing_configmap_raw.content | b64decode | from_yaml).data['inputs.yaml'] | from_yaml }}"
+      when: existing_configmap_file.stat.exists
+
+    - name: Initialize empty inputs if no existing file
+      set_fact:
+        existing_inputs:
+          organizations: []
+          robot_accounts: []
+          teams: []
+          team_members: []
+          default_repo_permissions: []
+          team_ldap_sync: []
+      when: not existing_configmap_file.stat.exists
+
+    # -------------------------------------------------------------------------
+    # Build new entries from survey variables
     # -------------------------------------------------------------------------
 
     - name: Build organization entry
       set_fact:
-        fact_organization:
+        new_organization:
           name: "{{ survey_organization_name }}"
           email: "{{ survey_organization_email }}"
           visibility: "{{ survey_organization_visibility }}"
 
     - name: Build robot account entry
       set_fact:
-        fact_robot_account:
+        new_robot_account:
           organization: "{{ survey_organization_name }}"
           robot_shortname: "{{ survey_robot_shortname }}"
           description: "CI automation bot"
 
     - name: Build teams list
       set_fact:
-        fact_teams: >-
+        new_teams: >-
           [
           {% for team in team_list %}
             {
@@ -124,7 +161,7 @@
 
     - name: Build team members list (add robot to all teams)
       set_fact:
-        fact_team_members: >-
+        new_team_members: >-
           [
           {% for team in team_list %}
             {
@@ -137,7 +174,7 @@
 
     - name: Build default repo permissions list
       set_fact:
-        fact_default_repo_permissions: >-
+        new_default_repo_permissions: >-
           [
           {% for team in team_list %}
             {
@@ -150,7 +187,7 @@
 
     - name: Build LDAP sync entry
       set_fact:
-        fact_team_ldap_sync:
+        new_team_ldap_sync:
           - organization: "{{ survey_organization_name }}"
             team_name: "{{ team_list | first }}"
             group_dn: "{{ survey_ldap_group_dn }}"
@@ -160,29 +197,41 @@
 
     - name: Set empty LDAP sync if not configured
       set_fact:
-        fact_team_ldap_sync: []
+        new_team_ldap_sync: []
       when:
         - survey_ldap_group_dn is not defined or survey_ldap_group_dn | length == 0
 
     # -------------------------------------------------------------------------
-    # Assemble inputs dict
+    # Merge new entries into existing inputs
     # -------------------------------------------------------------------------
 
-    - name: Assemble inputs
+    - name: Remove existing entries for this organization (avoid duplicates)
       set_fact:
-        fact_quay_inputs:
-          organizations:
-            - "{{ fact_organization }}"
-          robot_accounts:
-            - "{{ fact_robot_account }}"
-          teams: "{{ fact_teams }}"
-          team_members: "{{ fact_team_members }}"
-          default_repo_permissions: "{{ fact_default_repo_permissions }}"
-          team_ldap_sync: "{{ fact_team_ldap_sync }}"
+        cleaned_inputs:
+          organizations: "{{ existing_inputs.organizations | default([]) | rejectattr('name', 'equalto', survey_organization_name) | list }}"
+          robot_accounts: "{{ existing_inputs.robot_accounts | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
+          teams: "{{ existing_inputs.teams | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
+          team_members: "{{ existing_inputs.team_members | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
+          default_repo_permissions: "{{ existing_inputs.default_repo_permissions | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
+          team_ldap_sync: "{{ existing_inputs.team_ldap_sync | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
+
+    - name: Merge new entries into inputs
+      set_fact:
+        merged_inputs:
+          organizations: "{{ cleaned_inputs.organizations + [new_organization] }}"
+          robot_accounts: "{{ cleaned_inputs.robot_accounts + [new_robot_account] }}"
+          teams: "{{ cleaned_inputs.teams + new_teams }}"
+          team_members: "{{ cleaned_inputs.team_members + new_team_members }}"
+          default_repo_permissions: "{{ cleaned_inputs.default_repo_permissions + new_default_repo_permissions }}"
+          team_ldap_sync: "{{ cleaned_inputs.team_ldap_sync + new_team_ldap_sync }}"
 
     # -------------------------------------------------------------------------
-    # Generate ConfigMap YAML and write to templates directory
+    # Write ConfigMap file
     # -------------------------------------------------------------------------
+
+    - name: Set target filename
+      set_fact:
+        target_filename: "{{ inputs_configmap_file if existing_configmap_file.stat.exists else generated_file_prefix + '-inputs.yaml' }}"
 
     - name: Build ConfigMap content
       set_fact:
@@ -190,37 +239,37 @@
           apiVersion: v1
           kind: ConfigMap
           metadata:
-            name: "quay-provisioner-{{ survey_organization_name }}-inputs"
+            name: "{{ (existing_configmap.metadata.name) if existing_configmap_file.stat.exists else 'quay-provisioner-inputs' }}"
             labels:
               app.kubernetes.io/name: quay-provisioner
               app.kubernetes.io/managed-by: ansible-tower
               quay-provisioner/auto-generated: "true"
-              quay-provisioner/organization: "{{ survey_organization_name }}"
             annotations:
-              quay-provisioner/generated-by: "{{ tower_user_name | default(lookup('env', 'USER')) }}"
-              quay-provisioner/generated-at: "{{ now(utc=true).isoformat() }}"
+              quay-provisioner/last-modified-by: "{{ tower_user_name | default(lookup('env', 'USER')) }}"
+              quay-provisioner/last-modified-at: "{{ now(utc=true).isoformat() }}"
           data:
-            inputs.yaml: "{{ fact_quay_inputs | to_nice_yaml(indent=2) }}"
+            inputs.yaml: "{{ merged_inputs | to_nice_yaml(indent=2) }}"
 
     - name: Write ConfigMap to templates directory
       copy:
         content: "{{ fact_configmap_content | to_nice_yaml(indent=2) }}"
-        dest: "{{ fact_templates_path }}/{{ generated_filename }}"
+        dest: "{{ fact_templates_path }}/{{ target_filename }}"
       diff: yes
 
     - name: Display generated ConfigMap
       debug:
         msg: |
-          Generated file: {{ templates_path }}/{{ generated_filename }}
+          Target file: {{ templates_path }}/{{ target_filename }}
+          Mode: {{ 'UPDATED existing file' if existing_configmap_file.stat.exists else 'CREATED new file' }}
           {{ fact_configmap_content | to_nice_yaml(indent=2) }}
 
     # -------------------------------------------------------------------------
     # Commit and push to Gitea
     # -------------------------------------------------------------------------
 
-    - name: Git add generated file
+    - name: Git add ConfigMap file
       command:
-        cmd: git add "{{ templates_path }}/{{ generated_filename }}"
+        cmd: git add "{{ templates_path }}/{{ target_filename }}"
         chdir: "{{ fact_git_repo_path }}"
 
     - name: Git commit
@@ -250,7 +299,8 @@
       debug:
         msg: |
           Quay Organization '{{ survey_organization_name }}' - ConfigMap committed to Git.
-          File:          {{ templates_path }}/{{ generated_filename }}
+          File:          {{ templates_path }}/{{ target_filename }}
+          Mode:          {{ 'UPDATED existing file' if existing_configmap_file.stat.exists else 'CREATED new file' }}
           Visibility:    {{ survey_organization_visibility }}
           Robot account: {{ survey_organization_name }}+{{ survey_robot_shortname }}
           Teams:         {{ team_list | join(', ') }}
