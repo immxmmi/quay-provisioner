@@ -43,9 +43,9 @@
     # Path inside the repo where the ConfigMap file will be created or updated
     templates_path: "helm/chartrepo/quay-provisioner/templates"
     # Name of the existing inputs ConfigMap file (if it exists, it will be extended)
-    inputs_configmap_file: "inputs-config.yaml"
-    # Fallback filename if no existing file is found
-    generated_file_prefix: "auto-generated"
+    inputs_configmap_file: "auto-generated-inputs-config.yaml"
+    # Standard metadata.name for the ConfigMap (always the same)
+    inputs_configmap_name: "quay-provisioner-inputs"
 
   tasks:
     - name: Check required arguments
@@ -63,7 +63,7 @@
 
     - name: Parse team names
       set_fact:
-        team_list: "{{ survey_team_names.split(',') | map('trim') | list }}"
+        team_list: "{{ survey_team_names.split(',') | map('trim') | reject('equalto', '') | list }}"
 
     # -------------------------------------------------------------------------
     # Clone Git repository
@@ -145,45 +145,18 @@
           robot_shortname: "{{ survey_robot_shortname }}"
           description: "CI automation bot"
 
-    - name: Build teams list
+    - name: Initialize team-related entries
       set_fact:
-        new_teams: >-
-          [
-          {% for team in team_list %}
-            {
-              "organization": "{{ survey_organization_name }}",
-              "team_name": "{{ team }}",
-              "role": "{{ survey_team_role }}",
-              "description": "Team {{ team }}"
-            }{% if not loop.last %},{% endif %}
-          {% endfor %}
-          ]
+        new_teams: []
+        new_team_members: []
+        new_default_repo_permissions: []
 
-    - name: Build team members list (add robot to all teams)
+    - name: Build team-related entries
       set_fact:
-        new_team_members: >-
-          [
-          {% for team in team_list %}
-            {
-              "organization": "{{ survey_organization_name }}",
-              "team_name": "{{ team }}",
-              "member_name": "{{ survey_organization_name }}+{{ survey_robot_shortname }}"
-            }{% if not loop.last %},{% endif %}
-          {% endfor %}
-          ]
-
-    - name: Build default repo permissions list
-      set_fact:
-        new_default_repo_permissions: >-
-          [
-          {% for team in team_list %}
-            {
-              "organization": "{{ survey_organization_name }}",
-              "delegate": {"kind": "team", "name": "{{ team }}"},
-              "role": "admin"
-            }{% if not loop.last %},{% endif %}
-          {% endfor %}
-          ]
+        new_teams: "{{ new_teams + [ {'organization': survey_organization_name, 'team_name': item, 'role': survey_team_role, 'description': 'Team ' ~ item} ] }}"
+        new_team_members: "{{ new_team_members + [ {'organization': survey_organization_name, 'team_name': item, 'member_name': survey_organization_name ~ '+' ~ survey_robot_shortname} ] }}"
+        new_default_repo_permissions: "{{ new_default_repo_permissions + [ {'organization': survey_organization_name, 'delegate': {'kind': 'team', 'name': item}, 'role': 'admin'} ] }}"
+      loop: "{{ team_list }}"
 
     - name: Build LDAP sync entry
       set_fact:
@@ -231,7 +204,7 @@
 
     - name: Set target filename
       set_fact:
-        target_filename: "{{ inputs_configmap_file if existing_configmap_file.stat.exists else generated_file_prefix + '-inputs.yaml' }}"
+        target_filename: "{{ inputs_configmap_file }}"
 
     - name: Build ConfigMap content
       set_fact:
@@ -239,7 +212,7 @@
           apiVersion: v1
           kind: ConfigMap
           metadata:
-            name: "{{ (existing_configmap.metadata.name) if existing_configmap_file.stat.exists else 'quay-provisioner-inputs' }}"
+            name: "{{ inputs_configmap_name }}"
             labels:
               app.kubernetes.io/name: quay-provisioner
               app.kubernetes.io/managed-by: ansible-tower
