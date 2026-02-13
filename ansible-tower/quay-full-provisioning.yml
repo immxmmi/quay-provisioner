@@ -29,8 +29,9 @@
   force_handlers: true
 
   vars:
-    # Git repository
-    git_repo_url: "https://drcsp02.hel.kko.ch/openshift/cluster-config.git"
+    # Git repository (gitea_url, gitea_username, gitea_password, gitea_token come from global vars)
+    git_repo: "openshift/cluster-config"
+    git_repo_url: "{{ gitea_url }}/{{ git_repo }}.git"
     git_branch: main
     # Path inside the repo where the ConfigMap file will be created
     templates_path: "helm/chartrepo/quay-provisioner/templates"
@@ -71,7 +72,7 @@
 
     - name: Clone cluster-config repository
       git:
-        repo: "{{ git_repo_url }}"
+        repo: "{{ gitea_url | regex_replace('https://', 'https://' + gitea_token + '@') }}/{{ git_repo }}.git"
         dest: "{{ tmp_dir.path }}/cluster-config"
         version: "{{ git_branch }}"
         depth: 1
@@ -80,6 +81,14 @@
       set_fact:
         fact_git_repo_path: "{{ tmp_dir.path }}/cluster-config"
         fact_templates_path: "{{ tmp_dir.path }}/cluster-config/{{ templates_path }}"
+
+    - name: Configure git user
+      command:
+        cmd: "{{ item }}"
+        chdir: "{{ fact_git_repo_path }}"
+      loop:
+        - git config user.name "{{ gitea_username }}"
+        - git config user.email "{{ gitea_username }}@ansible-tower"
 
     # -------------------------------------------------------------------------
     # Build inputs.yaml content from survey variables
