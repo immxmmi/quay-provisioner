@@ -1,7 +1,12 @@
-# Validate inputs for full Quay organization deletion (Quay + ConfigMap).
+# Validate inputs for removing a Quay organization from the provisioning config.
+#
+# This workflow removes all entries for the organization from the ConfigMap
+# (organization, robot accounts, teams, team members, default permissions,
+# LDAP sync). The actual deletion of the organization in Quay must be done
+# manually.
 #
 # Required arguments:
-# - survey_organization_name: The organization name to delete
+# - survey_organization_name: The organization name to remove from config
 #
 
 - name: Run - Quay - Full Organization Delete - Validate
@@ -21,8 +26,15 @@
     - name: Display validation summary
       debug:
         msg: |
-          WARNING: Quay Full Organization Delete
+          WARNING: Quay Organization Config Removal
           Organization: {{ survey_organization_name }}
-          This will permanently delete the organization in Quay AND remove all related entries from the cluster-config ConfigMap!
-          All repositories, teams, robot accounts, and LDAP sync settings will be removed.
+          This will remove ALL entries for this organization from the cluster-config ConfigMap:
+          - Organization
+          - Robot accounts
+          - Teams
+          - Team members
+          - Default repository permissions
+          - LDAP sync settings
+          ArgoCD will no longer manage this organization after the next sync.
+          NOTE: The organization in Quay itself must be deleted manually!
           Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}

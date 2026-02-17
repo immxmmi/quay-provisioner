@@ -1,11 +1,15 @@
-# Fully deletes a Quay organization by:
-# 1. Deleting the organization via the Quay API
-# 2. Removing all related entries from the cluster-config ConfigMap
+# Removes all entries for a Quay organization from the provisioning ConfigMap
+# in the cluster-config Git repository.
 #
-# This prevents ArgoCD from re-creating the organization on the next sync.
+# This does NOT delete the organization in Quay itself - that must be done
+# manually. This only removes the entries from the ConfigMap so that ArgoCD
+# no longer re-creates or manages the organization.
+#
+# Removed entries: organization, robot accounts, teams, team members,
+# default repository permissions, LDAP sync settings.
 #
 # Required arguments:
-# - survey_organization_name: The organization name to delete
+# - survey_organization_name: The organization name to remove from config
 #
 # Global variables (from vars file):
 # - gitea_url: Gitea base URL
@@ -39,34 +43,9 @@
       loop_control:
         loop_var: param
 
-    # =========================================================================
-    # Phase 1 - Delete organization via Quay API
-    # =========================================================================
-
-    - name: Generate pipeline definition
-      set_fact:
-        quay_pipeline:
-          pipeline:
-            - name: delete-organization
-              job: delete_organization
-              enabled: true
-              params:
-                name: "{{ survey_organization_name }}"
-
-    - name: Write pipeline file
-      copy:
-        content: "{{ quay_pipeline | to_nice_yaml(indent=2) }}"
-        dest: "{{ fact_quay_pipeline_path }}"
-
-    - name: Run quay-provisioner
-      include_role:
-        name: quay-provisioner-run
-      vars:
-        quay_pipeline_file: "{{ fact_quay_pipeline_path }}"
-
-    # =========================================================================
-    # Phase 2 - Remove entries from ConfigMap in Git
-    # =========================================================================
+    # -------------------------------------------------------------------------
+    # Clone Git repository
+    # -------------------------------------------------------------------------
 
     - name: Create temp directory for git clone
       tempfile:
@@ -94,14 +73,18 @@
         - git config user.name "{{ gitea_username }}"
         - git config user.email "{{ gitea_username }}@ansible-tower"
 
+    # -------------------------------------------------------------------------
+    # Check for existing inputs ConfigMap file
+    # -------------------------------------------------------------------------
+
     - name: Check if inputs ConfigMap file exists
       stat:
         path: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
       register: existing_configmap_file
 
-    - name: Skip ConfigMap cleanup if file does not exist
-      debug:
-        msg: "No ConfigMap file found at {{ templates_path }}/{{ inputs_configmap_file }} - skipping Git cleanup."
+    - name: Fail if ConfigMap file does not exist
+      fail:
+        msg: "No ConfigMap file found at {{ templates_path }}/{{ inputs_configmap_file }} - nothing to remove."
       when: not existing_configmap_file.stat.exists
 
     # -------------------------------------------------------------------------
@@ -112,13 +95,11 @@
       slurp:
         src: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
       register: existing_configmap_raw
-      when: existing_configmap_file.stat.exists
 
     - name: Parse existing inputs from ConfigMap
       set_fact:
         existing_configmap: "{{ existing_configmap_raw.content | b64decode | from_yaml }}"
         existing_inputs: "{{ (existing_configmap_raw.content | b64decode | from_yaml).data['inputs.yaml'] | from_yaml }}"
-      when: existing_configmap_file.stat.exists
 
     - name: Remove entries for this organization
       set_fact:
@@ -129,7 +110,6 @@
           team_members: "{{ existing_inputs.team_members | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
           default_repo_permissions: "{{ existing_inputs.default_repo_permissions | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
           team_ldap_sync: "{{ existing_inputs.team_ldap_sync | default([]) | rejectattr('organization', 'equalto', survey_organization_name) | list }}"
-      when: existing_configmap_file.stat.exists
 
     - name: Check if all lists are empty
       set_fact:
@@ -140,7 +120,6 @@
              (cleaned_inputs.team_members | length == 0) and
              (cleaned_inputs.default_repo_permissions | length == 0) and
              (cleaned_inputs.team_ldap_sync | length == 0) }}
-      when: existing_configmap_file.stat.exists
 
     # -------------------------------------------------------------------------
     # Case 1: ConfigMap is empty - delete the file
@@ -150,17 +129,13 @@
       file:
         path: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
         state: absent
-      when:
-        - existing_configmap_file.stat.exists
-        - configmap_is_empty | bool
+      when: configmap_is_empty | bool
 
     - name: Git add deleted file
       command:
         cmd: git add "{{ templates_path }}/{{ inputs_configmap_file }}"
         chdir: "{{ fact_git_repo_path }}"
-      when:
-        - existing_configmap_file.stat.exists
-        - configmap_is_empty | bool
+      when: configmap_is_empty | bool
 
     # -------------------------------------------------------------------------
     # Case 2: Other organizations remain - update the file
@@ -182,25 +157,20 @@
               quay-provisioner/last-modified-at: "{{ now(utc=true).isoformat() }}"
           data:
             inputs.yaml: "{{ cleaned_inputs | to_nice_yaml(indent=2) }}"
-      when:
-        - existing_configmap_file.stat.exists
-        - not (configmap_is_empty | bool)
+      when: not (configmap_is_empty | bool)
 
     - name: Write updated ConfigMap to templates directory
       copy:
         content: "{{ fact_configmap_content | to_nice_yaml(indent=2) }}"
         dest: "{{ fact_templates_path }}/{{ inputs_configmap_file }}"
-      when:
-        - existing_configmap_file.stat.exists
-        - not (configmap_is_empty | bool)
+      diff: yes
+      when: not (configmap_is_empty | bool)
 
     - name: Git add updated file
       command:
         cmd: git add "{{ templates_path }}/{{ inputs_configmap_file }}"
         chdir: "{{ fact_git_repo_path }}"
-      when:
-        - existing_configmap_file.stat.exists
-        - not (configmap_is_empty | bool)
+      when: not (configmap_is_empty | bool)
 
     # -------------------------------------------------------------------------
     # Commit and push to Gitea
@@ -214,13 +184,11 @@
           Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}
           Auto-generated by Ansible Tower"
         chdir: "{{ fact_git_repo_path }}"
-      when: existing_configmap_file.stat.exists
 
     - name: Git push
       command:
         cmd: git push origin {{ git_branch }}
         chdir: "{{ fact_git_repo_path }}"
-      when: existing_configmap_file.stat.exists
 
     # -------------------------------------------------------------------------
     # Cleanup
@@ -234,7 +202,7 @@
     - name: Display result
       debug:
         msg: |
-          Quay Organization '{{ survey_organization_name }}' - Full delete completed.
-          Phase 1: Organization deleted from Quay API.
-          Phase 2: {{ 'ConfigMap file deleted (no organizations left).' if (existing_configmap_file.stat.exists and (configmap_is_empty | default(false) | bool)) else ('ConfigMap entries removed from ' ~ templates_path ~ '/' ~ inputs_configmap_file ~ '.') if existing_configmap_file.stat.exists else 'No ConfigMap file found - skipped Git cleanup.' }}
+          Organization '{{ survey_organization_name }}' removed from provisioning config.
+          ConfigMap: {{ 'DELETED (no organizations left)' if (configmap_is_empty | bool) else 'UPDATED - entries removed from ' ~ templates_path ~ '/' ~ inputs_configmap_file }}
+          NOTE: The organization in Quay must be deleted manually!
           Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}
