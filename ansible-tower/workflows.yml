@@ -94,10 +94,11 @@ workflows:
       - quay-full-delete.yml
     survey:
       - question_name: Organization name
-        question_description: 'Select the organization to remove from the provisioning config. This removes all related entries (organization, robot accounts, teams, members, permissions, LDAP sync) from the ConfigMap. The actual deletion in Quay must be done manually.'
+        question_description: 'Name of the organization to remove from the provisioning config. This removes all related entries (organization, robot accounts, teams, members, permissions, LDAP sync) from the ConfigMap. The actual deletion in Quay must be done manually.'
         required: true
-        type: multiselect
+        type: text
         variable: survey_organization_name
+        min: 2
+        max: 64
         default: ''
-        choices: "{{ fact_quay_organizations | join('\n') }}"
 
