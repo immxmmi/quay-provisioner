@@ -1,0 +1,28 @@
+# Validate inputs for full Quay organization deletion (Quay + ConfigMap).
+#
+# Required arguments:
+# - survey_organization_name: The organization name to delete
+#
+
+- name: Run - Quay - Full Organization Delete - Validate
+  hosts: localhost
+  gather_facts: false
+  force_handlers: true
+
+  tasks:
+    - name: Check required arguments
+      assert:
+        that: "{{ param }} is defined and {{ param }} | length"
+      loop:
+        - survey_organization_name
+      loop_control:
+        loop_var: param
+
+    - name: Display validation summary
+      debug:
+        msg: |
+          WARNING: Quay Full Organization Delete
+          Organization: {{ survey_organization_name }}
+          This will permanently delete the organization in Quay AND remove all related entries from the cluster-config ConfigMap!
+          All repositories, teams, robot accounts, and LDAP sync settings will be removed.
+          Requester: {{ tower_user_name | default(lookup('env', 'USER')) }}

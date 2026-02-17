@@ -526,3 +526,17 @@ workflows:
       max: 256
       default: ''
       choices: "{{ fact_groups | select('search', '-VIEW') | list | join('\n') }}"
+
+- name: Quay - Full Organization Delete
+  nodes:
+    - quay-full-delete-validate.yml
+    - approval
+    - quay-full-delete.yml
+  survey:
+    - question_name: Organization name
+      question_description: 'Select the organization to fully delete (Quay + Config)'
+      required: true
+      type: multiselect
+      variable: survey_organization_name
+      default: ''
+      choices: "{{ fact_quay_organizations | join('\n') }}"
