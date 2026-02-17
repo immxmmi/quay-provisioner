@@ -101,6 +101,12 @@
         existing_configmap: "{{ existing_configmap_raw.content | b64decode | from_yaml }}"
         existing_inputs: "{{ (existing_configmap_raw.content | b64decode | from_yaml).data['inputs.yaml'] | from_yaml }}"
 
+    - name: Check if organization exists in ConfigMap
+      fail:
+        msg: "Organization '{{ survey_organization_name }}' not found in ConfigMap - nothing to remove."
+      when:
+        - existing_inputs.organizations | default([]) | selectattr('name', 'equalto', survey_organization_name) | list | length == 0
+
     - name: Remove entries for this organization
       set_fact:
         cleaned_inputs:
